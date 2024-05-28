@@ -1,6 +1,6 @@
 import { fetchPosts } from '@/lib/fetch/posts';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
-import { Link, createFileRoute } from '@tanstack/react-router';
+import { ErrorComponent, Link, createFileRoute } from '@tanstack/react-router';
 
 const postsQueryOptions = queryOptions({
   queryKey: ['posts'],
@@ -10,9 +10,13 @@ const postsQueryOptions = queryOptions({
 export const Route = createFileRoute('/posts')({
   loader: ({ context: ctx }) => ctx.queryClient.ensureQueryData(postsQueryOptions),
   component: Posts,
+  errorComponent: ({ error }) => <ErrorComponent error={error} />,
 });
 
 function Posts() {
+  /**
+   * Feel free to throw in the component since it will be catched by the nearest ErrorComponent
+   */
   const { data: posts } = useSuspenseQuery(postsQueryOptions);
   return (
     <main>

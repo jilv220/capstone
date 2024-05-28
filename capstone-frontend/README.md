@@ -1,30 +1,47 @@
-# React + TypeScript + Vite
+# Capstone Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### VS Code Plugins to install
+* ESLint
+* Prettier
+  * Remember to set prettier as the default formatter for `.ts` and `.tsx` files
+* Tailwind CSS IntelliSense
 
-Currently, two official plugins are available:
+### How to install
+run `npm i`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### How to develop
+run `npm dev`
 
-## Expanding the ESLint configuration
+## Where do I learn?
+[Typescript Tutorials](https://www.youtube.com/watch?v=LKVHFHJsiO0&list=PLNqp92_EXZBJYFrpEzdO2EapvU0GOJ09n)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+[HTML/CSS, Javascript Documentations](https://developer.mozilla.org/en-US/)
 
-- Configure the top-level `parserOptions` property like this:
+[Tailwind CSS](https://tailwindcss.com/docs/installation)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+### Packages to learn
+[Tanstack query](https://tanstack.com/query/latest)
+
+[Tanstack router](https://tanstack.com/router/latest)
+
+[shadcn/ui](https://ui.shadcn.com/docs)
+
+## How do I?
+
+### Call API => use fetch()
+```typescript
+// example
+const response = await fetch('https://example.com', {
+	method: 'POST',
+	body: JSON.stringify({foo: true}),
+	headers: {
+		'content-type': 'application/json'
+	}
+});
 ```
+### Add a UI component
+`npx shadcn-ui@latest add <component-name>`
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+for example 
+
+`npx shadcn-ui@latest add button`
