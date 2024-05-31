@@ -1,13 +1,14 @@
 import '@/index.css';
 
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { RootHeader } from '@/components/root-header';
 import { QueryClient } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/sonner';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { toast } from 'sonner';
+import { Suspense } from 'react';
+import { TanStackRouterDevtools } from '@/components/tanstack-router-devtools';
 
 // Register types of custom variables here
 interface AppRouterContext {
@@ -38,7 +39,10 @@ function RootLayout() {
       <RootHeader />
       <Outlet />
       <ReactQueryDevtools buttonPosition="bottom-left" />
-      <TanStackRouterDevtools position="bottom-right" />
+      {/** Why is this not matching the behavior of react query dev tools.... */}
+      <Suspense>
+        <TanStackRouterDevtools position="bottom-right" />
+      </Suspense>
       <Toaster />
       {(offlineReady || needRefresh) &&
         void toast(
