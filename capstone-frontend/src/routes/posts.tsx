@@ -1,4 +1,4 @@
-import { fetchPosts } from '@/lib/fetch/posts';
+import { fetchPosts } from '@/actions/posts';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { ErrorComponent, Link, createFileRoute } from '@tanstack/react-router';
 
