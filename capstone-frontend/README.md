@@ -1,47 +1,50 @@
-# Capstone Frontend
+# Welcome to your Expo app 👋
 
-### VS Code Plugins to install
-* ESLint
-* Prettier
-  * Remember to set prettier as the default formatter for `.ts` and `.tsx` files
-* Tailwind CSS IntelliSense
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-### How to install
-run `npm i`
+## Get started
 
-### How to develop
-run `npm dev`
+1. Install dependencies
 
-## Where do I learn?
-[Typescript Tutorials](https://www.youtube.com/watch?v=LKVHFHJsiO0&list=PLNqp92_EXZBJYFrpEzdO2EapvU0GOJ09n)
+   ```bash
+   npm install
+   ```
 
-[HTML/CSS, Javascript Documentations](https://developer.mozilla.org/en-US/)
+2. Start the app
 
-[Tailwind CSS](https://tailwindcss.com/docs/installation)
+   ```bash
+    npx expo start
+   ```
 
-### Packages to learn
-[Tanstack query](https://tanstack.com/query/latest)
+In the output, you'll find options to open the app in a
 
-[Tanstack router](https://tanstack.com/router/latest)
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-[shadcn/ui](https://ui.shadcn.com/docs)
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## How do I?
+## Get a fresh project
 
-### Call API => use fetch()
-```typescript
-// example
-const response = await fetch('https://example.com', {
-	method: 'POST',
-	body: JSON.stringify({foo: true}),
-	headers: {
-		'content-type': 'application/json'
-	}
-});
+When you're ready, run:
+
+```bash
+npm run reset-project
 ```
-### Add a UI component
-`npx shadcn-ui@latest add <component-name>`
 
-for example 
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-`npx shadcn-ui@latest add button`
+## Learn more
+
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
