@@ -1,5 +1,3 @@
-import { db } from '@/db/db.ts';
-import { lucia } from '@/db/lucia.ts';
 import { google } from '@/oauth.ts';
 import { UserRepository } from '@/repos/user.repo.ts';
 import { AuthService } from '@/services/auth.ts';
@@ -46,26 +44,18 @@ export const createGoogleSession = async ({
   // No need to link existing user with their OAuth Identity, since only OAuth is provided
   const userId = generateId(15);
   let username = user.name;
-  await db.transaction().execute(async (tx) => {
-    await tx
-      .insertInto('user')
-      .values({
-        id: userId,
-        username,
-        email: user.email,
-      })
-      .returningAll()
-      .executeTakeFirstOrThrow();
-
-    return await tx
-      .insertInto('ouath_account')
-      .values({
-        provider_user_id: user.sub,
-        provider_id: 'google',
-        user_id: userId,
-      })
-      .execute();
-  });
+  await UserRepository.createWithOAuth(
+    {
+      id: userId,
+      username,
+      email: user.email,
+    },
+    {
+      provider_user_id: user.sub,
+      provider_id: 'google',
+      user_id: userId,
+    }
+  );
 
   return AuthService.createSession(userId, {});
 };
