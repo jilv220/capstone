@@ -1,0 +1,15 @@
+services:
+  hono-starter-db:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ${PWD}/.postgres/data:/var/lib/postgresql/data
+      - ${PWD}/.postgres/db-logs:/var/log/postgresql
+    networks:
+      default:
+    ports:
+      - 5432:5432

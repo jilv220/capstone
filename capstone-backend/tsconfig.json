@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "strictNullChecks": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+  }
+}
