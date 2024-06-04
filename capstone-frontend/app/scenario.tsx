@@ -4,7 +4,7 @@ export default function ScenarioScreen() {
   return (
     <ScrollView px={'$4'} py={'$7'}>
       <YStack>
-        <Text>Scenario Page</Text>
+        <Text>Scenario Screen</Text>
       </YStack>
     </ScrollView>
   );

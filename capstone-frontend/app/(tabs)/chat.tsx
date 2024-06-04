@@ -4,7 +4,7 @@ export default function ChatScreen() {
   return (
     <ScrollView px={'$4'} py={'$7'}>
       <YStack>
-        <Text>Chat Page</Text>
+        <Text>Chat Screen</Text>
       </YStack>
     </ScrollView>
   );

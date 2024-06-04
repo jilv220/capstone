@@ -3,8 +3,9 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { useFonts } from 'expo-font';
 import { TamaguiProvider, useTheme } from 'tamagui';
-import { tamaguiConfig } from '../tamagui.config';
 import { useEffect } from 'react';
+import { SessionProvider } from '@/context/auth';
+import tamaguiConfig from '@/tamagui.config';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -25,13 +26,17 @@ export default function RootLayout() {
   }
 
   return (
-    <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? 'light'}>
+    <TamaguiProvider config={tamaguiConfig} defaultTheme={'dark' ?? 'light'}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="scenario" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+        <SessionProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="scenario" options={{ headerShown: false }} />
+            <Stack.Screen name="resources" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </SessionProvider>
       </ThemeProvider>
     </TamaguiProvider>
   );

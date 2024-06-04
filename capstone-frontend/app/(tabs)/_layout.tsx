@@ -1,18 +1,28 @@
 import * as SystemUI from 'expo-system-ui';
 
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs, router } from 'expo-router';
 import React, { useEffect } from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { useTheme } from 'tamagui';
+import { useTheme, Text } from 'tamagui';
+import { useSession } from '@/context/auth';
 
 export default function TabLayout() {
   const theme = useTheme();
+  const { session, isLoading } = useSession();
 
   // Fix ScreenSplash background
   useEffect(() => {
     SystemUI.setBackgroundColorAsync(theme.background.val);
   }, []);
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (!session) {
+    return <Redirect href="/login" />;
+  }
 
   return (
     <Tabs
@@ -49,11 +59,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="resources"
+        name="more"
         options={{
-          title: 'Resources',
+          title: 'More',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'heart-circle' : 'heart-circle-outline'} color={color} />
+            <TabBarIcon
+              name={focused ? 'ellipsis-horizontal' : 'ellipsis-horizontal-outline'}
+              color={color}
+            />
           ),
         }}
       />
