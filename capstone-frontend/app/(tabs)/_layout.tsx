@@ -5,23 +5,23 @@ import React, { useEffect } from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { useTheme, Text } from 'tamagui';
-import { useSession } from '@/context/auth';
+import { useAuth } from '@/contexts/auth';
 
 export default function TabLayout() {
   const theme = useTheme();
-  const { session, isLoading } = useSession();
+  const { user, loading } = useAuth();
 
   // Fix ScreenSplash background
   useEffect(() => {
     SystemUI.setBackgroundColorAsync(theme.background.val);
   }, []);
 
-  if (isLoading) {
+  if (loading) {
     return <Text>Loading...</Text>;
   }
 
-  if (!session) {
-    return <Redirect href="/login" />;
+  if (!user) {
+    return <Redirect href="/sign-in" />;
   }
 
   return (

@@ -4,7 +4,7 @@ import { useColorScheme } from 'react-native';
 import { useFonts } from 'expo-font';
 import { TamaguiProvider, useTheme } from 'tamagui';
 import { useEffect } from 'react';
-import { SessionProvider } from '@/context/auth';
+import { AuthProvider } from '@/contexts/auth';
 import tamaguiConfig from '@/tamagui.config';
 
 export default function RootLayout() {
@@ -28,15 +28,15 @@ export default function RootLayout() {
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme={'dark' ?? 'light'}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <SessionProvider>
+        <AuthProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="sign-in" options={{ headerShown: false }} />
             <Stack.Screen name="scenario" options={{ headerShown: false }} />
             <Stack.Screen name="resources" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
-        </SessionProvider>
+        </AuthProvider>
       </ThemeProvider>
     </TamaguiProvider>
   );

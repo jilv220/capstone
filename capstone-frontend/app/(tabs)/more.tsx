@@ -1,7 +1,7 @@
 import { Button, H1, H2, ListItem, ScrollView, Text, YGroup, YStack } from 'tamagui';
 import { LogOut, FolderHeart } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
-import { useSession } from '@/context/auth';
+import { useSession } from '@/contexts/auth';
 
 export default function ResourcesScreen() {
   const { signOut } = useSession();
