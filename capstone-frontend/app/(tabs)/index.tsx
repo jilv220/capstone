@@ -1,12 +1,51 @@
 import MoodPickerOption from '@/components/MoodPickerOption';
-import { Avatar, Button, Card, Circle, ScrollView, Text, XStack, YStack } from 'tamagui';
-
+import {
+  Avatar,
+  Button,
+  Card,
+  Circle,
+  ScrollView,
+  SizableText,
+  Text,
+  XStack,
+  YStack,
+} from 'tamagui';
+import { Calendar } from '@tamagui/lucide-icons';
+import { useState } from 'react';
+import DatePicker from 'react-native-date-picker';
 export default function HomeScreen() {
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
   return (
-    <ScrollView px={'$4'} py={'$7'}>
-      <Card elevate size={'$4'} bordered bg={'$black5'}>
+    <ScrollView px={'$4'} py={'$20'} backgroundColor={'$white'}>
+      <Card elevate size={'$4'} backgroundColor={'$white3'}>
         <Card.Header padded alignSelf="center" pb={'$1'}>
-          <Text fow={700}>How are you?</Text>
+          <SizableText size={'$7'} fontWeight={700} color={'$background'} textAlign="center">
+            How are you?
+          </SizableText>
+          <Button
+            backgroundColor={'$white0'}
+            color={'$green10Dark'}
+            icon={<Calendar size="24" />}
+            onPress={() => {
+              setOpen(true);
+            }}
+          >
+            {date.toLocaleString()}
+          </Button>
+          <DatePicker
+            modal
+            mode="datetime"
+            open={open}
+            date={date}
+            onConfirm={(date) => {
+              setOpen(false);
+              setDate(date);
+            }}
+            onCancel={() => {
+              setOpen(false);
+            }}
+          />
         </Card.Header>
         <XStack px={'$4'} justifyContent="space-between" py={'$3'}>
           <MoodPickerOption bg={'$green9Light'}>rad</MoodPickerOption>
