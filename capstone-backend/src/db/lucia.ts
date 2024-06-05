@@ -1,12 +1,12 @@
-import { Lucia } from "lucia";
-import { adapter } from "./db.ts";
-import { Conf } from "../config.ts";
-import { User } from "kysely-codegen";
+import { Lucia } from 'lucia';
+import { adapter } from './db.ts';
+import { Conf } from '../config.ts';
+import { User } from 'kysely-codegen';
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
     attributes: {
-      secure: Conf.envType === "production",
+      secure: Conf.envType === 'production',
     },
   },
   getUserAttributes: (attributes) => {
@@ -14,11 +14,12 @@ export const lucia = new Lucia(adapter, {
       id: attributes.id,
       username: attributes.username,
       email: attributes.email,
+      avatar_url: attributes.avatar_url,
     };
   },
 });
 
-declare module "lucia" {
+declare module 'lucia' {
   interface Register {
     Lucia: typeof lucia;
     DatabaseUserAttributes: User;
