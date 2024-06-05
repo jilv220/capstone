@@ -7,6 +7,7 @@ import { Button } from 'tamagui';
 
 GoogleSignin.configure({
   webClientId: Conf.googleWebClientId,
+  iosClientId: Conf.googleIOSClientId,
   offlineAccess: true,
 });
 

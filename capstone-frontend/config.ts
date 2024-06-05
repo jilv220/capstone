@@ -5,6 +5,9 @@ class Conf {
   static get googleWebClientId() {
     return process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID!;
   }
+  static get googleIOSClientId() {
+    return process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID!;
+  }
 }
 
 export { Conf };
