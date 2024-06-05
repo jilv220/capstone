@@ -35,6 +35,7 @@ export function AuthProvider(props: React.PropsWithChildren) {
   const signInWithIdToken = async ({ idToken, provider }: IdTokenOptions) => {
     const sessionToken = await AuthActions.signInWithIdToken({ idToken, provider });
     if (!sessionToken) return null;
+    KySingleton.addAuthorizationHeader(sessionToken);
 
     const user = await getUser();
     setUser(user);

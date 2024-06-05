@@ -25,6 +25,7 @@ export const GoogleSignInBtn = () => {
               idToken: userInfo.serverAuthCode,
               provider: 'google',
             });
+
             if (user) {
               router.replace('/(tabs)');
             }
