@@ -1,6 +1,6 @@
 import * as SystemUI from 'expo-system-ui';
 
-import { Redirect, Tabs, router } from 'expo-router';
+import { Redirect, Stack, Tabs, router } from 'expo-router';
 import React, { useEffect } from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
@@ -17,7 +17,12 @@ export default function TabLayout() {
   }, []);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <>
+        <Text>Loading...</Text>
+        <Stack.Screen options={{ headerShown: false }} />
+      </>
+    );
   }
 
   if (!user) {
