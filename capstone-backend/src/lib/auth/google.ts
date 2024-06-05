@@ -49,6 +49,7 @@ export const createGoogleSession = async ({
       id: userId,
       username,
       email: user.email,
+      avatar_url: user.picture,
     },
     {
       provider_user_id: user.sub,
