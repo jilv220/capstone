@@ -3,8 +3,7 @@ import { lucia } from '@/db/lucia.ts';
 import { UserRepository } from '@/repos/user.repo.ts';
 import { AuthProvider } from '@/schemas/login.ts';
 import { GitHub, Google } from 'arctic';
-import { User } from 'kysely-codegen';
-import { RegisteredDatabaseSessionAttributes, generateId } from 'lucia';
+import { generateId } from 'lucia';
 
 export class AuthService {
   public github: GitHub;
@@ -22,14 +21,6 @@ export class AuthService {
     this.github = new GitHub(githubOAuth.clientId, githubOAuth.clientSecret);
   }
 
-  async validateSession(sessionToken: string) {
-    return await lucia.validateSession(sessionToken);
-  }
-
-  async createSession(userId: string, attributes: RegisteredDatabaseSessionAttributes) {
-    return await lucia.createSession(userId, attributes);
-  }
-
   async validateAuthorizationCode(code: string, authProvider: AuthProvider, codeVerifier?: string) {
     if (authProvider === 'google') {
       return this.google.validateAuthorizationCode(code, codeVerifier!);
@@ -38,15 +29,7 @@ export class AuthService {
     return this[authProvider].validateAuthorizationCode(code);
   }
 
-  async createGoogleSession({
-    idToken,
-    codeVerifier,
-    sessionToken,
-  }: {
-    idToken: string;
-    codeVerifier: string;
-    sessionToken?: string;
-  }) {
+  async createGoogleSession(idToken: string, codeVerifier: string) {
     const tokens = await this.validateAuthorizationCode(idToken, 'google', codeVerifier);
 
     const response = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
@@ -63,20 +46,20 @@ export class AuthService {
     } = await response.json();
 
     const existingAccount = await UserRepository.findOAuthAccount(user.sub.toString());
-
-    let existingUser: User | undefined = undefined;
-    if (!sessionToken) {
-      existingUser = await UserRepository.findBy({ email: user.email });
-    } else {
-      const { user } = await lucia.validateSession(sessionToken);
-      if (user) existingUser = user;
-    }
+    const existingUser = await UserRepository.findBy({ email: user.email });
 
     if (existingAccount && existingUser) {
       return lucia.createSession(existingUser.id, {});
     }
+    if (existingUser && user.email_verified && !existingAccount) {
+      await UserRepository.createOAuthAccount({
+        provider_id: 'google',
+        provider_user_id: user.sub.toString(),
+        user_id: existingUser.id,
+      });
+      return lucia.createSession(existingUser.id, {});
+    }
 
-    // No need to link existing user with their OAuth Identity, since only OAuth is provided
     const userId = generateId(15);
     let username = user.name;
     await UserRepository.createWithOAuth(
@@ -93,6 +76,72 @@ export class AuthService {
       }
     );
 
-    return this.createSession(userId, {});
+    return lucia.createSession(userId, {});
+  }
+
+  async createGithubSession(idToken: string) {
+    const tokens = await this.validateAuthorizationCode(idToken, 'github');
+    const githubUserResponse = await fetch('https://api.github.com/user', {
+      headers: {
+        'User-Agent': 'hono',
+        Authorization: `Bearer ${tokens.accessToken}`,
+      },
+    });
+
+    const githubUserResult: {
+      id: number;
+      login: string; // username
+      name: string;
+      avatar_url: string;
+    } = await githubUserResponse.json();
+
+    const userEmailResponse = await fetch('https://api.github.com/user/emails', {
+      headers: {
+        'User-Agent': 'hono',
+        Authorization: `Bearer ${tokens.accessToken}`,
+      },
+    });
+
+    const userEmailResult: {
+      email: string;
+      primary: boolean;
+      verified: boolean;
+    }[] = await userEmailResponse.json();
+
+    const primaryEmail = userEmailResult.find((email) => email.primary);
+    if (!primaryEmail) return null;
+
+    const existingAccount = await UserRepository.findOAuthAccount(githubUserResult.id.toString());
+    const existingUser = await UserRepository.findBy({ email: primaryEmail.email });
+
+    if (existingAccount && existingUser) {
+      return lucia.createSession(existingUser.id, {});
+    }
+    if (existingUser && primaryEmail.verified && !existingAccount) {
+      await UserRepository.createOAuthAccount({
+        provider_id: 'github',
+        provider_user_id: githubUserResult.id.toString(),
+        user_id: existingUser.id,
+      });
+      return lucia.createSession(existingUser.id, {});
+    }
+
+    const userId = generateId(15);
+    let username = githubUserResult.login;
+    await UserRepository.createWithOAuth(
+      {
+        id: userId,
+        username,
+        email: primaryEmail.email,
+        avatar_url: githubUserResult.avatar_url,
+      },
+      {
+        provider_user_id: githubUserResult.id.toString(),
+        provider_id: 'github',
+        user_id: userId,
+      }
+    );
+
+    return lucia.createSession(userId, {});
   }
 }

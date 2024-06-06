@@ -1,7 +1,7 @@
 import debug from 'debug';
 
 import { zValidator } from '@hono/zod-validator';
-import { loginJsonSchema, loginParamSchema } from '../../schemas/login.ts';
+import { loginJsonSchema, loginParamSchema, loginRedirectSchema } from '../../schemas/login.ts';
 import { Session } from 'lucia';
 import { Hono } from 'hono';
 import { generateState } from 'arctic';
@@ -12,43 +12,70 @@ import { Conf } from '@/config.ts';
 const signIn = new Hono().basePath('/sign-in');
 const Debug = debug('app:api:sign-in');
 
-signIn.get(':provider', zValidator('param', loginParamSchema), async (c) => {
-  const provider = c.req.valid('param').provider;
-  const state = generateState();
-  const auth = new AuthService();
+signIn.get(
+  ':provider',
+  zValidator('param', loginParamSchema),
+  zValidator('query', loginRedirectSchema),
+  async (c) => {
+    const provider = c.req.valid('param').provider;
+    const state = generateState();
+    const auth = new AuthService();
 
-  switch (provider) {
-    case 'github': {
-      const url = await auth.github.createAuthorizationURL(state);
-      setCookie(c, 'github_oauth_state', state, {
-        httpOnly: true,
-        maxAge: 60 * 10,
-        path: '/',
-        secure: Conf.envType === 'production',
-      });
-      return c.redirect(url.toString());
+    const redirect = c.req.valid('query').redirect;
+    setCookie(c, 'redirect', redirect, {
+      httpOnly: true,
+      maxAge: 60 * 10,
+      path: '/',
+      secure: Conf.envType === 'production',
+    });
+
+    switch (provider) {
+      case 'github': {
+        const url = await auth.github.createAuthorizationURL(state, {
+          scopes: ['read:user', 'user:email'],
+        });
+        setCookie(c, 'github_oauth_state', state, {
+          httpOnly: true,
+          maxAge: 60 * 10,
+          path: '/',
+          secure: Conf.envType === 'production',
+        });
+
+        return c.redirect(url.toString());
+      }
+      default:
+        break;
     }
-    default:
-      break;
-  }
 
-  return c.json({}, 400);
-});
+    return c.json({}, 400);
+  }
+);
 
 signIn.get(':provider/callback', zValidator('param', loginParamSchema), async (c) => {
   const provider = c.req.valid('param').provider;
+  const redirect = getCookie(c, 'redirect');
+  const auth = new AuthService();
 
   const url = new URL(c.req.url);
   let state = url.searchParams.get('state');
   let code = url.searchParams.get('code');
   let stateCookie = getCookie(c, `${provider}_oauth_state`);
 
-  if (!state || !stateCookie || !code || stateCookie !== state) {
+  if (!state || !stateCookie || !code || stateCookie !== state || !redirect) {
     return c.json({ error: 'Invalid request' }, 400);
   }
 
   switch (provider) {
     case 'github': {
+      const session = await auth.createGithubSession(code);
+      if (!session) {
+        return c.json({}, 400);
+      }
+
+      const redirectUrl = new URL(redirect);
+      redirectUrl.searchParams.append('token', session.id);
+
+      return c.redirect(redirectUrl.toString());
     }
     default:
       break;
@@ -63,16 +90,11 @@ signIn.post(
     const auth = new AuthService();
     const provider = c.req.param('provider');
     const idToken = c.req.valid('json').idToken;
-    const sessionToken = c.req.valid('json').sessionToken;
 
     let session: Session | null = null;
     switch (provider) {
       case 'google':
-        session = await auth.createGoogleSession({
-          idToken,
-          codeVerifier: '',
-          sessionToken,
-        });
+        session = await auth.createGoogleSession(idToken, '');
         break;
       default:
         break;
