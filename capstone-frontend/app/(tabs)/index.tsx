@@ -3,7 +3,8 @@ import React from 'react';
 import MoodDisplay from '@/components/MoodDisplay';
 import { useState } from 'react';
 import DatePicker from 'react-native-date-picker';
-import { ScrollView } from 'tamagui';
+import { ScrollView, XStack, YStack } from 'tamagui';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const d2 = {
@@ -49,20 +50,23 @@ export default function HomeScreen() {
     },
   ];
   return (
-    <ScrollView maxHeight={800} py={'$20'}>
-      {data.map((moodData, index) => {
-        return (
-          <MoodDisplay
-            key={index}
-            mood={moodData.mood}
-            weekday={moodData.weekday}
-            date={moodData.date}
-            month={moodData.month}
-            digitTime={moodData.digitTime}
-            moodReason={moodData.moodReason}
-          />
-        );
-      })}
-    </ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView>
+        <XStack h={'$11'}></XStack>
+        {data.map((moodData, index) => {
+          return (
+            <MoodDisplay
+              key={index}
+              mood={moodData.mood}
+              weekday={moodData.weekday}
+              date={moodData.date}
+              month={moodData.month}
+              digitTime={moodData.digitTime}
+              moodReason={moodData.moodReason}
+            />
+          );
+        })}
+      </ScrollView>
+    </SafeAreaView>
   );
 }

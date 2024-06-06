@@ -49,6 +49,7 @@ export function AuthProvider(props: React.PropsWithChildren) {
     if (!res.ok) return;
 
     setUser(null);
+    KySingleton.clearAuthorizationHeader();
     await Storage.deleteItem('session_token');
   };
 
