@@ -25,6 +25,10 @@ export class UserRepository {
     return await query.executeTakeFirst();
   }
 
+  static async createOAuthAccount(oauthAccount: Insertable<OuathAccount>) {
+    await db.insertInto('ouath_account').values(oauthAccount).execute();
+  }
+
   static async createWithOAuth(user: Insertable<User>, oauthAccount: Insertable<OuathAccount>) {
     await db.transaction().execute(async (tx) => {
       await tx.insertInto('user').values(user).returningAll().executeTakeFirstOrThrow();

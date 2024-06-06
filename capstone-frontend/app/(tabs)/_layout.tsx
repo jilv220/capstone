@@ -24,9 +24,9 @@ export default function TabLayout() {
     return <Text>Loading...</Text>;
   }
 
-  // if (!user) {
-  //   return <Redirect href="/sign-in" />;
-  // }
+  if (!user) {
+    return <Redirect href="/sign-in" />;
+  }
 
   return (
     <GestureHandlerRootView>

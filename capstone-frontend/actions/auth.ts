@@ -14,6 +14,6 @@ export class AuthActions {
     return sessionToken;
   }
   static async signOut() {
-    return await ky.getInstance().post(process.env.API_URL + `${BASE_URL}/sign-out`);
+    return await ky.getInstance().post('sign-out');
   }
 }
