@@ -1,11 +1,16 @@
 import { Button, H1, H2, ListItem, ScrollView, Text, YGroup, YStack } from 'tamagui';
-import { LogOut, FolderHeart } from '@tamagui/lucide-icons';
+import { LogOut, FolderHeart, SunMoon } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { AuthActions } from '@/actions/auth';
 import { useAuth } from '@/contexts/auth';
+import { Appearance } from 'react-native';
+import { useUserStore } from '@/stores/userStore';
 
 export default function ResourcesScreen() {
   const { signOut } = useAuth();
+
+  const theme = useUserStore((state) => state.theme);
+  const toggleTheme = useUserStore((state) => state.toggleTheme);
 
   return (
     <ScrollView px={'$4'} py={'$7'}>
@@ -18,6 +23,17 @@ export default function ResourcesScreen() {
             }}
           >
             Resources
+          </ListItem>
+        </YGroup.Item>
+        <YGroup.Item>
+          <ListItem
+            icon={SunMoon}
+            onPress={() => {
+              toggleTheme();
+              Appearance.setColorScheme(theme);
+            }}
+          >
+            Color Mode
           </ListItem>
         </YGroup.Item>
       </YGroup>
