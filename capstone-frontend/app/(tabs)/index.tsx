@@ -1,60 +1,68 @@
-import MoodPickerOption from '@/components/MoodPickerOption';
-import {
-  Avatar,
-  Button,
-  Card,
-  Circle,
-  ScrollView,
-  SizableText,
-  Text,
-  XStack,
-  YStack,
-} from 'tamagui';
-import { Calendar } from '@tamagui/lucide-icons';
+import { View, Text } from 'react-native';
+import React from 'react';
+import MoodDisplay from '@/components/MoodDisplay';
 import { useState } from 'react';
 import DatePicker from 'react-native-date-picker';
+import { ScrollView } from 'tamagui';
+
 export default function HomeScreen() {
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
+  const d2 = {
+    mood: 'good',
+    digitTime: '18:11',
+    moodReason: 'date',
+    weekday: 2,
+    month: 5,
+    date: 5,
+  };
+  const data = [
+    {
+      mood: 'good',
+      digitTime: '18:11',
+      moodReason: 'date',
+      weekday: 2,
+      month: 5,
+      date: 5,
+    },
+    {
+      mood: 'bad',
+      digitTime: '19:11',
+      moodReason: 'food',
+      weekday: 5,
+      month: 5,
+      date: 2,
+    },
+    {
+      mood: 'mad',
+      digitTime: '18:11',
+      moodReason: 'date',
+      weekday: 2,
+      month: 5,
+      date: 5,
+    },
+    {
+      mood: 'not bad',
+      digitTime: '18:11',
+      moodReason: 'date',
+      weekday: 2,
+      month: 5,
+      date: 5,
+    },
+  ];
   return (
-    <ScrollView px={'$4'} py={'$20'} backgroundColor={'$white'}>
-      <Card elevate size={'$4'} backgroundColor={'$white3'}>
-        <Card.Header padded alignSelf="center" pb={'$1'}>
-          <SizableText size={'$7'} fontWeight={700} color={'$background'} textAlign="center">
-            How are you?
-          </SizableText>
-          <Button
-            backgroundColor={'$white0'}
-            color={'$green10Dark'}
-            icon={<Calendar size="24" />}
-            onPress={() => {
-              setOpen(true);
-            }}
-          >
-            {date.toLocaleString()}
-          </Button>
-          <DatePicker
-            modal
-            mode="datetime"
-            open={open}
-            date={date}
-            onConfirm={(date) => {
-              setOpen(false);
-              setDate(date);
-            }}
-            onCancel={() => {
-              setOpen(false);
-            }}
+    <ScrollView maxHeight={800} py={'$20'}>
+      {data.map((moodData, index) => {
+        return (
+          <MoodDisplay
+            key={index}
+            mood={moodData.mood}
+            weekday={moodData.weekday}
+            date={moodData.date}
+            month={moodData.month}
+            digitTime={moodData.digitTime}
+            moodReason={moodData.moodReason}
           />
-        </Card.Header>
-        <XStack px={'$4'} justifyContent="space-between" py={'$3'}>
-          <MoodPickerOption bg={'$green9Light'}>rad</MoodPickerOption>
-          <MoodPickerOption bg={'limegreen'}>good</MoodPickerOption>
-          <MoodPickerOption bg={'yellow'}>meh</MoodPickerOption>
-          <MoodPickerOption bg={'orange'}>bad</MoodPickerOption>
-          <MoodPickerOption bg={'red'}>awful</MoodPickerOption>
-        </XStack>
-      </Card>
+        );
+      })}
     </ScrollView>
   );
 }
