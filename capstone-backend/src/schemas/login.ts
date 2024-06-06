@@ -1,8 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const loginParamSchema = z.object({
-  provider: z.enum(["google", "github"]),
+  provider: z.enum(['google', 'github']),
 });
+export type AuthProvider = z.infer<typeof loginParamSchema>['provider'];
 
 export const loginJsonSchema = z.object({
   idToken: z.string(),

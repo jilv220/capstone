@@ -1,5 +1,5 @@
 import { db } from '@/db/db.ts';
-import { Insertable } from 'kysely';
+import { Insertable, Selectable } from 'kysely';
 import { OuathAccount, User } from 'kysely-codegen';
 
 export class UserRepository {
@@ -11,12 +11,18 @@ export class UserRepository {
       .executeTakeFirst();
   }
 
-  static async findByEmail(email: string) {
-    return await db
-      .selectFrom('user')
-      .selectAll()
-      .where('user.email', '=', email)
-      .executeTakeFirst();
+  static async findBy(uniqueFields: Partial<Pick<User, 'id' | 'email'>>) {
+    let query = db.selectFrom('user').selectAll();
+
+    if (uniqueFields.email) {
+      query = query.where('email', '=', uniqueFields.email);
+    }
+
+    if (uniqueFields.id) {
+      query = query.where('id', '=', uniqueFields.id);
+    }
+
+    return await query.executeTakeFirst();
   }
 
   static async createWithOAuth(user: Insertable<User>, oauthAccount: Insertable<OuathAccount>) {
