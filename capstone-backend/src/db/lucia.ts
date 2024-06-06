@@ -1,12 +1,12 @@
+import type { User } from 'kysely-codegen';
 import { Lucia } from 'lucia';
-import { adapter } from './db.ts';
 import { Conf } from '../config.ts';
-import { User } from 'kysely-codegen';
+import { adapter } from './db.ts';
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
     attributes: {
-      secure: Conf.envType === 'production',
+      secure: Conf.isProduction,
     },
   },
   getUserAttributes: (attributes) => {

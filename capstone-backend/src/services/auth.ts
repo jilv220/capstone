@@ -1,7 +1,7 @@
 import { Conf } from '@/config.ts';
 import { lucia } from '@/db/lucia.ts';
 import { UserRepository } from '@/repos/user.repo.ts';
-import { AuthProvider } from '@/schemas/login.ts';
+import type { AuthProvider } from '@/schemas/login.ts';
 import { GitHub, Google } from 'arctic';
 import { generateId } from 'lucia';
 
@@ -61,7 +61,7 @@ export class AuthService {
     }
 
     const userId = generateId(15);
-    let username = user.name;
+    const username = user.name;
     await UserRepository.createWithOAuth(
       {
         id: userId,
@@ -127,7 +127,7 @@ export class AuthService {
     }
 
     const userId = generateId(15);
-    let username = githubUserResult.login;
+    const username = githubUserResult.login;
     await UserRepository.createWithOAuth(
       {
         id: userId,

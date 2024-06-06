@@ -1,7 +1,8 @@
-import { Env, Hono } from 'hono';
-import { cors } from 'hono/cors';
 import api from './routes/v1/api.ts';
+
 import { captureException } from '@sentry/bun';
+import { type Env, Hono } from 'hono';
+import { cors } from 'hono/cors';
 
 const app = new Hono<Env>();
 app.use('*', cors({ origin: '*' }));

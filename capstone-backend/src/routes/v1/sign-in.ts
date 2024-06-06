@@ -1,13 +1,13 @@
 import debug from 'debug';
 
-import { zValidator } from '@hono/zod-validator';
-import { loginJsonSchema, loginParamSchema, loginRedirectSchema } from '../../schemas/login.ts';
-import { Session } from 'lucia';
-import { Hono } from 'hono';
-import { generateState } from 'arctic';
-import { AuthService } from '@/services/auth.ts';
-import { getCookie, setCookie } from 'hono/cookie';
 import { Conf } from '@/config.ts';
+import { AuthService } from '@/services/auth.ts';
+import { zValidator } from '@hono/zod-validator';
+import { generateState } from 'arctic';
+import { Hono } from 'hono';
+import { getCookie, setCookie } from 'hono/cookie';
+import type { Session } from 'lucia';
+import { loginJsonSchema, loginParamSchema, loginRedirectSchema } from '../../schemas/login.ts';
 
 const signIn = new Hono().basePath('/sign-in');
 const Debug = debug('app:api:sign-in');
@@ -26,7 +26,7 @@ signIn.get(
       httpOnly: true,
       maxAge: 60 * 10,
       path: '/',
-      secure: Conf.envType === 'production',
+      secure: Conf.isProduction,
     });
 
     switch (provider) {
@@ -38,7 +38,7 @@ signIn.get(
           httpOnly: true,
           maxAge: 60 * 10,
           path: '/',
-          secure: Conf.envType === 'production',
+          secure: Conf.isProduction,
         });
 
         return c.redirect(url.toString());
@@ -57,9 +57,9 @@ signIn.get(':provider/callback', zValidator('param', loginParamSchema), async (c
   const auth = new AuthService();
 
   const url = new URL(c.req.url);
-  let state = url.searchParams.get('state');
-  let code = url.searchParams.get('code');
-  let stateCookie = getCookie(c, `${provider}_oauth_state`);
+  const state = url.searchParams.get('state');
+  const code = url.searchParams.get('code');
+  const stateCookie = getCookie(c, `${provider}_oauth_state`);
 
   if (!state || !stateCookie || !code || stateCookie !== state || !redirect) {
     return c.json({ error: 'Invalid request' }, 400);
