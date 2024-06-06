@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 class Conf {
   static get port() {
-    return parseInt(Bun.env.PORT ?? '4036');
+    return parseInt(process.env.PORT || '4036');
   }
   static get envType() {
-    return process.env.NODE_ENV ?? 'development';
+    return process.env.NODE_ENV || 'development';
   }
   static get databaseUrl() {
-    return process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/postgres';
+    return process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/postgres';
   }
   static get expoRedirectURI() {
     const nativeAppPackageName = z.string().parse(process.env.NATIVE_APP_PACKAGE_NAME);
