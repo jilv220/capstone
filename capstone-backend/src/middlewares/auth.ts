@@ -23,6 +23,11 @@ const authMiddleware = createMiddleware<AuthMiddlewareEnv>(async (c, next) => {
     return c.newResponse('Unauthorized', { status: 401 });
   }
 
+  if (session.fresh) {
+    const sessionCookie = lucia.createSessionCookie(session.id);
+    c.header('Set-Cookie', sessionCookie.serialize());
+  }
+
   c.set('user', user);
   c.set('session', session);
   await next();
