@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node';
+import * as Sentry from '@sentry/bun';
 import { Conf } from './config.ts';
 
 Sentry.init({
