@@ -1,20 +1,23 @@
+import { GithubSignInBtn } from '@/components/GithubSignInBtn';
 import { GoogleSignInBtn } from '@/components/GoogleSignInBtn';
-import { useAuth } from '@/contexts/auth';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
-import { Button, ScrollView } from 'tamagui';
+import { Button, Card, ScrollView, SizableText, YStack } from 'tamagui';
 
 export default function SignIn() {
   return (
-    <ScrollView px={'$4'} py={'$7'}>
-      <Button
-        onPress={() => {
-          router.replace('/(tabs)');
-        }}
-      >
-        Log In
-      </Button>
-      <GoogleSignInBtn />
-    </ScrollView>
+    <YStack ai="center" jc="center" f={1}>
+      <Card py={'$3'}>
+        <Card.Header pb={'$2'}>
+          <SizableText size={'$9'}>Sign In</SizableText>
+          <SizableText size={'$3'} color={'$color10'}>
+            continue with:
+          </SizableText>
+        </Card.Header>
+        <Card.Footer padded fd={'column'} gap={'$3'}>
+          <GoogleSignInBtn />
+          <GithubSignInBtn />
+        </Card.Footer>
+      </Card>
+    </YStack>
   );
 }
