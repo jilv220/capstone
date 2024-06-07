@@ -1,20 +1,12 @@
 import ky from '@/lib/kySingleton';
 
 export async function getUser() {
-  const res = await ky
-    .getInstance()
-    .extend({
-      hooks: {
-        beforeRequest: [
-          (req) => {
-            console.log(req.headers);
-          },
-        ],
-      },
-    })
-    .get('user/me');
+  let user;
+  try {
+    user = await ky.getInstance().get('user/me').json();
+  } catch (e) {
+    console.error(e);
+  }
 
-  if (!res.ok) return null;
-
-  return res.json();
+  return user;
 }
