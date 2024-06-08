@@ -7,12 +7,22 @@ import {
   Card,
   Circle,
   Label,
+  Popover,
   ScrollView,
   SizableText,
   XStack,
   YStack,
 } from 'tamagui';
-import { Calendar, X, Music4, Heart, PlusCircle } from '@tamagui/lucide-icons';
+import {
+  Calendar,
+  X,
+  Music4,
+  Heart,
+  PlusCircle,
+  Edit3,
+  Trash2,
+  NotebookPen,
+} from '@tamagui/lucide-icons';
 import { useState } from 'react';
 
 interface MoodDisplayProps {
@@ -105,13 +115,61 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           </XStack>
         </YStack>
         <YStack flex={1}>
-          <Button
-            icon={PlusCircle}
-            size={'$8'}
-            backgroundColor={'$white0'}
-            color={'gray10Light'}
-            marginTop={'$-3'}
-          ></Button>
+          <Popover size={'$8'} allowFlip placement="bottom">
+            <Popover.Trigger asChild>
+              <Button
+                icon={PlusCircle}
+                backgroundColor={'$white3'}
+                size={'$7'}
+                color={'gray10Light'}
+                justifyContent="flex-start"
+              ></Button>
+            </Popover.Trigger>
+            <Popover.Content
+              size={'$8'}
+              flex={1}
+              backgroundColor={'beige'}
+              borderColor="$gray10Light"
+              borderWidth={1}
+              padding={0}
+              elevate
+              borderRadius={0}
+              animation={[
+                'lazy',
+                {
+                  opactiy: {
+                    overshoot: {
+                      overshootClamping: true,
+                    },
+                  },
+                },
+              ]}
+            >
+              <YStack flex={1}>
+                <Button
+                  icon={Edit3}
+                  size={'$5'}
+                  borderBottomColor={'$gray10Light'}
+                  borderRadius={0}
+                  justifyContent="flex-start"
+                >
+                  <SizableText fontSize={'$5'}>Edit</SizableText>
+                </Button>
+
+                <Button
+                  icon={NotebookPen}
+                  size={'$5'}
+                  borderBottomColor={'$gray10Light'}
+                  borderRadius={0}
+                >
+                  <SizableText fontSize={'$5'}>Add Note</SizableText>
+                </Button>
+                <Button icon={Trash2} flex={1} size={'$5'} justifyContent="flex-start">
+                  <SizableText fontSize={'$5'}>Delete</SizableText>
+                </Button>
+              </YStack>
+            </Popover.Content>
+          </Popover>
         </YStack>
       </XStack>
     </ScrollView>
