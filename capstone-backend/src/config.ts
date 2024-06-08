@@ -22,6 +22,9 @@ const Conf = {
   get isProduction() {
     return Env.NODE_ENV === 'production';
   },
+  get isStaging() {
+    return Env.NODE_ENV === 'staging';
+  },
   get expoRedirectURI() {
     return `${Env.NATIVE_APP_PACKAGE_NAME}://`;
   },
