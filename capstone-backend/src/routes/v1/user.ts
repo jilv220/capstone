@@ -1,6 +1,7 @@
 import authMiddleware, { type AuthMiddlewareEnv } from '@/middlewares/auth.ts';
-import debug from 'debug';
 import { Hono } from 'hono';
+
+import debug from 'debug';
 
 const user = new Hono<AuthMiddlewareEnv>().basePath('/user');
 const Debug = debug('app:api:user');

@@ -25,9 +25,10 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .createTable('scenario')
-    .addColumn('id', 'text', (col) => col.primaryKey())
-    .addColumn('category', sql`category`)
-    .addColumn('detail', 'text', (col) => col.unique().notNull())
+    .addColumn('id', 'serial', (col) => col.primaryKey())
+    .addColumn('category', sql`category`, (col) => col.notNull())
+    .addColumn('detail', 'text', (col) => col.notNull())
+    .addUniqueConstraint('category_detail_unique', ['category', 'detail'])
     .execute();
 }
 
