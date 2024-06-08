@@ -1,5 +1,5 @@
 import * as SystemUI from 'expo-system-ui';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { Redirect, Tabs, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -10,11 +10,12 @@ import AddButton from '@/components/navigation/AddButton';
 import { NavigationContainer } from '@react-navigation/native';
 import { Modal, View } from 'react-native';
 import MoodSelect from '@/components/MoodSelect';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 export default function TabLayout() {
   const theme = useTheme();
   const { user, loading } = useAuth();
-  const [moodselect, showMoodSelect] = useState(false);
+  const [moodSelect, showMoodSelect] = useState(false);
+  const [editRecord, showEditRecord] = useState(false);
   // Fix ScreenSplash background
   useEffect(() => {
     SystemUI.setBackgroundColorAsync(theme.background.val);
@@ -68,7 +69,7 @@ export default function TabLayout() {
             tabBarButton: () => (
               <AddButton
                 handleClick={() => {
-                  showMoodSelect(!moodselect);
+                  showMoodSelect(!moodSelect);
                 }}
               />
             ),
@@ -98,35 +99,48 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
+      {/* -- Add MoodSelect modal */}
       <Modal
         animationType="fade"
         transparent={true}
-        visible={moodselect}
+        visible={moodSelect}
         onRequestClose={() => {
           showMoodSelect(false);
         }}
       >
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity
-            onPress={() => {
-              showMoodSelect(false);
-            }}
-          >
-            <MoodSelect
-              handleClose={() => {
-                showMoodSelect(false);
-              }}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            showMoodSelect(false);
+          }}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.inner}>
+              <TouchableOpacity onPress={() => {}}>
+                <MoodSelect
+                  handleClose={() => {
+                    showMoodSelect(false);
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
       </Modal>
+
+      {/* -- Add Edit Modal */}
+      <Modal animationType="fade" transparent={true} visible={editRecord}></Modal>
     </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   modalOverlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    flex: 1,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+  },
+  inner: {
+    paddingHorizontal: 20,
   },
 });
