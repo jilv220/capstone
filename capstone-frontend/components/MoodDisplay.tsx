@@ -12,7 +12,7 @@ import {
   XStack,
   YStack,
 } from 'tamagui';
-import { Calendar, X, Music4, Heart, BadgeCheck } from '@tamagui/lucide-icons';
+import { Calendar, X, Music4, Heart, PlusCircle } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 
 interface MoodDisplayProps {
@@ -106,7 +106,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
         </YStack>
         <YStack flex={1}>
           <Button
-            icon={BadgeCheck}
+            icon={PlusCircle}
             size={'$8'}
             backgroundColor={'$white0'}
             color={'gray10Light'}

@@ -15,7 +15,6 @@ export default function TabLayout() {
   const theme = useTheme();
   const { user, loading } = useAuth();
   const [moodSelect, showMoodSelect] = useState(false);
-  const [editRecord, showEditRecord] = useState(false);
   // Fix ScreenSplash background
   useEffect(() => {
     SystemUI.setBackgroundColorAsync(theme.background.val);
@@ -114,7 +113,7 @@ export default function TabLayout() {
           }}
         >
           <View style={styles.modalOverlay}>
-            <View style={styles.inner}>
+            <View>
               <TouchableOpacity onPress={() => {}}>
                 <MoodSelect
                   handleClose={() => {
@@ -126,9 +125,6 @@ export default function TabLayout() {
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* -- Add Edit Modal */}
-      <Modal animationType="fade" transparent={true} visible={editRecord}></Modal>
     </GestureHandlerRootView>
   );
 }
@@ -139,8 +135,5 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.6)',
-  },
-  inner: {
-    paddingHorizontal: 6,
   },
 });
