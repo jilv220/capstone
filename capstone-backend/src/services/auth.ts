@@ -1,7 +1,7 @@
 import { Conf } from '@/config.ts';
 import { lucia } from '@/db/lucia.ts';
 import { UserRepository } from '@/repos/user.repo.ts';
-import { AuthProvider } from '@/schemas/login.ts';
+import type { AuthProvider } from '@/schemas/login.ts';
 import { GitHub, Google } from 'arctic';
 import { generateId } from 'lucia';
 
@@ -23,7 +23,9 @@ export class AuthService {
 
   async validateAuthorizationCode(code: string, authProvider: AuthProvider, codeVerifier?: string) {
     if (authProvider === 'google') {
-      return this.google.validateAuthorizationCode(code, codeVerifier!);
+      if (!codeVerifier) throw new Error('Must provide codeVerifier with google OAuth');
+
+      return this.google.validateAuthorizationCode(code, codeVerifier);
     }
 
     return this[authProvider].validateAuthorizationCode(code);
@@ -61,7 +63,7 @@ export class AuthService {
     }
 
     const userId = generateId(15);
-    let username = user.name;
+    const username = user.name;
     await UserRepository.createWithOAuth(
       {
         id: userId,
@@ -127,7 +129,7 @@ export class AuthService {
     }
 
     const userId = generateId(15);
-    let username = githubUserResult.login;
+    const username = githubUserResult.login;
     await UserRepository.createWithOAuth(
       {
         id: userId,

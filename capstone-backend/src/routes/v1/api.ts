@@ -3,8 +3,8 @@ import debug from 'debug';
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import signIn from './sign-in.ts';
-import user from './user.ts';
 import signOut from './sign-out.ts';
+import user from './user.ts';
 
 const api = new Hono().basePath('/api/v1');
 const Debug = debug('app:api');

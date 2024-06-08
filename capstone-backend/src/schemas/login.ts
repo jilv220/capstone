@@ -18,10 +18,7 @@ export const loginJsonSchema = z.object({
 
 export const loginRedirectSchema = z.object({
   redirect: z
-    .enum([
-      `${Conf.expoRedirectURI}`,
-      `http://localhost:${Conf.port}`,
-      'https://expo-lucia-auth-example-web.pages.dev',
-    ])
+    // TODO: Domain should be configuarble
+    .enum([`${Conf.expoRedirectURI}`, `http://localhost:${Conf.port}`])
     .default(`http://localhost:${Conf.port}`),
 });

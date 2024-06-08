@@ -1,4 +1,4 @@
-import { Kysely } from 'kysely';
+import type { Kysely } from 'kysely';
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema.alterTable('user').addColumn('avatar_url', 'text').execute();

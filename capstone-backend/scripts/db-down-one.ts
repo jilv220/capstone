@@ -5,7 +5,7 @@ import { Pool } from 'pg';
 import { FileMigrationProvider, Kysely, Migrator, PostgresDialect } from 'kysely';
 import { Conf } from '../src/config.ts';
 
-async function migrateToLatest() {
+async function downOne() {
   const pool = new Pool({ connectionString: Conf.DATABASE_URL });
   const db = new Kysely({
     dialect: new PostgresDialect({
@@ -23,20 +23,20 @@ async function migrateToLatest() {
     }),
   });
 
-  console.info('Running migrations...');
-  const { error, results } = await migrator.migrateToLatest();
+  console.info('Dropping latest migration...');
+  const { error, results } = await migrator.migrateDown();
 
   // biome-ignore lint/complexity/noForEach: <explanation>
   results?.forEach((it) => {
     if (it.status === 'Success') {
-      console.log(`migration "${it.migrationName}" was executed successfully`);
+      console.log(`dropping migration "${it.migrationName}" was executed successfully`);
     } else if (it.status === 'Error') {
-      console.error(`failed to execute migration "${it.migrationName}"`);
+      console.error(`failed to drop migration "${it.migrationName}"`);
     }
   });
 
   if (error) {
-    console.error('failed to migrate');
+    console.error('failed to drop migration');
     console.error(error);
     process.exit(1);
   }
@@ -44,4 +44,4 @@ async function migrateToLatest() {
   await db.destroy();
 }
 
-migrateToLatest();
+downOne();

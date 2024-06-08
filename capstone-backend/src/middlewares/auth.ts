@@ -1,6 +1,6 @@
 import { lucia } from '@/db/lucia.ts';
 import { createMiddleware } from 'hono/factory';
-import { Session, User } from 'lucia';
+import type { Session, User } from 'lucia';
 
 export type AuthMiddlewareEnv = {
   Variables: {

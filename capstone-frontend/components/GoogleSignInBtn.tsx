@@ -1,8 +1,8 @@
 import { Conf } from '@/config';
 import { useAuth } from '@/contexts/auth';
+import { FontAwesome } from '@expo/vector-icons';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { router } from 'expo-router';
-import { SvgUri } from 'react-native-svg';
 import { Button } from 'tamagui';
 
 GoogleSignin.configure({
@@ -35,9 +35,7 @@ export const GoogleSignInBtn = () => {
           console.log(error);
         }
       }}
-      icon={
-        <SvgUri uri={'https://www.cdnlogo.com/logos/g/35/google-icon.svg'} width={20} height={20} />
-      }
+      icon={<FontAwesome name="google" size={20} />}
     >
       Continue with Google
     </Button>

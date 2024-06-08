@@ -1,32 +1,43 @@
+import { createEnv } from '@t3-oss/env-core';
 import { z } from 'zod';
 
-class Conf {
-  static get port() {
-    return parseInt(Bun.env.PORT ?? '4036');
-  }
-  static get envType() {
-    return process.env.NODE_ENV ?? 'development';
-  }
-  static get databaseUrl() {
-    return process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/postgres';
-  }
-  static get expoRedirectURI() {
-    const nativeAppPackageName = z.string().parse(process.env.NATIVE_APP_PACKAGE_NAME);
-    return `${nativeAppPackageName}://`;
-  }
-  static get googleOAuth() {
+const Env = createEnv({
+  server: {
+    port: z.coerce.number().max(65535).default(4036),
+    NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+    DATABASE_URL: z.string().url().default('postgres://postgres:postgres@localhost:5432/postgres'),
+    NATIVE_APP_PACKAGE_NAME: z.string(),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    GOOGLE_REDIRECT_URI: z.string().default(''),
+    GITHUB_CLIENT_ID: z.string(),
+    GITHUB_CLIENT_SECRET: z.string(),
+  },
+  runtimeEnv: process.env,
+  emptyStringAsUndefined: true,
+});
+
+const Conf = {
+  ...Env,
+  get isProduction() {
+    return Env.NODE_ENV === 'production';
+  },
+  get expoRedirectURI() {
+    return `${Env.NATIVE_APP_PACKAGE_NAME}://`;
+  },
+  get googleOAuth() {
     return {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      redirectURI: process.env.GOOGLE_REDIRECT_URI!,
+      clientId: Env.GOOGLE_CLIENT_ID,
+      clientSecret: Env.GOOGLE_CLIENT_SECRET,
+      redirectURI: Env.GOOGLE_REDIRECT_URI,
     };
-  }
-  static get githubOAuth() {
+  },
+  get githubOAuth() {
     return {
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      clientId: Env.GITHUB_CLIENT_ID,
+      clientSecret: Env.GITHUB_CLIENT_SECRET,
     };
-  }
-}
+  },
+};
 
 export { Conf };

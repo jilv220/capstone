@@ -1,4 +1,4 @@
-import authMiddleware, { AuthMiddlewareEnv } from '@/middlewares/auth.ts';
+import authMiddleware, { type AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import debug from 'debug';
 import { Hono } from 'hono';
 
