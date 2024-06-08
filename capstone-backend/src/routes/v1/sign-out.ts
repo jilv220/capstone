@@ -1,6 +1,7 @@
 import { lucia } from '@/db/lucia.ts';
-import debug from 'debug';
 import { Hono } from 'hono';
+
+import debug from 'debug';
 
 const signOut = new Hono().basePath('/sign-out');
 const Debug = debug('app:api:sign-out');

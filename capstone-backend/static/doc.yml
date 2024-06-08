@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  title: Scenario API
+  version: 1.0.0
+  description: API for retrieving scenarios.
+paths:
+  /api/v1/scenario:
+    get:
+      summary: Retrieve mood scenarios
+      responses:
+        '200':
+          description: A JSON object of scenarios categorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioResponse'
+      tags:
+        - Scenario
+components:
+  schemas:
+    ScenarioResponse:
+      type: object
+      properties:
+        bad_habits:
+          type: array
+          items:
+            type: string
+        beauty:
+          type: array
+          items:
+            type: string
+        chores:
+          type: array
+          items:
+            type: string
+        emotions:
+          type: array
+          items:
+            type: string
+        food:
+          type: array
+          items:
+            type: string
+        health:
+          type: array
+          items:
+            type: string
+        hobbies:
+          type: array
+          items:
+            type: string
+        period_symptoms:
+          type: array
+          items:
+            type: string
+        places:
+          type: array
+          items:
+            type: string
+        productivity:
+          type: array
+          items:
+            type: string
+        romance:
+          type: array
+          items:
+            type: string
+        school:
+          type: array
+          items:
+            type: string
+        sleep:
+          type: array
+          items:
+            type: string
+        social:
+          type: array
+          items:
+            type: string
+        weather:
+          type: array
+          items:
+            type: string
+        work:
+          type: array
+          items:
+            type: string
+
