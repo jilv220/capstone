@@ -13,10 +13,10 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   return (
-    <ScrollView px={'$4'} py={'$20'} backgroundColor={'$white'}>
+    <ScrollView px={'$4'} backgroundColor={'$white'}>
       <Card elevate size={'$4'} backgroundColor={'$white3'}>
         <Card.Header padded alignSelf="center" pb={'$1'}>
-          <SizableText size={'$7'} fontWeight={700} color={'$background'} textAlign="center">
+          <SizableText size={'$7'} fontWeight={700} color={'$black5'} textAlign="center">
             How are you?
           </SizableText>
           <Button
