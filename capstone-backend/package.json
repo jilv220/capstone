@@ -4,8 +4,9 @@
     "dev": "bun run --hot src/server.ts",
     "start": "bun run src/server.ts",
     "lint": "biome lint --write ./src/**",
-    "db:gen-types": "kysely-codegen",
-    "db:migrate": "bun ./scripts/db-migrate.ts && kysely-codegen"
+    "db:typegen": "kysely-codegen",
+    "db:migrate": "bun ./scripts/db-migrate.ts && kysely-codegen",
+    "db:seed": "bun ./scripts/db-seed.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.2.2",

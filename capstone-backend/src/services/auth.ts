@@ -23,7 +23,9 @@ export class AuthService {
 
   async validateAuthorizationCode(code: string, authProvider: AuthProvider, codeVerifier?: string) {
     if (authProvider === 'google') {
-      return this.google.validateAuthorizationCode(code, codeVerifier!);
+      if (!codeVerifier) throw new Error('Must provide codeVerifier with google OAuth');
+
+      return this.google.validateAuthorizationCode(code, codeVerifier);
     }
 
     return this[authProvider].validateAuthorizationCode(code);
