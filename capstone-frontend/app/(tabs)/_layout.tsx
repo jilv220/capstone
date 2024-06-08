@@ -141,6 +141,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
   inner: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 6,
   },
 });

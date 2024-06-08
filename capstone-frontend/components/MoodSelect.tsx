@@ -46,7 +46,7 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
         <XStack px={'$4'} justifyContent="space-between" py={'$3'}>
           <MoodPickerOption bg={'$green9Light'}>rad</MoodPickerOption>
           <MoodPickerOption bg={'limegreen'}>good</MoodPickerOption>
-          <MoodPickerOption bg={'yellow'}>meh</MoodPickerOption>
+          <MoodPickerOption bg={'$yellow9Dark'}>meh</MoodPickerOption>
           <MoodPickerOption bg={'orange'}>bad</MoodPickerOption>
           <MoodPickerOption bg={'red'}>awful</MoodPickerOption>
         </XStack>

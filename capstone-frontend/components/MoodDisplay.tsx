@@ -54,6 +54,14 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
     10: 'Nov',
     11: 'Dec',
   };
+  const bgColors: { [key: string]: string } = {
+    rad: '$green9Light',
+    good: 'limegreen',
+    meh: 'yellow9Dark',
+    bad: 'orange',
+    awful: 'red',
+  };
+
   let convertedWeekday = dateToWeekday[weekday];
   let convertedMonth = dateToMonth[month];
 
@@ -63,7 +71,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
         <YStack flex={1}>
           <Card size={'$4'} backgroundColor={'$white3'} padded>
             <Card.Header padded alignSelf="center" pb={'$1'}></Card.Header>
-            <MoodPickerOption bg={'$green9Light'}>{mood}</MoodPickerOption>
+            <MoodPickerOption bg={bgColors[mood]}>{mood}</MoodPickerOption>
           </Card>
         </YStack>
         <YStack flex={2}>

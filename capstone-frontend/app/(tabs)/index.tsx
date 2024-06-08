@@ -33,7 +33,7 @@ export default function HomeScreen() {
       date: 2,
     },
     {
-      mood: 'mad',
+      mood: 'meh',
       digitTime: '18:11',
       moodReason: 'date',
       weekday: 2,
@@ -41,7 +41,7 @@ export default function HomeScreen() {
       date: 5,
     },
     {
-      mood: 'not bad',
+      mood: 'rad',
       digitTime: '18:11',
       moodReason: 'date',
       weekday: 2,
