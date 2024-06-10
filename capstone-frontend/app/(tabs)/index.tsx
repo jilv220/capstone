@@ -3,10 +3,15 @@ import React from 'react';
 import MoodDisplay from '@/components/MoodDisplay';
 import { useState } from 'react';
 import DatePicker from 'react-native-date-picker';
-import { ScrollView, XStack, YStack } from 'tamagui';
+import { ScrollView, Sheet, XStack, YStack, Button } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ChevronDown } from '@tamagui/lucide-icons';
 
 export default function HomeScreen() {
+  const [position, setPosition] = useState(0);
+
+  const [open, setOpen] = useState(false);
+
   const d2 = {
     mood: 'good',
     digitTime: '18:11',
@@ -63,9 +68,28 @@ export default function HomeScreen() {
               month={moodData.month}
               digitTime={moodData.digitTime}
               moodReason={moodData.moodReason}
+              setSheetOpen={setOpen}
             />
           );
         })}
+        <Sheet
+          forceRemoveScrollEnabled={open}
+          open={open}
+          onOpenChange={setOpen}
+          dismissOnSnapToBottom
+          position={position}
+          onPositionChange={setPosition}
+          zIndex={100_000}
+          animation="medium"
+        >
+          <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+
+          <Sheet.Handle />
+
+          <Sheet.Frame padding="$4" justifyContent="center" alignItems="center">
+            <Button size="$6" circular icon={ChevronDown} onPress={() => setOpen(false)} />
+          </Sheet.Frame>
+        </Sheet>
       </ScrollView>
     </SafeAreaView>
   );

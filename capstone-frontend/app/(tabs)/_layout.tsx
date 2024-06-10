@@ -4,13 +4,14 @@ import { Redirect, Tabs, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { useTheme, Text } from 'tamagui';
+import { useTheme, Text, Sheet, Button } from 'tamagui';
 import { useAuth } from '@/contexts/auth';
 import AddButton from '@/components/navigation/AddButton';
 import { NavigationContainer } from '@react-navigation/native';
 import { Modal, View } from 'react-native';
 import MoodSelect from '@/components/MoodSelect';
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { ChevronDown } from '@tamagui/lucide-icons';
 export default function TabLayout() {
   const theme = useTheme();
   const { user, loading } = useAuth();

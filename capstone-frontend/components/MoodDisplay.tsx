@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import MoodPickerOption from '@/components/MoodPickerOption';
+import EditRecord from '@/components/EditRecord';
 import {
   Avatar,
   Button,
@@ -9,6 +10,7 @@ import {
   Label,
   Popover,
   ScrollView,
+  Sheet,
   SizableText,
   XStack,
   YStack,
@@ -22,6 +24,7 @@ import {
   Edit3,
   Trash2,
   NotebookPen,
+  ChevronDown,
 } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 
@@ -32,6 +35,7 @@ interface MoodDisplayProps {
   weekday: number;
   month: number;
   date: number;
+  setSheetOpen: (value: boolean) => void;
 }
 const MoodDisplay: React.FC<MoodDisplayProps> = ({
   mood,
@@ -40,6 +44,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
   weekday,
   month,
   date,
+  setSheetOpen,
 }) => {
   const dateToWeekday: { [key: number]: string } = {
     0: 'Sunday',
@@ -74,6 +79,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
 
   let convertedWeekday = dateToWeekday[weekday];
   let convertedMonth = dateToMonth[month];
+  const [editPanel, setEditPanel] = useState(false);
 
   return (
     <ScrollView px={'$4'} py={'$4'} backgroundColor={'$white'}>
@@ -122,7 +128,10 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                 backgroundColor={'$white3'}
                 size={'$7'}
                 color={'gray10Light'}
-                justifyContent="flex-start"
+                justifyContent="center"
+                onPress={() => {
+                  setEditPanel(true);
+                }}
               ></Button>
             </Popover.Trigger>
             <Popover.Content
@@ -134,8 +143,10 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
               padding={0}
               elevate
               borderRadius={0}
+              enterStyle={{ y: -10, opacity: 0 }}
+              exitStyle={{ y: -10, opacity: 0 }}
               animation={[
-                'lazy',
+                'quick',
                 {
                   opactiy: {
                     overshoot: {
@@ -145,29 +156,23 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                 },
               ]}
             >
-              <YStack flex={1}>
-                <Button
-                  icon={Edit3}
-                  size={'$5'}
-                  borderBottomColor={'$gray10Light'}
-                  borderRadius={0}
-                  justifyContent="flex-start"
-                >
-                  <SizableText fontSize={'$5'}>Edit</SizableText>
-                </Button>
-
-                <Button
-                  icon={NotebookPen}
-                  size={'$5'}
-                  borderBottomColor={'$gray10Light'}
-                  borderRadius={0}
-                >
-                  <SizableText fontSize={'$5'}>Add Note</SizableText>
-                </Button>
-                <Button icon={Trash2} flex={1} size={'$5'} justifyContent="flex-start">
-                  <SizableText fontSize={'$5'}>Delete</SizableText>
-                </Button>
-              </YStack>
+              {editPanel && (
+                <YStack flex={1}>
+                  <Button
+                    icon={Edit3}
+                    size={'$5'}
+                    borderBottomColor={'$gray10Light'}
+                    borderRadius={0}
+                    justifyContent="flex-start"
+                    onPress={() => {
+                      setEditPanel(false);
+                      setSheetOpen(true);
+                    }}
+                  >
+                    <SizableText fontSize={'$5'}>Edit</SizableText>
+                  </Button>
+                </YStack>
+              )}
             </Popover.Content>
           </Popover>
         </YStack>
