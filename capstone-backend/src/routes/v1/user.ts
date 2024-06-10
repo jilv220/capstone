@@ -7,6 +7,8 @@ import { type Insertable, NoResultError } from 'kysely';
 import type { MoodLogScenario } from 'kysely-codegen';
 import { generateIdFromEntropySize } from 'lucia';
 
+import { ScenarioRepository } from '@/repos/scenario.repo.ts';
+import { ScenarioService } from '@/services/scenarios.ts';
 import debug from 'debug';
 import * as R from 'remeda';
 
@@ -41,22 +43,8 @@ user.get('/mood-log', async (c) => {
       .execute();
   });
   const scenariosByMoodLog = await Promise.all(scenariosByMoodLogPromise);
-
-  const scenarioByCategroy = R.pipe(
-    scenariosByMoodLog,
-    R.map((group) => {
-      return R.reduce(
-        group,
-        (obj, sc) => {
-          return R.conditional(
-            obj[sc.category],
-            [R.isNullish, () => R.addProp(obj, sc.category, [sc.detail])],
-            [R.isArray, (arr) => R.set(obj, sc.category, [...arr, sc.detail])]
-          );
-        },
-        Object.create({})
-      );
-    })
+  const scenarioByCategroy = R.map(scenariosByMoodLog, (group) =>
+    ScenarioService.toCategorized(group)
   );
 
   const res = R.map(moodLogs, (log, idx) =>
@@ -77,33 +65,9 @@ user.post('/mood-log', zValidator('json', moodLogInsertSchema), async (c) => {
   const note = c.req.valid('json').note;
   const scenario = c.req.valid('json').scenario;
 
-  const scenarioPairs = R.pipe(
-    scenario,
-    R.entries,
-    R.flatMap(([key, values]) => values.map((value: string) => [key, value]))
-  );
-
-  const scenarioIdsPromise = R.pipe(
-    scenarioPairs,
-    R.map((pair) =>
-      db
-        .selectFrom('scenario')
-        .select('id')
-        .where('category', '=', pair[0])
-        .where('detail', '=', pair[1])
-        .executeTakeFirstOrThrow()
-        .then((res) => {
-          return {
-            mood_log_id,
-            scenario_id: res.id,
-          };
-        })
-    )
-  );
-
-  let scenarioIds: Insertable<MoodLogScenario>[] = [];
+  let moodLogScenarios: Insertable<MoodLogScenario>[] = [];
   try {
-    scenarioIds = await Promise.all(scenarioIdsPromise);
+    moodLogScenarios = await ScenarioService.createMoodLogScenarios(scenario, mood_log_id);
   } catch (e) {
     if (e instanceof NoResultError)
       return c.json(
@@ -114,23 +78,15 @@ user.post('/mood-log', zValidator('json', moodLogInsertSchema), async (c) => {
       );
   }
 
-  const res = await db.transaction().execute(async (tx) => {
-    const newMoodLog = await tx
-      .insertInto('mood_log')
-      .values({
-        id: mood_log_id,
-        log_date,
-        mood,
-        note,
-        user_id: user.id,
-      })
-      .returningAll()
-      .executeTakeFirstOrThrow();
+  const moodLog = {
+    id: mood_log_id,
+    log_date,
+    mood,
+    note,
+    user_id: user.id,
+  };
 
-    await tx.insertInto('mood_log_scenario').values(scenarioIds).executeTakeFirstOrThrow();
-    return newMoodLog;
-  });
-
+  const res = await ScenarioRepository.insertOrUpdateMoodLog(moodLog, moodLogScenarios);
   return c.json(res);
 });
 
