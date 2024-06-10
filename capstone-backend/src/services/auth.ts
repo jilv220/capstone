@@ -23,7 +23,9 @@ export class AuthService {
 
   async validateAuthorizationCode(code: string, authProvider: AuthProvider, codeVerifier?: string) {
     if (authProvider === 'google') {
-      if (!codeVerifier) throw new Error('Must provide codeVerifier with google OAuth');
+      // empty string is also falsy...
+      if (codeVerifier === null || codeVerifier === undefined)
+        throw new Error('Must provide codeVerifier with google OAuth');
 
       return this.google.validateAuthorizationCode(code, codeVerifier);
     }
