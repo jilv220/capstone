@@ -18,3 +18,5 @@ export const scenarioResponseSchema = z.object({
   weather: z.array(z.string()),
   work: z.array(z.string()),
 });
+
+export type ScenarioByCategroy = Partial<z.infer<typeof scenarioResponseSchema>>;
