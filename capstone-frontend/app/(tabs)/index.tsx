@@ -6,20 +6,13 @@ import DatePicker from 'react-native-date-picker';
 import { ScrollView, Sheet, XStack, YStack, Button } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronDown } from '@tamagui/lucide-icons';
+import EditRecord from '@/components/EditRecord';
 
 export default function HomeScreen() {
   const [position, setPosition] = useState(0);
 
   const [open, setOpen] = useState(false);
 
-  const d2 = {
-    mood: 'good',
-    digitTime: '18:11',
-    moodReason: 'date',
-    weekday: 2,
-    month: 5,
-    date: 5,
-  };
   const data = [
     {
       mood: 'good',
@@ -28,6 +21,7 @@ export default function HomeScreen() {
       weekday: 2,
       month: 5,
       date: 5,
+      id: '1',
     },
     {
       mood: 'bad',
@@ -36,6 +30,7 @@ export default function HomeScreen() {
       weekday: 5,
       month: 5,
       date: 2,
+      id: '2',
     },
     {
       mood: 'meh',
@@ -44,6 +39,7 @@ export default function HomeScreen() {
       weekday: 2,
       month: 5,
       date: 5,
+      id: '3',
     },
     {
       mood: 'rad',
@@ -52,16 +48,23 @@ export default function HomeScreen() {
       weekday: 2,
       month: 5,
       date: 5,
+      id: '4',
     },
   ];
+  const [moodTestData, setData] = useState(data);
+  const handleDelete = (dataId: string) => {
+    const newData = moodTestData.filter((item) => item.id !== dataId);
+    setData(newData);
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <XStack h={'$11'}></XStack>
-        {data.map((moodData, index) => {
+        {moodTestData.map((moodData, index) => {
           return (
             <MoodDisplay
               key={index}
+              id={moodData.id}
               mood={moodData.mood}
               weekday={moodData.weekday}
               date={moodData.date}
@@ -69,6 +72,7 @@ export default function HomeScreen() {
               digitTime={moodData.digitTime}
               moodReason={moodData.moodReason}
               setSheetOpen={setOpen}
+              onDelete={handleDelete}
             />
           );
         })}
@@ -87,6 +91,7 @@ export default function HomeScreen() {
           <Sheet.Handle />
 
           <Sheet.Frame padding="$4" justifyContent="center" alignItems="center">
+            <EditRecord />
             <Button size="$6" circular icon={ChevronDown} onPress={() => setOpen(false)} />
           </Sheet.Frame>
         </Sheet>
