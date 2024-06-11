@@ -1,10 +1,9 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import MoodPickerOption from '@/components/MoodPickerOption';
 import { Avatar, Button, Card, Circle, ScrollView, SizableText, XStack, YStack } from 'tamagui';
 import {
   Calendar,
-  BadgeX,
   Laugh,
   Meh,
   Smile,
@@ -15,13 +14,54 @@ import {
 } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 import DatePicker from 'react-native-date-picker';
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 interface MoodSelectProps {
   handleClose: () => void;
 }
 const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
   const [date, setDate] = useState(new Date());
+  const [mood, setMood] = useState('rad');
   const [open, setOpen] = useState(false);
+  const moodOptions = [
+    {
+      mood: 'rad',
+      bg: '$green9Light',
+      Icon: Laugh,
+    },
+    {
+      mood: 'good',
+      bg: 'limegreen',
+      Icon: Smile,
+    },
+    {
+      mood: 'meh',
+      bg: '$yellow9Dark',
+      Icon: Meh,
+    },
+    {
+      mood: 'bad',
+      bg: 'orange',
+      Icon: Frown,
+    },
+    {
+      mood: 'awful',
+      bg: 'red',
+      Icon: Angry,
+    },
+  ];
+
+  const onMoodSelect = (mood: string) => {
+    setMood(mood);
+  };
+  const onMoodSelectHandler = (mood: string) => {
+    onMoodSelect(mood);
+    // handleClose();
+    // router.push({
+    //   pathname: '/scenario',
+    //   params: { moodInScenario: mood, dateInScenario: date.toISOString() },
+    // });
+  };
+  useEffect(() => {}, [mood]);
   return (
     <ScrollView px={'$4'} backgroundColor={'$white'}>
       <Card elevate size={'$4'} backgroundColor={'$white3'}>
@@ -54,21 +94,18 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
           />
         </Card.Header>
         <XStack px={'$4'} justifyContent="space-between" py={'$3'}>
-          <MoodPickerOption bg={'$green9Light'} Icon={Laugh}>
-            rad
-          </MoodPickerOption>
-          <MoodPickerOption bg={'limegreen'} Icon={Smile}>
-            good
-          </MoodPickerOption>
-          <MoodPickerOption bg={'$yellow9Dark'} Icon={Meh}>
-            meh
-          </MoodPickerOption>
-          <MoodPickerOption bg={'orange'} Icon={Frown}>
-            bad
-          </MoodPickerOption>
-          <MoodPickerOption bg={'red'} Icon={Angry}>
-            awful
-          </MoodPickerOption>
+          {moodOptions.map((option, index) => {
+            return (
+              <MoodPickerOption
+                key={index}
+                bg={(option.mood === mood && option.bg) || 'grey'}
+                Icon={option.Icon}
+                onPressHandler={() => {
+                  onMoodSelectHandler(option.mood);
+                }}
+              ></MoodPickerOption>
+            );
+          })}
         </XStack>
         <Button
           icon={ArrowRightCircle}

@@ -1,10 +1,16 @@
 import ScenariosOptions from '@/components/ScenariosOptions';
+import { useRoute } from '@react-navigation/native';
 import { ChevronLeft, ChevronRight, X } from '@tamagui/lucide-icons';
-import { router } from 'expo-router';
+import { router, useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router';
 import { green } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 import { Button, ScrollView, SizableStack, SizableText, Text, XStack, YStack } from 'tamagui';
 
-export default function ScenarioScreen() {
+const ScenarioScreen: React.FC = () => {
+  const router = useRouter();
+  const { moodInScenario, dateInScenario } = useLocalSearchParams();
+
+  console.log(moodInScenario, dateInScenario);
+
   return (
     <ScrollView px={'$4'} py={'$7'}>
       <XStack flex={1} justifyContent="space-between">
@@ -29,4 +35,6 @@ export default function ScenarioScreen() {
       </YStack>
     </ScrollView>
   );
-}
+};
+
+export default ScenarioScreen;

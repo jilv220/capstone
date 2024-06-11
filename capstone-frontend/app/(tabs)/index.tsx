@@ -42,7 +42,7 @@ export default function HomeScreen() {
       id: '3',
     },
     {
-      mood: 'rad',
+      mood: 'meh',
       digitTime: '18:11',
       moodReason: 'date',
       weekday: 2,

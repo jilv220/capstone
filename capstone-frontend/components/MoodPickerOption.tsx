@@ -21,10 +21,6 @@ export default function MoodPickerOption({
 }: MoodPickerOption) {
   const theme = useTheme();
 
-  // const onPressHandler = () => {
-  //   router.push('/scenario');
-  // };
-
   return (
     <YStack alignItems="center" gap={'$2'}>
       <Button
