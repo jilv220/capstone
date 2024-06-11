@@ -7,3 +7,6 @@ export const moodLogInsertSchema = z.object({
   note: z.string().optional(),
   scenario: scenarioResponseSchema.partial(),
 });
+
+export const moodLogUpdateSchema = moodLogInsertSchema.partial();
+type t2 = z.infer<typeof moodLogUpdateSchema>;
