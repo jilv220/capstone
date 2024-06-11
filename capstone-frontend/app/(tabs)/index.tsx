@@ -100,18 +100,19 @@ export default function HomeScreen() {
 
           <Sheet.Handle />
 
-          <Sheet.Frame paddingTop="$4" justifyContent="center" alignItems="center">
-            <EditRecord
-              key={editData.id}
-              id={editData.id}
-              mood={editData.mood}
-              weekday={editData.weekday}
-              date={editData.date}
-              month={editData.month}
-              digitTime={editData.digitTime}
-              moodReason={editData.moodReason}
-            />
-            <Button size="$6" circular icon={ChevronDown} onPress={() => setOpen(false)} />
+          <Sheet.Frame alignItems="center">
+            <YStack py={'$4'} width={'90%'} justifyContent="space-evenly">
+              <EditRecord
+                key={editData.id}
+                id={editData.id}
+                mood={editData.mood}
+                weekday={editData.weekday}
+                date={editData.date}
+                month={editData.month}
+                digitTime={editData.digitTime}
+                moodReason={editData.moodReason}
+              />
+            </YStack>
           </Sheet.Frame>
         </Sheet>
       </ScrollView>

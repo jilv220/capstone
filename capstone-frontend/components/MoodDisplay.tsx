@@ -30,6 +30,8 @@ import {
   Meh,
   Annoyed,
   Angry,
+  AlertCircle,
+  Frown,
 } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 
@@ -78,13 +80,13 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
         return Meh;
         break;
       case 'bad':
-        return Annoyed;
+        return Frown;
         break;
       case 'awful':
         return Angry;
         break;
       default:
-        null;
+        return AlertCircle;
     }
   };
   return (

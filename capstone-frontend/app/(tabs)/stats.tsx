@@ -1,11 +1,12 @@
-import { ScrollView, Text, YStack } from 'tamagui';
+import { View, Text } from 'react-native';
+import React from 'react';
 
-export default function StatsScreen() {
+const stats = () => {
   return (
-    <ScrollView px={'$4'} py={'$7'}>
-      <YStack>
-        <Text>Stats Screen</Text>
-      </YStack>
-    </ScrollView>
+    <View>
+      <Text>stats</Text>
+    </View>
   );
-}
+};
+
+export default stats;
