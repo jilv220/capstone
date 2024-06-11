@@ -1,14 +1,14 @@
 import { db } from '@/db/db.ts';
 import authMiddleware, { type AuthMiddlewareEnv } from '@/middlewares/auth.ts';
-import { moodLogInsertSchema } from '@/schemas/mood_log.ts';
+import { MoodLogRepository } from '@/repos/moodLog.repo.ts';
+import { moodLogInsertSchema, moodLogUpdateSchema } from '@/schemas/mood_log.ts';
+import { ScenarioService } from '@/services/scenarios.ts';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { type Insertable, NoResultError } from 'kysely';
 import type { MoodLogScenario } from 'kysely-codegen';
 import { generateIdFromEntropySize } from 'lucia';
 
-import { ScenarioRepository } from '@/repos/scenario.repo.ts';
-import { ScenarioService } from '@/services/scenarios.ts';
 import debug from 'debug';
 import * as R from 'remeda';
 
@@ -67,7 +67,7 @@ user.post('/mood-log', zValidator('json', moodLogInsertSchema), async (c) => {
 
   let moodLogScenarios: Insertable<MoodLogScenario>[] = [];
   try {
-    moodLogScenarios = await ScenarioService.createMoodLogScenarios(scenario, mood_log_id);
+    moodLogScenarios = await ScenarioService.buildMoodLogScenarios(scenario, mood_log_id);
   } catch (e) {
     if (e instanceof NoResultError)
       return c.json(
@@ -86,8 +86,64 @@ user.post('/mood-log', zValidator('json', moodLogInsertSchema), async (c) => {
     user_id: user.id,
   };
 
-  const res = await ScenarioRepository.insertOrUpdateMoodLog(moodLog, moodLogScenarios);
-  return c.json(res);
+  try {
+    const res = await MoodLogRepository.createWithScenario(moodLog, moodLogScenarios);
+    return c.json(res);
+  } catch (e) {
+    console.error(e);
+    return c.text('Internal Server Error', 500);
+  }
+});
+
+user.patch('/mood-log/:id', zValidator('json', moodLogUpdateSchema), async (c) => {
+  const user = c.var.user;
+  const moodLogId = c.req.param('id');
+
+  const log_date = c.req.valid('json').log_date;
+  const mood = c.req.valid('json').mood;
+  const note = c.req.valid('json').note;
+  const scenario = c.req.valid('json').scenario;
+
+  // Not Found
+  const existingMoodLog = await MoodLogRepository.findById(moodLogId);
+  if (!existingMoodLog)
+    return c.json(
+      {
+        error: 'Mood log not found',
+      },
+      404
+    );
+
+  const moodLog = {
+    id: moodLogId,
+    log_date,
+    mood,
+    note,
+    user_id: user.id,
+  };
+
+  let moodLogScenarios: Insertable<MoodLogScenario>[] = [];
+  if (scenario) {
+    try {
+      moodLogScenarios = await ScenarioService.buildMoodLogScenarios(scenario, moodLogId);
+    } catch (e) {
+      if (e instanceof NoResultError)
+        return c.json(
+          {
+            error: 'Invalid scenario',
+          },
+          400
+        );
+    }
+  }
+
+  try {
+    const res = await MoodLogRepository.updateWithScenario(moodLog, moodLogScenarios);
+    return c.json(res);
+  } catch (e) {
+    console.error(e);
+    return c.text('Internal Server Error', 500);
+  }
 });
 
 export default user;

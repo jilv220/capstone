@@ -19,7 +19,7 @@ function toCategorized(scenarios: Omit<Selectable<Scenario>, 'id'>[]): ScenarioB
   );
 }
 
-async function createMoodLogScenarios(scenario: ScenarioByCategroy, mood_log_id: string) {
+async function buildMoodLogScenarios(scenario: ScenarioByCategroy, mood_log_id: string) {
   const scenarioPairs = R.pipe(
     scenario,
     R.entries,
@@ -49,7 +49,7 @@ async function createMoodLogScenarios(scenario: ScenarioByCategroy, mood_log_id:
 
 const ScenarioService = {
   toCategorized,
-  createMoodLogScenarios,
+  buildMoodLogScenarios,
 };
 
 export { ScenarioService };
