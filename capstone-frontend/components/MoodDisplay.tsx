@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import MoodPickerOption from '@/components/MoodPickerOption';
-import EditRecord from '@/components/EditRecord';
+
 import {
   Avatar,
   Button,
@@ -25,6 +25,11 @@ import {
   Trash2,
   NotebookPen,
   ChevronDown,
+  Laugh,
+  Smile,
+  Meh,
+  Annoyed,
+  Angry,
 } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 
@@ -35,7 +40,10 @@ interface MoodDisplayProps {
   weekday: number;
   month: number;
   date: number;
+  id: string;
   setSheetOpen: (value: boolean) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 const MoodDisplay: React.FC<MoodDisplayProps> = ({
   mood,
@@ -44,31 +52,11 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
   weekday,
   month,
   date,
+  id,
   setSheetOpen,
+  onDelete,
+  onEdit,
 }) => {
-  const dateToWeekday: { [key: number]: string } = {
-    0: 'Sunday',
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-  };
-  const dateToMonth: { [key: number]: string } = {
-    0: 'Jan',
-    1: 'Feb',
-    2: 'Mar',
-    3: 'Apr',
-    4: 'May',
-    5: 'Jun',
-    6: 'Jul',
-    7: 'Aug',
-    8: 'Sep',
-    9: 'Oct',
-    10: 'Nov',
-    11: 'Dec',
-  };
   const bgColors: { [key: string]: string } = {
     rad: '$green9Light',
     good: 'limegreen',
@@ -77,23 +65,49 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
     awful: 'red',
   };
 
-  let convertedWeekday = dateToWeekday[weekday];
-  let convertedMonth = dateToMonth[month];
-  const [editPanel, setEditPanel] = useState(false);
-
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const returnIcon = (mood: string) => {
+    switch (mood) {
+      case 'rad':
+        return Laugh;
+        break;
+      case 'good':
+        return Smile;
+        break;
+      case 'meh':
+        return Meh;
+        break;
+      case 'bad':
+        return Annoyed;
+        break;
+      case 'awful':
+        return Angry;
+        break;
+      default:
+        null;
+    }
+  };
   return (
     <ScrollView px={'$4'} py={'$4'} backgroundColor={'$white'}>
       <XStack elevation={2} backgroundColor={'$white3'} borderRadius={4}>
         <YStack flex={1}>
           <Card size={'$4'} backgroundColor={'$white3'} padded>
             <Card.Header padded alignSelf="center" pb={'$1'}></Card.Header>
-            <MoodPickerOption bg={bgColors[mood]}>{mood}</MoodPickerOption>
+            <MoodPickerOption Icon={returnIcon(mood)} bg={bgColors[mood]}>
+              {mood}
+            </MoodPickerOption>
           </Card>
         </YStack>
         <YStack flex={2}>
           <XStack px={'$2'} py={'$4'}>
             <SizableText color={'$gray10Light'} fontWeight={300} fontFamily={'$mono'}>
-              {convertedWeekday} {convertedMonth} {date}
+              {new Date(
+                2024,
+                month,
+                date,
+                parseInt(digitTime.split(':')[0]),
+                parseInt(digitTime.split(':')[1])
+              ).toDateString()}
             </SizableText>
           </XStack>
           <XStack px={'$2'} marginTop={'$-2'}>
@@ -121,7 +135,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           </XStack>
         </YStack>
         <YStack flex={1}>
-          <Popover size={'$8'} allowFlip placement="bottom">
+          <Popover size={'$8'} allowFlip placement="bottom" open={popoverOpen}>
             <Popover.Trigger asChild>
               <Button
                 icon={PlusCircle}
@@ -130,14 +144,13 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                 color={'gray10Light'}
                 justifyContent="center"
                 onPress={() => {
-                  setEditPanel(true);
+                  setPopoverOpen(true);
                 }}
               ></Button>
             </Popover.Trigger>
             <Popover.Content
               size={'$8'}
               flex={1}
-              backgroundColor={'beige'}
               borderColor="$gray10Light"
               borderWidth={1}
               padding={0}
@@ -156,23 +169,46 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                 },
               ]}
             >
-              {editPanel && (
-                <YStack flex={1}>
-                  <Button
-                    icon={Edit3}
-                    size={'$5'}
-                    borderBottomColor={'$gray10Light'}
-                    borderRadius={0}
-                    justifyContent="flex-start"
-                    onPress={() => {
-                      setEditPanel(false);
-                      setSheetOpen(true);
-                    }}
-                  >
-                    <SizableText fontSize={'$5'}>Edit</SizableText>
-                  </Button>
-                </YStack>
-              )}
+              <YStack flex={1}>
+                <Button
+                  icon={Edit3}
+                  size={'$5'}
+                  borderRadius={0}
+                  borderBottomColor={'$gray10Light'}
+                  justifyContent="flex-start"
+                  onPress={() => {
+                    setSheetOpen(true);
+                    setPopoverOpen(false);
+                    onEdit(id);
+                  }}
+                >
+                  <SizableText fontSize={'$5'}>Edit</SizableText>
+                </Button>
+                <Button
+                  icon={NotebookPen}
+                  size={'$5'}
+                  borderRadius={0}
+                  borderBottomColor={'$gray10Light'}
+                  justifyContent="flex-start"
+                  onPress={() => {
+                    setPopoverOpen(false);
+                  }}
+                >
+                  <SizableText fontSize={'$5'}>Add Note</SizableText>
+                </Button>
+                <Button
+                  icon={Trash2}
+                  size={'$5'}
+                  borderRadius={0}
+                  justifyContent="flex-start"
+                  onPress={() => {
+                    onDelete(id);
+                    setPopoverOpen(false);
+                  }}
+                >
+                  <SizableText fontSize={'$5'}>Delete</SizableText>
+                </Button>
+              </YStack>
             </Popover.Content>
           </Popover>
         </YStack>

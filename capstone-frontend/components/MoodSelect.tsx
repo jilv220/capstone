@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import React from 'react';
 import MoodPickerOption from '@/components/MoodPickerOption';
 import { Avatar, Button, Card, Circle, ScrollView, SizableText, XStack, YStack } from 'tamagui';
-import { Calendar, BadgeX } from '@tamagui/lucide-icons';
+import { Calendar, BadgeX, Laugh, Meh, Smile, Annoyed, Angry } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 import DatePicker from 'react-native-date-picker';
 import { router } from 'expo-router';
@@ -44,11 +44,21 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
           />
         </Card.Header>
         <XStack px={'$4'} justifyContent="space-between" py={'$3'}>
-          <MoodPickerOption bg={'$green9Light'}>rad</MoodPickerOption>
-          <MoodPickerOption bg={'limegreen'}>good</MoodPickerOption>
-          <MoodPickerOption bg={'$yellow9Dark'}>meh</MoodPickerOption>
-          <MoodPickerOption bg={'orange'}>bad</MoodPickerOption>
-          <MoodPickerOption bg={'red'}>awful</MoodPickerOption>
+          <MoodPickerOption bg={'$green9Light'} Icon={Laugh}>
+            rad
+          </MoodPickerOption>
+          <MoodPickerOption bg={'limegreen'} Icon={Smile}>
+            good
+          </MoodPickerOption>
+          <MoodPickerOption bg={'$yellow9Dark'} Icon={Meh}>
+            meh
+          </MoodPickerOption>
+          <MoodPickerOption bg={'orange'} Icon={Annoyed}>
+            bad
+          </MoodPickerOption>
+          <MoodPickerOption bg={'red'} Icon={Angry}>
+            awful
+          </MoodPickerOption>
         </XStack>
         <Button
           icon={BadgeX}

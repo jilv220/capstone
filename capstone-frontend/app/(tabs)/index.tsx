@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import MoodDisplay from '@/components/MoodDisplay';
 import { useState } from 'react';
 import DatePicker from 'react-native-date-picker';
@@ -28,16 +28,16 @@ export default function HomeScreen() {
       digitTime: '19:11',
       moodReason: 'food',
       weekday: 5,
-      month: 5,
+      month: 4,
       date: 2,
       id: '2',
     },
     {
-      mood: 'meh',
+      mood: 'awful',
       digitTime: '18:11',
       moodReason: 'date',
       weekday: 2,
-      month: 5,
+      month: 3,
       date: 5,
       id: '3',
     },
@@ -46,7 +46,7 @@ export default function HomeScreen() {
       digitTime: '18:11',
       moodReason: 'date',
       weekday: 2,
-      month: 5,
+      month: 2,
       date: 5,
       id: '4',
     },
@@ -56,6 +56,15 @@ export default function HomeScreen() {
     const newData = moodTestData.filter((item) => item.id !== dataId);
     setData(newData);
   };
+  const [editData, setEditData] = useState(moodTestData[0]);
+
+  useEffect(() => {}, [editData]);
+
+  const handleEdit = (dataId: string) => {
+    const newData = moodTestData.find((item) => item.id === dataId);
+    if (newData != undefined) setEditData(newData);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
@@ -73,6 +82,7 @@ export default function HomeScreen() {
               moodReason={moodData.moodReason}
               setSheetOpen={setOpen}
               onDelete={handleDelete}
+              onEdit={handleEdit}
             />
           );
         })}
@@ -90,8 +100,17 @@ export default function HomeScreen() {
 
           <Sheet.Handle />
 
-          <Sheet.Frame padding="$4" justifyContent="center" alignItems="center">
-            <EditRecord />
+          <Sheet.Frame paddingTop="$4" justifyContent="center" alignItems="center">
+            <EditRecord
+              key={editData.id}
+              id={editData.id}
+              mood={editData.mood}
+              weekday={editData.weekday}
+              date={editData.date}
+              month={editData.month}
+              digitTime={editData.digitTime}
+              moodReason={editData.moodReason}
+            />
             <Button size="$6" circular icon={ChevronDown} onPress={() => setOpen(false)} />
           </Sheet.Frame>
         </Sheet>
