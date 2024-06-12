@@ -20,7 +20,7 @@ async function findScenariosById(id: string) {
   return await db
     .selectFrom('mood_log_scenario')
     .innerJoin('scenario', 'scenario.id', 'mood_log_scenario.scenario_id')
-    .select(['scenario.category', 'scenario.detail'])
+    .select(['scenario.name'])
     .where('mood_log_id', '=', id)
     .execute();
 }

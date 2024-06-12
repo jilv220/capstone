@@ -25,14 +25,14 @@ moodLog.get('/', async (c) => {
   const scenariosByMoodLogPromise = R.map(moodLogs, (log) =>
     MoodLogRepository.findScenariosById(log.id)
   );
-  const scenariosByMoodLog = await Promise.all(scenariosByMoodLogPromise);
-  const scenariosByCategroy = R.map(scenariosByMoodLog, (group) =>
-    ScenarioService.toCategorized(group)
+  const scenariosByMoodLog = R.pipe(
+    await Promise.all(scenariosByMoodLogPromise),
+    R.map((sc) => ScenarioService.pluckName(sc))
   );
 
   const res = R.map(moodLogs, (log, idx) =>
     R.merge(log, {
-      scenario: scenariosByCategroy[idx],
+      scenario: scenariosByMoodLog[idx],
     })
   );
 
@@ -86,10 +86,13 @@ moodLog.get('/:id', async (c) => {
     const result = await MoodLogRepository.findByIdAndUserId(moodLogId, user.id);
     if (!result) return c.notFound();
 
-    const scenarios = await MoodLogRepository.findScenariosById(moodLogId);
-    const scenariosByCategroy = ScenarioService.toCategorized(scenarios);
+    const scenarios = R.pipe(
+      await MoodLogRepository.findScenariosById(moodLogId),
+      ScenarioService.pluckName
+    );
+
     const res = R.merge(result, {
-      scenario: scenariosByCategroy,
+      scenario: scenarios,
     });
 
     return c.json(res);
