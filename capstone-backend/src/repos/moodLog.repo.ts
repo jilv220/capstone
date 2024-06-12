@@ -7,6 +7,15 @@ async function findById(id: string) {
   return await db.selectFrom('mood_log').selectAll().where('id', '=', id).executeTakeFirst();
 }
 
+async function findByIdAndUserId(id: string, userId: string) {
+  return await db
+    .selectFrom('mood_log')
+    .selectAll()
+    .where('id', '=', id)
+    .where('user_id', '=', userId)
+    .executeTakeFirst();
+}
+
 async function findScenariosById(id: string) {
   return await db
     .selectFrom('mood_log_scenario')
@@ -18,6 +27,14 @@ async function findScenariosById(id: string) {
 
 async function deleteById(id: string) {
   return await db.deleteFrom('mood_log').where('id', '=', id).executeTakeFirst();
+}
+
+async function deleteByIdAndUserId(id: string, userId: string) {
+  return await db
+    .deleteFrom('mood_log')
+    .where('id', '=', id)
+    .where('user_id', '=', userId)
+    .executeTakeFirst();
 }
 
 async function createWithScenarios(
@@ -74,8 +91,10 @@ async function updateWithScenarios(
 
 const MoodLogRepository = {
   findById,
+  findByIdAndUserId,
   findScenariosById,
   deleteById,
+  deleteByIdAndUserId,
   updateWithScenarios,
   createWithScenarios,
 };

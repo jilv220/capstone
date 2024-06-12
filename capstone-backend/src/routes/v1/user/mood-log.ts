@@ -79,9 +79,11 @@ moodLog.post('/', zValidator('json', moodLogInsertSchema), async (c) => {
 });
 
 moodLog.get('/:id', async (c) => {
+  const user = c.var.user;
   const moodLogId = c.req.param('id');
+
   try {
-    const result = await MoodLogRepository.findById(moodLogId);
+    const result = await MoodLogRepository.findByIdAndUserId(moodLogId, user.id);
     if (!result) return c.notFound();
 
     const scenarios = await MoodLogRepository.findScenariosById(moodLogId);
@@ -107,7 +109,7 @@ moodLog.patch('/:id', zValidator('json', moodLogUpdateSchema), async (c) => {
   const scenario = c.req.valid('json').scenario;
 
   // Not Found
-  const existingMoodLog = await MoodLogRepository.findById(moodLogId);
+  const existingMoodLog = await MoodLogRepository.findByIdAndUserId(moodLogId, user.id);
   if (!existingMoodLog) return c.notFound();
 
   const moodLog = {
@@ -143,10 +145,11 @@ moodLog.patch('/:id', zValidator('json', moodLogUpdateSchema), async (c) => {
 });
 
 moodLog.delete('/:id', async (c) => {
+  const user = c.var.user;
   const moodLogId = c.req.param('id');
 
   try {
-    const result = await MoodLogRepository.deleteById(moodLogId);
+    const result = await MoodLogRepository.deleteByIdAndUserId(moodLogId, user.id);
 
     if (result.numDeletedRows !== BigInt(0)) {
       return c.newResponse(null, 202);
