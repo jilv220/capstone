@@ -62,7 +62,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
   const bgColors: { [key: string]: string } = {
     rad: '$green9Light',
     good: 'limegreen',
-    meh: 'yellow9Dark',
+    meh: '$yellow9Dark',
     bad: 'orange',
     awful: 'red',
   };
