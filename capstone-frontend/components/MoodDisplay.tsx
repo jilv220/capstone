@@ -39,7 +39,7 @@ interface MoodDisplayProps {
   mood: string;
   digitTime: string;
   moodReason: string;
-  weekday: number;
+  year: number;
   month: number;
   date: number;
   id: string;
@@ -51,7 +51,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
   mood,
   digitTime,
   moodReason,
-  weekday,
+  year,
   month,
   date,
   id,
@@ -104,7 +104,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           <XStack px={'$2'} py={'$4'}>
             <SizableText color={'$gray10Light'} fontWeight={300} fontFamily={'$mono'}>
               {new Date(
-                2024,
+                year,
                 month,
                 date,
                 parseInt(digitTime.split(':')[0]),

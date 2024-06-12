@@ -1,14 +1,25 @@
+import QuickNote from '@/components/QuickNote';
 import ScenariosOptions from '@/components/ScenariosOptions';
 import { useRoute } from '@react-navigation/native';
-import { ChevronLeft, ChevronRight, X } from '@tamagui/lucide-icons';
+import { ArrowRightCircle, ChevronLeft, ChevronRight, NotebookPen, X } from '@tamagui/lucide-icons';
 import { router, useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router';
 import { green } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
-import { Button, ScrollView, SizableStack, SizableText, Text, XStack, YStack } from 'tamagui';
+import {
+  Button,
+  Input,
+  ScrollView,
+  SizableStack,
+  SizableText,
+  Text,
+  XStack,
+  YStack,
+} from 'tamagui';
 
 const ScenarioScreen: React.FC = () => {
   const router = useRouter();
   const { moodInScenario, dateInScenario } = useLocalSearchParams();
 
+  console.log('params are:');
   console.log(moodInScenario, dateInScenario);
 
   return (
@@ -32,6 +43,25 @@ const ScenarioScreen: React.FC = () => {
       </YStack>
       <YStack>
         <ScenariosOptions />
+      </YStack>
+      <YStack>
+        <QuickNote />
+      </YStack>
+      <YStack>
+        <Button
+          icon={ArrowRightCircle}
+          backgroundColor={'$white0'}
+          color={'yellowgreen'}
+          size={55}
+          onPress={() => {
+            console.log(dateInScenario);
+            // router.setParams({
+            //   mood:moodInScenario,
+
+            // })
+            router.push('/');
+          }}
+        ></Button>
       </YStack>
     </ScrollView>
   );

@@ -7,56 +7,74 @@ import { ScrollView, Sheet, XStack, YStack, Button } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronDown } from '@tamagui/lucide-icons';
 import EditRecord from '@/components/EditRecord';
-
+import { useLocalSearchParams } from 'expo-router';
+import Storage from '@/lib/storage.native';
+interface MoodData {
+  mood: string;
+  digitTime: string;
+  moodReason: string;
+  year: number;
+  month: number;
+  date: number;
+  id: string;
+}
 export default function HomeScreen() {
   const [position, setPosition] = useState(0);
-
   const [open, setOpen] = useState(false);
+  const [sessionToken, setSessionToken] = useState('');
+  const [moodTestData, setData] = useState<MoodData[]>([]);
+  const [editData, setEditData] = useState<MoodData | null>(null);
+  useEffect(() => {
+    const fetchSessionToken = async () => {
+      const token = await Storage.getItem('session_token');
+      if (token) setSessionToken(token);
+    };
+    fetchSessionToken();
+  }, []);
 
-  const data = [
-    {
-      mood: 'good',
-      digitTime: '18:11',
-      moodReason: 'date',
-      weekday: 2,
-      month: 5,
-      date: 5,
-      id: '1',
-    },
-    {
-      mood: 'bad',
-      digitTime: '19:11',
-      moodReason: 'food',
-      weekday: 5,
-      month: 4,
-      date: 2,
-      id: '2',
-    },
-    {
-      mood: 'awful',
-      digitTime: '18:11',
-      moodReason: 'date',
-      weekday: 2,
-      month: 3,
-      date: 5,
-      id: '3',
-    },
-    {
-      mood: 'meh',
-      digitTime: '18:11',
-      moodReason: 'date',
-      weekday: 2,
-      month: 2,
-      date: 5,
-      id: '4',
-    },
-  ];
-  const [moodTestData, setData] = useState(data);
+  const getMoodLog = async (token: any) => {
+    const url = 'https://api.capstone.lyuji.dev/api/v1/user/mood-log';
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        const data: MoodData[] = [];
+        responseJson.forEach((item: any) => {
+          const logDate = new Date(item['log_date']);
+          const moodData = {
+            mood: item['mood'],
+            digitTime: logDate.getHours() + ':' + logDate.getMinutes(),
+            moodReason: 'wait for update',
+            date: logDate.getDate(),
+            month: logDate.getMonth(),
+            year: logDate.getFullYear(),
+            id: item['id'],
+          };
+          // console.log(moodData);
+          data.push(moodData);
+        });
+        // console.log(data);
+        setData(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    if (sessionToken) {
+      getMoodLog(sessionToken);
+    }
+  }, [sessionToken]);
+
   const handleDelete = (dataId: string) => {
     const newData = moodTestData.filter((item) => item.id !== dataId);
     setData(newData);
   };
-  const [editData, setEditData] = useState(moodTestData[0]);
 
   useEffect(() => {}, [editData]);
 
@@ -68,14 +86,14 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
-        <XStack h={'$11'}></XStack>
+        <XStack h={'$9'}></XStack>
         {moodTestData.map((moodData, index) => {
           return (
             <MoodDisplay
               key={index}
               id={moodData.id}
               mood={moodData.mood}
-              weekday={moodData.weekday}
+              year={moodData.year}
               date={moodData.date}
               month={moodData.month}
               digitTime={moodData.digitTime}
@@ -102,16 +120,18 @@ export default function HomeScreen() {
 
           <Sheet.Frame alignItems="center">
             <YStack py={'$4'} width={'90%'} justifyContent="space-evenly">
-              <EditRecord
-                key={editData.id}
-                id={editData.id}
-                mood={editData.mood}
-                weekday={editData.weekday}
-                date={editData.date}
-                month={editData.month}
-                digitTime={editData.digitTime}
-                moodReason={editData.moodReason}
-              />
+              {editData && (
+                <EditRecord
+                  key={editData.id}
+                  id={editData.id}
+                  mood={editData.mood}
+                  year={editData.year}
+                  date={editData.date}
+                  month={editData.month}
+                  digitTime={editData.digitTime}
+                  moodReason={editData.moodReason}
+                />
+              )}
             </YStack>
           </Sheet.Frame>
         </Sheet>

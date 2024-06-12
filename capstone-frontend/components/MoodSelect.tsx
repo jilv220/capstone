@@ -114,7 +114,10 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
           size={55}
           onPress={() => {
             handleClose();
-            router.push('/scenario');
+            router.push({
+              pathname: '/scenario',
+              params: { moodInScenario: mood, dateInScenario: date.toISOString() },
+            });
           }}
         ></Button>
       </Card>

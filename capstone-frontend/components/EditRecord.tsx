@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MoodSelect from './MoodSelect';
 import DatePicker from 'react-native-date-picker';
 import { ScrollView, Button, SizableText, XStack, YStack, Input } from 'tamagui';
@@ -16,11 +16,12 @@ import {
 import MoodPickerOption from './MoodPickerOption';
 import { green } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 import ScenariosOptions from './ScenariosOptions';
+import QuickNote from './QuickNote';
 interface EditRecordProps {
   mood: string;
   digitTime: string;
   moodReason: string;
-  weekday: number;
+  year: number;
   month: number;
   date: number;
   id: string;
@@ -29,7 +30,7 @@ const EditRecord: React.FC<EditRecordProps> = ({
   mood,
   digitTime,
   moodReason,
-  weekday,
+  year,
   month,
   date,
   id,
@@ -37,34 +38,43 @@ const EditRecord: React.FC<EditRecordProps> = ({
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [specificDate, setDate] = useState(
     new Date(
-      2024,
+      year,
       month,
       date,
       parseInt(digitTime.split(':')[0]),
       parseInt(digitTime.split(':')[1])
     )
   );
-  const setIcon = (mood: string) => {
-    switch (mood) {
-      case 'rad':
-        return Laugh;
-        break;
-      case 'good':
-        return Smile;
-        break;
-      case 'meh':
-        return Meh;
-        break;
-      case 'bad':
-        return Frown;
-        break;
-      case 'awful':
-        return Angry;
-        break;
-      default:
-        return AlertCircle;
-    }
-  };
+  const [emotion, setEmotion] = useState(mood);
+  useEffect(() => {}, [emotion]);
+
+  const emotionConfig = [
+    {
+      mood: 'rad',
+      bg: '$green9Light',
+      Icon: Laugh,
+    },
+    {
+      mood: 'good',
+      bg: 'limegreen',
+      Icon: Smile,
+    },
+    {
+      mood: 'meh',
+      bg: '$yellow9Dark',
+      Icon: Meh,
+    },
+    {
+      mood: 'bad',
+      bg: 'orange',
+      Icon: Frown,
+    },
+    {
+      mood: 'awful',
+      bg: 'red',
+      Icon: Angry,
+    },
+  ];
 
   return (
     <ScrollView>
@@ -101,43 +111,27 @@ const EditRecord: React.FC<EditRecordProps> = ({
           justifyContent="space-between"
           py={'$3'}
           borderBlockColor={'grey'}
-          // backgroundColor={'blue'}
           borderBottomWidth={'$0.5'}
         >
-          <MoodPickerOption bg={(mood === 'rad' && '$green9Light') || 'grey'} Icon={setIcon('rad')}>
-            rad
-          </MoodPickerOption>
-          <MoodPickerOption bg={(mood === 'good' && 'limegreen') || 'grey'} Icon={setIcon('good')}>
-            good
-          </MoodPickerOption>
-          <MoodPickerOption bg={(mood === 'meh' && '$yellow9Dark') || 'grey'} Icon={setIcon('meh')}>
-            meh
-          </MoodPickerOption>
-          <MoodPickerOption bg={(mood === 'bad' && 'orange') || 'grey'} Icon={setIcon('bad')}>
-            bad
-          </MoodPickerOption>
-          <MoodPickerOption bg={(mood === 'awful' && 'red') || 'grey'} Icon={setIcon('awful')}>
-            awful
-          </MoodPickerOption>
+          {emotionConfig.map((eConfig, index) => {
+            return (
+              <MoodPickerOption
+                key={index}
+                bg={(eConfig.mood === emotion && eConfig.bg) || 'grey'}
+                Icon={eConfig.Icon}
+                onPressHandler={() => {
+                  setEmotion(eConfig.mood);
+                }}
+              >
+                {eConfig.mood}
+              </MoodPickerOption>
+            );
+          })}
         </XStack>
         <XStack>
           <ScenariosOptions />
         </XStack>
-        <XStack py="$3" justifyContent="space-between" flexDirection="row">
-          <Button
-            icon={<NotebookPen size={'$1'} />}
-            backgroundColor={'white'}
-            color={'yellowgreen'}
-          >
-            <SizableText>Quick Note</SizableText>
-          </Button>
-          <Button backgroundColor={'white'}>
-            <SizableText color={'green'}>Open Full Note</SizableText>
-          </Button>
-        </XStack>
-        <XStack>
-          <Input size={'$4'} placeholder="Add Note..." flex={1}></Input>
-        </XStack>
+        <QuickNote bgColor="$white0" />
       </YStack>
     </ScrollView>
   );
