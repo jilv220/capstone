@@ -15,3 +15,7 @@ export async function getUser() {
 export async function getMoodLogs() {
   return await ky.getInstance().get('user/mood-log').json<MoodLog[]>(); 
 }
+
+export async function deleteMoodLog(id: string) {
+  return await ky.getInstance().delete(`user/mood-log/${id}`); 
+}
