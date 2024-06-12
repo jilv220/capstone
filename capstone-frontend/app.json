@@ -51,6 +51,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "89b590b2-d870-42aa-adf1-11eca01a602d"
+      }
+    },
+    "owner": "sashimisub"
   }
 }
