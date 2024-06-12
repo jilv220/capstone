@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: Scenario API
-  version: 1.0.0
-  description: API for retrieving scenarios.
+  title: Capstone API
+  version: 1.0.1
+  description: API for capstone project
 paths:
   /api/v1/scenario:
     get:
@@ -16,7 +16,122 @@ paths:
                 $ref: '#/components/schemas/ScenarioResponse'
       tags:
         - Scenario
+  /api/v1/user/mood-log:
+    get:
+      summary: Retrieve all mood logs
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of mood logs with categorized scenarios.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MoodLogResponse'
+      tags:
+        - Mood Log
+    post:
+      summary: Create a new mood log
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoodLogInsert'
+      responses:
+        '200':
+          description: The created mood log.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodLogResponse'
+        '400':
+          description: Invalid scenario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Mood Log
+  /api/v1/user/mood-log/{id}:
+    get:
+      summary: Retrieve a specific mood log by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A specific mood log with categorized scenarios.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodLogResponse'
+        '404':
+          description: Mood log not found.
+      tags:
+        - Mood Log
+    patch:
+      summary: Update a specific mood log by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoodLogUpdate'
+      responses:
+        '200':
+          description: The updated mood log.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodLogResponse'
+        '400':
+          description: Invalid scenario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Mood log not found.
+      tags:
+        - Mood Log
+    delete:
+      summary: Delete a specific mood log by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Mood log successfully deleted.
+        '404':
+          description: Mood log not found.
+      tags:
+        - Mood Log
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     ScenarioResponse:
       type: object
@@ -85,4 +200,59 @@ components:
           type: array
           items:
             type: string
+    MoodLogResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        log_date:
+          type: string
+          format: date-time
+        mood:
+          type: string
+          enum: ['awful', 'bad', 'good', 'meh', 'rad']
+        note:
+          type: string
+          nullable: true
+        user_id:
+          type: string
+        scenario:
+          $ref: '#/components/schemas/ScenarioResponse'
+    MoodLogInsert:
+      type: object
+      properties:
+        log_date:
+          type: string
+          format: date-time
+        mood:
+          type: string
+          enum: ['awful', 'bad', 'good', 'meh', 'rad']
+        note:
+          type: string
+          nullable: true
+        scenario:
+          $ref: '#/components/schemas/ScenarioResponse'
+      required:
+        - log_date
+        - mood
+        - scenario
+    MoodLogUpdate:
+      type: object
+      properties:
+        log_date:
+          type: string
+          format: date-time
+        mood:
+          type: string
+          enum: ['awful', 'bad', 'good', 'meh', 'rad']
+        note:
+          type: string
+          nullable: true
+        scenario:
+          $ref: '#/components/schemas/ScenarioResponse'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
 
