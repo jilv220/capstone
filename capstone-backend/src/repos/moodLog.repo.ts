@@ -7,7 +7,20 @@ async function findById(id: string) {
   return await db.selectFrom('mood_log').selectAll().where('id', '=', id).executeTakeFirst();
 }
 
-async function createWithScenario(
+async function findScenariosById(id: string) {
+  return await db
+    .selectFrom('mood_log_scenario')
+    .innerJoin('scenario', 'scenario.id', 'mood_log_scenario.scenario_id')
+    .select(['scenario.category', 'scenario.detail'])
+    .where('mood_log_id', '=', id)
+    .execute();
+}
+
+async function deleteById(id: string) {
+  return await db.deleteFrom('mood_log').where('id', '=', id).executeTakeFirst();
+}
+
+async function createWithScenarios(
   moodLog: MoodLogCreate,
   moodLogScenarios: Insertable<MoodLogScenario>[]
 ) {
@@ -31,7 +44,7 @@ async function createWithScenario(
   });
 }
 
-async function updateWithScenario(
+async function updateWithScenarios(
   moodLog: MoodLogUpdate,
   moodLogScenarios: Insertable<MoodLogScenario>[]
 ) {
@@ -61,8 +74,10 @@ async function updateWithScenario(
 
 const MoodLogRepository = {
   findById,
-  updateWithScenario,
-  createWithScenario,
+  findScenariosById,
+  deleteById,
+  updateWithScenarios,
+  createWithScenarios,
 };
 
 export { MoodLogRepository };

@@ -1,32 +1,20 @@
 import { db } from '@/db/db.ts';
-import authMiddleware, { type AuthMiddlewareEnv } from '@/middlewares/auth.ts';
+import type { AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import { MoodLogRepository } from '@/repos/moodLog.repo.ts';
 import { moodLogInsertSchema, moodLogUpdateSchema } from '@/schemas/mood_log.ts';
 import { ScenarioService } from '@/services/scenarios.ts';
+import { serverError } from '@/utils/hono.ts';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { type Insertable, NoResultError } from 'kysely';
 import type { MoodLogScenario } from 'kysely-codegen';
 import { generateIdFromEntropySize } from 'lucia';
 
-import debug from 'debug';
 import * as R from 'remeda';
 
-const user = new Hono<AuthMiddlewareEnv>().basePath('/user');
-const Debug = debug('app:api:user');
+const moodLog = new Hono<AuthMiddlewareEnv>().basePath('/mood-log');
 
-/**
- * We are not social media or blogging app?
- * Every access to user resource should be from user themselves?
- */
-user.use('*', authMiddleware);
-
-user.get('/me', async (c) => {
-  const user = c.var.user;
-  return c.json(user);
-});
-
-user.get('/mood-log', async (c) => {
+moodLog.get('/', async (c) => {
   const user = c.var.user;
   const moodLogs = await db
     .selectFrom('mood_log')
@@ -34,29 +22,24 @@ user.get('/mood-log', async (c) => {
     .where('user_id', '=', user.id)
     .execute();
 
-  const scenariosByMoodLogPromise = R.map(moodLogs, (log) => {
-    return db
-      .selectFrom('mood_log_scenario')
-      .innerJoin('scenario', 'scenario.id', 'mood_log_scenario.scenario_id')
-      .select(['scenario.category', 'scenario.detail'])
-      .where('mood_log_id', '=', log.id)
-      .execute();
-  });
+  const scenariosByMoodLogPromise = R.map(moodLogs, (log) =>
+    MoodLogRepository.findScenariosById(log.id)
+  );
   const scenariosByMoodLog = await Promise.all(scenariosByMoodLogPromise);
-  const scenarioByCategroy = R.map(scenariosByMoodLog, (group) =>
+  const scenariosByCategroy = R.map(scenariosByMoodLog, (group) =>
     ScenarioService.toCategorized(group)
   );
 
   const res = R.map(moodLogs, (log, idx) =>
     R.merge(log, {
-      scenario: scenarioByCategroy[idx],
+      scenario: scenariosByCategroy[idx],
     })
   );
 
   return c.json(res);
 });
 
-user.post('/mood-log', zValidator('json', moodLogInsertSchema), async (c) => {
+moodLog.post('/', zValidator('json', moodLogInsertSchema), async (c) => {
   const user = c.var.user;
 
   const mood_log_id = generateIdFromEntropySize(10);
@@ -87,15 +70,34 @@ user.post('/mood-log', zValidator('json', moodLogInsertSchema), async (c) => {
   };
 
   try {
-    const res = await MoodLogRepository.createWithScenario(moodLog, moodLogScenarios);
+    const res = await MoodLogRepository.createWithScenarios(moodLog, moodLogScenarios);
     return c.json(res);
   } catch (e) {
     console.error(e);
-    return c.text('Internal Server Error', 500);
+    return serverError(c);
   }
 });
 
-user.patch('/mood-log/:id', zValidator('json', moodLogUpdateSchema), async (c) => {
+moodLog.get('/:id', async (c) => {
+  const moodLogId = c.req.param('id');
+  try {
+    const result = await MoodLogRepository.findById(moodLogId);
+    if (!result) return c.notFound();
+
+    const scenarios = await MoodLogRepository.findScenariosById(moodLogId);
+    const scenariosByCategroy = ScenarioService.toCategorized(scenarios);
+    const res = R.merge(result, {
+      scenario: scenariosByCategroy,
+    });
+
+    return c.json(res);
+  } catch (e) {
+    console.error(e);
+    return serverError(c);
+  }
+});
+
+moodLog.patch('/:id', zValidator('json', moodLogUpdateSchema), async (c) => {
   const user = c.var.user;
   const moodLogId = c.req.param('id');
 
@@ -106,13 +108,7 @@ user.patch('/mood-log/:id', zValidator('json', moodLogUpdateSchema), async (c) =
 
   // Not Found
   const existingMoodLog = await MoodLogRepository.findById(moodLogId);
-  if (!existingMoodLog)
-    return c.json(
-      {
-        error: 'Mood log not found',
-      },
-      404
-    );
+  if (!existingMoodLog) return c.notFound();
 
   const moodLog = {
     id: moodLogId,
@@ -138,12 +134,29 @@ user.patch('/mood-log/:id', zValidator('json', moodLogUpdateSchema), async (c) =
   }
 
   try {
-    const res = await MoodLogRepository.updateWithScenario(moodLog, moodLogScenarios);
+    const res = await MoodLogRepository.updateWithScenarios(moodLog, moodLogScenarios);
     return c.json(res);
   } catch (e) {
     console.error(e);
-    return c.text('Internal Server Error', 500);
+    return serverError(c);
   }
 });
 
-export default user;
+moodLog.delete('/:id', async (c) => {
+  const moodLogId = c.req.param('id');
+
+  try {
+    const result = await MoodLogRepository.deleteById(moodLogId);
+
+    if (result.numDeletedRows !== BigInt(0)) {
+      return c.newResponse(null, 202);
+    }
+
+    return c.notFound();
+  } catch (e) {
+    console.error(e);
+    return serverError(c);
+  }
+});
+
+export default moodLog;
