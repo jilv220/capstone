@@ -5,7 +5,7 @@ export const moodLogInsertSchema = z.object({
   log_date: z.string().datetime(),
   mood: z.enum(['awful', 'bad', 'good', 'meh', 'rad']),
   note: z.string().optional(),
-  scenario: scenarioResponseSchema.partial(),
+  scenario: scenarioResponseSchema,
 });
 
 export const moodLogUpdateSchema = moodLogInsertSchema.partial();
