@@ -45,9 +45,17 @@ export default function HomeScreen() {
         const data: MoodData[] = [];
         responseJson.forEach((item: any) => {
           const logDate = new Date(item['log_date']);
+          const minutes =
+            logDate.getMinutes().toString().length === 1
+              ? '0' + logDate.getMinutes()
+              : logDate.getMinutes();
+          const hour =
+            logDate.getHours().toString().length === 1
+              ? '0' + logDate.getHours()
+              : logDate.getHours();
           const moodData = {
             mood: item['mood'],
-            digitTime: logDate.getHours() + ':' + logDate.getMinutes(),
+            digitTime: hour + ':' + minutes,
             moodReason: 'wait for update',
             date: logDate.getDate(),
             month: logDate.getMonth(),
