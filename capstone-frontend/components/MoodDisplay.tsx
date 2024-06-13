@@ -34,6 +34,8 @@ import {
   Frown,
 } from '@tamagui/lucide-icons';
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteMoodLog } from '@/actions/user';
 
 interface MoodDisplayProps {
   mood: string;
@@ -62,33 +64,37 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
   const bgColors: { [key: string]: string } = {
     rad: '$green9Light',
     good: 'limegreen',
-    meh: 'yellow9Dark',
+    meh: '$yellow9Dark',
     bad: 'orange',
     awful: 'red',
   };
 
-  const [popoverOpen, setPopoverOpen] = useState(false);
   const returnIcon = (mood: string) => {
     switch (mood) {
       case 'rad':
         return Laugh;
-        break;
       case 'good':
         return Smile;
-        break;
       case 'meh':
         return Meh;
-        break;
       case 'bad':
         return Frown;
-        break;
       case 'awful':
         return Angry;
-        break;
       default:
         return AlertCircle;
     }
   };
+
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteMoodLog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mood-log'] });
+    },
+  });
+
   return (
     <ScrollView px={'$4'} py={'$4'} backgroundColor={'$white'}>
       <XStack elevation={2} backgroundColor={'$white3'} borderRadius={4}>
@@ -137,7 +143,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           </XStack>
         </YStack>
         <YStack flex={1}>
-          <Popover size={'$8'} allowFlip placement="bottom" open={popoverOpen}>
+          <Popover size={'$8'} allowFlip placement="bottom">
             <Popover.Trigger asChild>
               <Button
                 icon={PlusCircle}
@@ -145,9 +151,6 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                 size={'$7'}
                 color={'gray10Light'}
                 justifyContent="center"
-                onPress={() => {
-                  setPopoverOpen(true);
-                }}
               ></Button>
             </Popover.Trigger>
             <Popover.Content
@@ -172,44 +175,48 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
               ]}
             >
               <YStack flex={1}>
-                <Button
-                  icon={Edit3}
-                  size={'$5'}
-                  borderRadius={0}
-                  borderBottomColor={'$gray10Light'}
-                  justifyContent="flex-start"
-                  onPress={() => {
-                    setSheetOpen(true);
-                    setPopoverOpen(false);
-                    onEdit(id);
-                  }}
-                >
-                  <SizableText fontSize={'$5'}>Edit</SizableText>
-                </Button>
-                <Button
-                  icon={NotebookPen}
-                  size={'$5'}
-                  borderRadius={0}
-                  borderBottomColor={'$gray10Light'}
-                  justifyContent="flex-start"
-                  onPress={() => {
-                    setPopoverOpen(false);
-                  }}
-                >
-                  <SizableText fontSize={'$5'}>Add Note</SizableText>
-                </Button>
-                <Button
-                  icon={Trash2}
-                  size={'$5'}
-                  borderRadius={0}
-                  justifyContent="flex-start"
-                  onPress={() => {
-                    onDelete(id);
-                    setPopoverOpen(false);
-                  }}
-                >
-                  <SizableText fontSize={'$5'}>Delete</SizableText>
-                </Button>
+                <Popover.Close asChild fd={'row'}>
+                  <Button
+                    icon={Edit3}
+                    size={'$5'}
+                    borderRadius={0}
+                    borderBottomColor={'$gray10Light'}
+                    justifyContent="flex-start"
+                    onPress={() => {
+                      setSheetOpen(true);
+                      onEdit(id);
+                    }}
+                  >
+                    <SizableText fontSize={'$5'}>Edit</SizableText>
+                  </Button>
+                </Popover.Close>
+
+                <Popover.Close asChild fd={'row'}>
+                  <Button
+                    icon={NotebookPen}
+                    size={'$5'}
+                    borderRadius={0}
+                    borderBottomColor={'$gray10Light'}
+                    justifyContent="flex-start"
+                    onPress={() => {}}
+                  >
+                    <SizableText fontSize={'$5'}>Add Note</SizableText>
+                  </Button>
+                </Popover.Close>
+
+                <Popover.Close asChild fd={'row'}>
+                  <Button
+                    icon={Trash2}
+                    size={'$5'}
+                    borderRadius={0}
+                    justifyContent="flex-start"
+                    onPress={() => {
+                      deleteMutation.mutate(id);
+                    }}
+                  >
+                    <SizableText fontSize={'$5'}>Delete</SizableText>
+                  </Button>
+                </Popover.Close>
               </YStack>
             </Popover.Content>
           </Popover>

@@ -1,39 +1,22 @@
 import { db } from '@/db/db.ts';
-import type { ScenarioByCategroy } from '@/schemas/scenario.ts';
+import type { Scenarios } from '@/schemas/scenario.ts';
 import { NoResultError, type Selectable } from 'kysely';
 import type { Scenario } from 'kysely-codegen';
 
 import * as R from 'remeda';
 
-function toCategorized(scenarios: Omit<Selectable<Scenario>, 'id'>[]): ScenarioByCategroy {
-  return R.reduce(
-    scenarios,
-    (obj, sc) => {
-      return R.conditional(
-        obj[sc.category],
-        [R.isNullish, () => R.addProp(obj, sc.category, [sc.detail])],
-        [R.isArray, (arr) => R.set(obj, sc.category, [...arr, sc.detail])]
-      );
-    },
-    Object.create({})
-  );
+function pluckName(scenarios: Omit<Selectable<Scenario>, 'id'>[]) {
+  return R.map(scenarios, (sc) => R.prop(sc, 'name'));
 }
 
-async function buildMoodLogScenarios(scenario: ScenarioByCategroy, mood_log_id: string) {
-  const scenarioPairs = R.pipe(
-    scenario,
-    R.entries,
-    R.flatMap(([key, values]) => values.map((value: string) => [key, value]))
-  );
-
+async function buildMoodLogScenarios(scenarios: Scenarios, mood_log_id: string) {
   const moodLogScenariosPromise = R.pipe(
-    scenarioPairs,
-    R.map((pair) =>
+    scenarios,
+    R.map((sc) =>
       db
         .selectFrom('scenario')
         .select('id')
-        .where('category', '=', pair[0])
-        .where('detail', '=', pair[1])
+        .where('name', '=', sc)
         .executeTakeFirstOrThrow()
         .then((res) => {
           return {
@@ -48,7 +31,7 @@ async function buildMoodLogScenarios(scenario: ScenarioByCategroy, mood_log_id: 
 }
 
 const ScenarioService = {
-  toCategorized,
+  pluckName,
   buildMoodLogScenarios,
 };
 

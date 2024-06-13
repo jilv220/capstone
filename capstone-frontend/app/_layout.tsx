@@ -7,6 +7,9 @@ import { useEffect } from 'react';
 import { AuthProvider } from '@/contexts/auth';
 import tamaguiConfig from '@/tamagui.config';
 import { useUserStore } from '@/stores/userStore';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   // This is from Native
@@ -36,13 +39,15 @@ export default function RootLayout() {
       <Theme name={colorScheme}>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <AuthProvider>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-              <Stack.Screen name="scenario" options={{ headerShown: false }} />
-              <Stack.Screen name="resources" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
+            <QueryClientProvider client={queryClient}>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+                <Stack.Screen name="scenario" options={{ headerShown: false }} />
+                <Stack.Screen name="resources" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </QueryClientProvider>
           </AuthProvider>
         </ThemeProvider>
       </Theme>

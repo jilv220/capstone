@@ -1,7 +1,7 @@
 import { db } from '@/db/db.ts';
 import type { AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import { MoodLogRepository } from '@/repos/moodLog.repo.ts';
-import { moodLogInsertSchema, moodLogUpdateSchema } from '@/schemas/mood_log.ts';
+import { moodLogCreateSchema, moodLogUpdateSchema } from '@/schemas/mood_log.ts';
 import { ScenarioService } from '@/services/scenarios.ts';
 import { serverError } from '@/utils/hono.ts';
 import { zValidator } from '@hono/zod-validator';
@@ -25,21 +25,21 @@ moodLog.get('/', async (c) => {
   const scenariosByMoodLogPromise = R.map(moodLogs, (log) =>
     MoodLogRepository.findScenariosById(log.id)
   );
-  const scenariosByMoodLog = await Promise.all(scenariosByMoodLogPromise);
-  const scenariosByCategroy = R.map(scenariosByMoodLog, (group) =>
-    ScenarioService.toCategorized(group)
+  const scenariosByMoodLog = R.pipe(
+    await Promise.all(scenariosByMoodLogPromise),
+    R.map((sc) => ScenarioService.pluckName(sc))
   );
 
   const res = R.map(moodLogs, (log, idx) =>
     R.merge(log, {
-      scenario: scenariosByCategroy[idx],
+      scenario: scenariosByMoodLog[idx],
     })
   );
 
   return c.json(res);
 });
 
-moodLog.post('/', zValidator('json', moodLogInsertSchema), async (c) => {
+moodLog.post('/', zValidator('json', moodLogCreateSchema), async (c) => {
   const user = c.var.user;
 
   const mood_log_id = generateIdFromEntropySize(10);
@@ -86,10 +86,13 @@ moodLog.get('/:id', async (c) => {
     const result = await MoodLogRepository.findByIdAndUserId(moodLogId, user.id);
     if (!result) return c.notFound();
 
-    const scenarios = await MoodLogRepository.findScenariosById(moodLogId);
-    const scenariosByCategroy = ScenarioService.toCategorized(scenarios);
+    const scenarios = R.pipe(
+      await MoodLogRepository.findScenariosById(moodLogId),
+      ScenarioService.pluckName
+    );
+
     const res = R.merge(result, {
-      scenario: scenariosByCategroy,
+      scenario: scenarios,
     });
 
     return c.json(res);
