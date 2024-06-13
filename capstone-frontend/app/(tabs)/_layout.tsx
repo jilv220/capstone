@@ -1,17 +1,17 @@
-import * as SystemUI from 'expo-system-ui';
-import { Alert, StyleSheet } from 'react-native';
-import { Redirect, Tabs, router } from 'expo-router';
+import { StyleSheet } from 'react-native';
+import { Redirect, Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { useTheme, Text, Sheet, Button } from 'tamagui';
+import { useTheme, Text } from 'tamagui';
 import { useAuth } from '@/contexts/auth';
-import AddButton from '@/components/navigation/AddButton';
-import { NavigationContainer } from '@react-navigation/native';
 import { Modal, View } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+
+import AddButton from '@/components/navigation/AddButton';
 import MoodSelect from '@/components/MoodSelect';
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { ChevronDown } from '@tamagui/lucide-icons';
+import * as SystemUI from 'expo-system-ui';
+
 export default function TabLayout() {
   const theme = useTheme();
   const { user, loading } = useAuth();

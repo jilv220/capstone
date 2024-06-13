@@ -2,10 +2,12 @@ import { View, Text } from 'react-native';
 import React from 'react';
 import { XStack, YStack, Button, SizableText, Input } from 'tamagui';
 import { NotebookPen } from '@tamagui/lucide-icons';
+import { ReactSetStateType } from '@/interfaces/base';
 interface QuickNoteProps {
   bgColor?: string;
+  onChangeText: ReactSetStateType<string>;
 }
-const QuickNote: React.FC<QuickNoteProps> = ({ bgColor }) => {
+const QuickNote: React.FC<QuickNoteProps> = ({ bgColor, onChangeText }) => {
   return (
     <YStack>
       <XStack py="$3" justifyContent="space-between" flexDirection="row">
@@ -21,7 +23,14 @@ const QuickNote: React.FC<QuickNoteProps> = ({ bgColor }) => {
         </Button>
       </XStack>
       <XStack>
-        <Input size={'$4'} placeholder="Add Note..." flex={1}></Input>
+        <Input
+          size={'$4'}
+          placeholder="Add Note..."
+          flex={1}
+          onChangeText={(newText) => {
+            onChangeText(newText);
+          }}
+        ></Input>
       </XStack>
     </YStack>
   );
