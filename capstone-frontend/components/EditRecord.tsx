@@ -6,7 +6,9 @@ import { ScrollView, Button, SizableText, XStack, YStack, Input } from 'tamagui'
 import {
   AlertCircle,
   Angry,
+  ArrowRightCircle,
   Calendar,
+  ChevronRightCircle,
   Frown,
   Laugh,
   Meh,
@@ -17,6 +19,7 @@ import MoodPickerOption from './MoodPickerOption';
 import { green } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 import ScenariosOptions from './ScenariosOptions';
 import QuickNote from './QuickNote';
+import { router } from 'expo-router';
 interface EditRecordProps {
   mood: string;
   digitTime: string;
@@ -25,6 +28,7 @@ interface EditRecordProps {
   month: number;
   date: number;
   id: string;
+  handlePreceding: () => void;
 }
 const EditRecord: React.FC<EditRecordProps> = ({
   mood,
@@ -34,6 +38,7 @@ const EditRecord: React.FC<EditRecordProps> = ({
   month,
   date,
   id,
+  handlePreceding,
 }) => {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [specificDate, setDate] = useState(
@@ -131,7 +136,18 @@ const EditRecord: React.FC<EditRecordProps> = ({
         <XStack>
           <ScenariosOptions />
         </XStack>
-        <QuickNote bgColor="$white0" />
+        <YStack>
+          <QuickNote bgColor="$white0" />
+        </YStack>
+        <YStack py={'$3'}>
+          <Button
+            backgroundColor={'$white0'}
+            icon={<ArrowRightCircle size={'$3'} color={'yellowgreen'} />}
+            onPress={() => {
+              handlePreceding();
+            }}
+          ></Button>
+        </YStack>
       </YStack>
     </ScrollView>
   );

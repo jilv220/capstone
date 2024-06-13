@@ -65,56 +65,59 @@ export default function HomeScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <XStack h={'$9'}></XStack>
-        {moodTestData &&
-          moodTestData.map((moodData) => {
-            return (
-              <MoodDisplay
-                key={moodData.id}
-                id={moodData.id}
-                mood={moodData.mood}
-                year={moodData.year}
-                date={moodData.date}
-                month={moodData.month}
-                digitTime={moodData.digitTime}
-                moodReason={moodData.moodReason}
-                setSheetOpen={setOpen}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-              />
-            );
-          })}
+
+        {moodTestData.map((moodData, index) => {
+          return (
+            <MoodDisplay
+              key={index}
+              id={moodData.id}
+              mood={moodData.mood}
+              year={moodData.year}
+              date={moodData.date}
+              month={moodData.month}
+              digitTime={moodData.digitTime}
+              moodReason={moodData.moodReason}
+              setSheetOpen={setOpen}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          );
+        })}
+        <Sheet
+          forceRemoveScrollEnabled={open}
+          open={open}
+          onOpenChange={setOpen}
+          dismissOnSnapToBottom
+          position={position}
+          onPositionChange={setPosition}
+          zIndex={100_000}
+          animation="medium"
+        >
+          <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+
+          <Sheet.Handle />
+
+          <Sheet.Frame alignItems="center">
+            <YStack py={'$4'} width={'90%'} justifyContent="space-evenly">
+              {editData && (
+                <EditRecord
+                  key={editData.id}
+                  id={editData.id}
+                  mood={editData.mood}
+                  year={editData.year}
+                  date={editData.date}
+                  month={editData.month}
+                  digitTime={editData.digitTime}
+                  moodReason={editData.moodReason}
+                  handlePreceding={() => {
+                    setOpen(false);
+                  }}
+                />
+              )}
+            </YStack>
+          </Sheet.Frame>
+        </Sheet>
       </ScrollView>
-      <Sheet
-        forceRemoveScrollEnabled={open}
-        open={open}
-        onOpenChange={setOpen}
-        dismissOnSnapToBottom
-        position={position}
-        onPositionChange={setPosition}
-        zIndex={100_000}
-        animation="medium"
-      >
-        <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
-
-        <Sheet.Handle />
-
-        <Sheet.Frame alignItems="center">
-          <YStack py={'$4'} width={'90%'} justifyContent="space-evenly">
-            {editData && (
-              <EditRecord
-                key={editData.id}
-                id={editData.id}
-                mood={editData.mood}
-                year={editData.year}
-                date={editData.date}
-                month={editData.month}
-                digitTime={editData.digitTime}
-                moodReason={editData.moodReason}
-              />
-            )}
-          </YStack>
-        </Sheet.Frame>
-      </Sheet>
     </SafeAreaView>
   );
 }
