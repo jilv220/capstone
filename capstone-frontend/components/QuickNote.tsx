@@ -2,6 +2,8 @@ import { View, Text } from 'react-native';
 import React from 'react';
 import { XStack, YStack, Button, SizableText, Input } from 'tamagui';
 import { NotebookPen } from '@tamagui/lucide-icons';
+import fullnote from '@/app/fullnote';
+import { router } from 'expo-router';
 interface QuickNoteProps {
   bgColor?: string;
 }
@@ -16,7 +18,12 @@ const QuickNote: React.FC<QuickNoteProps> = ({ bgColor }) => {
         >
           <SizableText>Quick Note</SizableText>
         </Button>
-        <Button backgroundColor={bgColor || '$background'}>
+        <Button
+          backgroundColor={bgColor || '$background'}
+          onPress={() => {
+            router.push('/fullnote');
+          }}
+        >
           <SizableText color={'green'}>Open Full Note</SizableText>
         </Button>
       </XStack>

@@ -138,6 +138,9 @@ export default function HomeScreen() {
                   month={editData.month}
                   digitTime={editData.digitTime}
                   moodReason={editData.moodReason}
+                  handlePreceding={() => {
+                    setOpen(false);
+                  }}
                 />
               )}
             </YStack>
