@@ -55,11 +55,6 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
   };
   const onMoodSelectHandler = (mood: string) => {
     onMoodSelect(mood);
-    // handleClose();
-    // router.push({
-    //   pathname: '/scenario',
-    //   params: { moodInScenario: mood, dateInScenario: date.toISOString() },
-    // });
   };
   useEffect(() => {}, [mood]);
   return (

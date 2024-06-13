@@ -5,15 +5,15 @@
   "build": {
     "development": {
       "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
       "distribution": "internal",
       "env": {
         "EXPO_PUBLIC_API_URL": "https://api.capstone.lyuji.dev",
         "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "75697194092-o31ijaiqvflutpm8lvh3u2b9s4ua3qre.apps.googleusercontent.com",
         "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "75697194092-cpe5hmbh943t9kkq784nfj8bn4oc0677.apps.googleusercontent.com"
       }
-    },
-    "preview": {
-      "distribution": "internal"
     },
     "production": {}
   },
