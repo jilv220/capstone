@@ -1,5 +1,4 @@
 import { type Kysely, sql } from 'kysely';
-import { MoodLogScenario } from 'kysely-codegen';
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema.alterTable('scenario').dropConstraint('category_detail_unique').execute();

@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Capstone API
-  version: 1.0.1
+  version: 1.0.2
   description: API for capstone project
 paths:
   /api/v1/scenario:
@@ -136,70 +136,27 @@ components:
     ScenarioResponse:
       type: object
       properties:
-        bad_habits:
+        scenarios:
           type: array
           items:
             type: string
-        beauty:
-          type: array
-          items:
-            type: string
-        chores:
-          type: array
-          items:
-            type: string
-        emotions:
-          type: array
-          items:
-            type: string
-        food:
-          type: array
-          items:
-            type: string
-        health:
-          type: array
-          items:
-            type: string
-        hobbies:
-          type: array
-          items:
-            type: string
-        period_symptoms:
-          type: array
-          items:
-            type: string
-        places:
-          type: array
-          items:
-            type: string
-        productivity:
-          type: array
-          items:
-            type: string
-        romance:
-          type: array
-          items:
-            type: string
-        school:
-          type: array
-          items:
-            type: string
-        sleep:
-          type: array
-          items:
-            type: string
-        social:
-          type: array
-          items:
-            type: string
-        weather:
-          type: array
-          items:
-            type: string
-        work:
-          type: array
-          items:
-            type: string
+            enum: [
+              "productivity",
+              "school",
+              "weather",
+              "social",
+              "food",
+              "sleep",
+              "hobbies",
+              "health",
+              "chores",
+              "romance",
+              "beauty",
+              "places",
+              "period_symptoms",
+              "bad_habits",
+              "work"
+            ]
     MoodLogResponse:
       type: object
       properties:

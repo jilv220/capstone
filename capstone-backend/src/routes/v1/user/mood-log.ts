@@ -1,7 +1,7 @@
 import { db } from '@/db/db.ts';
 import type { AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import { MoodLogRepository } from '@/repos/moodLog.repo.ts';
-import { moodLogInsertSchema, moodLogUpdateSchema } from '@/schemas/mood_log.ts';
+import { moodLogCreateSchema, moodLogUpdateSchema } from '@/schemas/mood_log.ts';
 import { ScenarioService } from '@/services/scenarios.ts';
 import { serverError } from '@/utils/hono.ts';
 import { zValidator } from '@hono/zod-validator';
@@ -39,7 +39,7 @@ moodLog.get('/', async (c) => {
   return c.json(res);
 });
 
-moodLog.post('/', zValidator('json', moodLogInsertSchema), async (c) => {
+moodLog.post('/', zValidator('json', moodLogCreateSchema), async (c) => {
   const user = c.var.user;
 
   const mood_log_id = generateIdFromEntropySize(10);
