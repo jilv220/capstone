@@ -1,0 +1,7 @@
+// APIValidationSchemas.ts
+import * as Yup from 'yup';
+
+export const userSchema = Yup.object({
+  username: Yup.string().required(),
+  email: Yup.string().email().required(),
+});
