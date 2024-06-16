@@ -23,7 +23,7 @@ import { router } from 'expo-router';
 interface EditRecordProps {
   mood: string;
   digitTime: string;
-  moodReason: string;
+  scenarios: string;
   year: number;
   month: number;
   date: number;
@@ -33,7 +33,7 @@ interface EditRecordProps {
 const EditRecord: React.FC<EditRecordProps> = ({
   mood,
   digitTime,
-  moodReason,
+  scenarios,
   year,
   month,
   date,

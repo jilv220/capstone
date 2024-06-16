@@ -33,6 +33,7 @@ export default function HomeScreen() {
   }
 
   const moodTestData = data.map((log) => {
+    // console.log(log['scenario']);
     const logDate = new Date(log['log_date']);
     const minutes =
       logDate.getMinutes().toString().length === 1
@@ -43,7 +44,7 @@ export default function HomeScreen() {
     const moodData = {
       mood: log['mood'],
       digitTime: hour + ':' + minutes,
-      moodReason: 'wait for update',
+      scenarios: log['scenario'],
       date: logDate.getDate(),
       month: logDate.getMonth(),
       year: logDate.getFullYear(),
@@ -52,13 +53,9 @@ export default function HomeScreen() {
     return moodData;
   });
 
-  const handleDelete = (dataId: string) => {
-    const newData = moodTestData.filter((item) => item.id !== dataId);
-  };
-
   const handleEdit = (dataId: string) => {
-    const newData = moodTestData.find((item) => item.id === dataId);
-    if (newData != undefined) setEditData(newData);
+    // const newData = moodTestData.find((item) => item.id === dataId);
+    // if (newData != undefined) setEditData(newData);
   };
 
   return (
@@ -76,9 +73,8 @@ export default function HomeScreen() {
               date={moodData.date}
               month={moodData.month}
               digitTime={moodData.digitTime}
-              moodReason={moodData.moodReason}
+              scenarios={moodData.scenarios}
               setSheetOpen={setOpen}
-              onDelete={handleDelete}
               onEdit={handleEdit}
             />
           );
@@ -108,7 +104,7 @@ export default function HomeScreen() {
                   date={editData.date}
                   month={editData.month}
                   digitTime={editData.digitTime}
-                  moodReason={editData.moodReason}
+                  scenarios={editData.scenarios}
                   handlePreceding={() => {
                     setOpen(false);
                   }}

@@ -1,10 +1,14 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { Input, TextArea, YStack, Button } from 'tamagui';
-import { CheckCircle2 } from '@tamagui/lucide-icons';
+import Counter from '@/components/_TestForIvy/Counter';
 
 const stats = () => {
-  return <YStack></YStack>;
+  return (
+    <YStack>
+      <Counter></Counter>
+    </YStack>
+  );
 };
 
 export default stats;

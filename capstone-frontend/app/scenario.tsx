@@ -32,11 +32,6 @@ const ScenarioScreen: React.FC = () => {
     },
   });
 
-  // useEffect(() => {
-  //   console.log(scenarios);
-  //   console.log(note);
-  // }, [scenarios, note]);
-
   return (
     <View flex={1}>
       <ScrollView px={'$4'} pt={'$6'}>
@@ -55,7 +50,7 @@ const ScenarioScreen: React.FC = () => {
         </XStack>
 
         <YStack alignItems="center">
-          <SizableText fontWeight={'500'}>What have you been up to?</SizableText>
+          <SizableText fontWeight={'bold'}>What have you been up to?</SizableText>
         </YStack>
         <YStack>
           <ScenariosOptions onOptionClick={setScenarios} />
@@ -66,7 +61,7 @@ const ScenarioScreen: React.FC = () => {
         <YStack flex={1} ai={'center'}>
           <Button
             icon={Check}
-            backgroundColor={'$green9'}
+            backgroundColor={'yellowgreen'}
             color={'white'}
             size={50}
             circular

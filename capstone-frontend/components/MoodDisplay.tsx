@@ -36,29 +36,29 @@ import {
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMoodLog } from '@/actions/user';
+import { categories } from '@/interfaces/categories';
+import { Scenario, Scenarios } from '@/interfaces/scenario';
 
 interface MoodDisplayProps {
   mood: string;
   digitTime: string;
-  moodReason: string;
+  scenarios: Scenarios;
   year: number;
   month: number;
   date: number;
   id: string;
   setSheetOpen: (value: boolean) => void;
-  onDelete: (id: string) => void;
   onEdit: (id: string) => void;
 }
 const MoodDisplay: React.FC<MoodDisplayProps> = ({
   mood,
   digitTime,
-  moodReason,
+  scenarios,
   year,
   month,
   date,
   id,
   setSheetOpen,
-  onDelete,
   onEdit,
 }) => {
   const bgColors: { [key: string]: string } = {
@@ -95,6 +95,10 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
     },
   });
 
+  const getCategory = (category: Scenario) => {
+    const categoryData = categories.find((item) => item.key === category);
+    return categoryData;
+  };
   return (
     <ScrollView px={'$4'} py={'$4'} backgroundColor={'$white'}>
       <XStack elevation={2} backgroundColor={'$white3'} borderRadius={4}>
@@ -126,20 +130,27 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
               {digitTime}
             </SizableText>
           </XStack>
-          <XStack>
-            <XStack>
-              <Button
-                icon={Heart}
-                size={'$3'}
-                backgroundColor={'$white0'}
-                color={'yellowgreen'}
-              ></Button>
-            </XStack>
-            <XStack>
-              <SizableText color={'$gray10Light'} py={'$2'}>
-                {moodReason}
-              </SizableText>
-            </XStack>
+          <XStack flexWrap="wrap">
+            {scenarios.map((scenario: Scenario) => {
+              const category = getCategory(scenario);
+              return (
+                <XStack key={category?.key}>
+                  <YStack>
+                    <Button
+                      icon={category?.icon}
+                      size={'$3'}
+                      backgroundColor={'$white0'}
+                      color={'yellowgreen'}
+                    />
+                  </YStack>
+                  <YStack>
+                    <SizableText color={'$gray10Light'} py={'$2'} fontSize={'$1'}>
+                      {category?.text}
+                    </SizableText>
+                  </YStack>
+                </XStack>
+              );
+            })}
           </XStack>
         </YStack>
         <YStack flex={1}>
