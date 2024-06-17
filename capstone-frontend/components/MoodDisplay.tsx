@@ -48,6 +48,7 @@ interface MoodDisplayProps {
   month: number;
   date: number;
   id: string;
+  note: string;
   setSheetOpen: (value: boolean) => void;
   onEdit: (id: string) => void;
 }
@@ -59,6 +60,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
   month,
   date,
   id,
+  note,
   setSheetOpen,
   onEdit,
 }) => {
@@ -160,6 +162,13 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
               );
             })}
           </XStack>
+          {note && (
+            <XStack>
+              <SizableText color={'$black075'} py={'$2'} fontSize={'$1'}>
+                {note}
+              </SizableText>
+            </XStack>
+          )}
         </YStack>
         <YStack flex={1}>
           <Popover size={'$8'} allowFlip placement="bottom">

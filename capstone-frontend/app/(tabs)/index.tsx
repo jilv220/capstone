@@ -47,6 +47,7 @@ export default function HomeScreen() {
       date: logDate.getDate(),
       month: logDate.getMonth(),
       year: logDate.getFullYear(),
+      note: log.note,
       id: log['id'],
     };
 
@@ -81,6 +82,7 @@ export default function HomeScreen() {
               month={moodData.month}
               digitTime={moodData.digitTime}
               scenarios={moodData.scenarios}
+              note={moodData.note || ''}
               setSheetOpen={setOpen}
               onEdit={handleEdit}
             />

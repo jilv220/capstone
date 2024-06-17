@@ -13,12 +13,8 @@ import { createMoodLog } from '@/actions/user';
 const ScenarioScreen: React.FC = () => {
   const router = useRouter();
   const { moodInScenario, dateInScenario } = useLocalSearchParams();
-
-  console.log('params are:');
-  console.log(moodInScenario, dateInScenario);
-
   const [scenarios, setScenarios] = useState<Scenarios>([]);
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
   const createMutation = useMutation({
@@ -56,7 +52,7 @@ const ScenarioScreen: React.FC = () => {
           <ScenariosOptions onOptionClick={setScenarios} />
         </YStack>
         <YStack pb={'$3'}>
-          <QuickNote onChangeText={setNote} />
+          <QuickNote onChangeText={setNote} note={note || ''} />
         </YStack>
         <YStack flex={1} ai={'center'}>
           <Button
@@ -70,14 +66,14 @@ const ScenarioScreen: React.FC = () => {
                 log_date: dateInScenario as string,
                 mood: moodInScenario as Mood,
                 scenario: scenarios,
-                note,
+                note: note,
               };
               createMutation.mutate(newMoodLog);
             }}
           ></Button>
-          <SizableText size={'$1'} color={'$green9'}>
+          {/* <SizableText size={'$1'} color={'$green9'}>
             Save
-          </SizableText>
+          </SizableText> */}
         </YStack>
       </ScrollView>
     </View>

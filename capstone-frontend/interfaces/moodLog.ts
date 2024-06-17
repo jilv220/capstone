@@ -9,6 +9,7 @@ export interface LegacyMoodData {
   year: number;
   month: number;
   date: number;
+  note?:string;
   id: string;
 }
 

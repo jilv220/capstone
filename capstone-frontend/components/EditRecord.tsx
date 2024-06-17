@@ -52,6 +52,7 @@ const EditRecord: React.FC<EditRecordProps> = ({
   const [specificDate, setDate] = useState(new Date(log_date));
   const [emotion, setEmotion] = useState<'awful' | 'bad' | 'good' | 'meh' | 'rad'>(mood);
   const [modifiedScenario, setModifiedScenario] = useState<Scenarios>(scenario);
+  const [modifiedNote, setModifiedNote] = useState<string | null>(note || null);
   useEffect(() => {}, [emotion]);
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
@@ -148,7 +149,7 @@ const EditRecord: React.FC<EditRecordProps> = ({
         <ScenariosOptions onOptionClick={setModifiedScenario} currentScenarios={modifiedScenario} />
       </YStack>
       <YStack>
-        <QuickNote bgColor="$white0" onChangeText={() => {}} />
+        <QuickNote bgColor="$white0" onChangeText={setModifiedNote} note={note || ''} />
       </YStack>
       <YStack py={'$3'}>
         <Button
@@ -159,9 +160,10 @@ const EditRecord: React.FC<EditRecordProps> = ({
               id: id,
               mood: emotion,
               log_date: specificDate.toISOString(),
-              note,
+              note: modifiedNote,
               scenario: modifiedScenario,
             };
+            console.log(updatedMoodLog);
             updateMutation.mutate(updatedMoodLog);
             router.push('/');
             handlePreceding();
