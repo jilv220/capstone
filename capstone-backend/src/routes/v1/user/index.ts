@@ -2,6 +2,7 @@ import authMiddleware, { type AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import { Hono } from 'hono';
 
 import debug from 'debug';
+import moodLogStreak from './mood-log-streak.ts';
 import moodLog from './mood-log.ts';
 
 const user = new Hono<AuthMiddlewareEnv>().basePath('/user');
@@ -13,6 +14,7 @@ const Debug = debug('app:api:user');
  */
 user.use('*', authMiddleware);
 user.route('/', moodLog);
+user.route('/', moodLogStreak);
 
 user.get('/me', async (c) => {
   const user = c.var.user;
