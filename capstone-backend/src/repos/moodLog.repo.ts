@@ -1,6 +1,6 @@
 import { db } from '@/db/db.ts';
 import type { MoodLogCreate, MoodLogUpdate } from '@/interfaces/moodLog.ts';
-import type { Insertable, Updateable } from 'kysely';
+import { type Insertable, type Updateable, sql } from 'kysely';
 import type { MoodLog, MoodLogScenario } from 'kysely-codegen';
 
 async function findById(id: string) {
@@ -22,6 +22,34 @@ async function findScenariosById(id: string) {
     .innerJoin('scenario', 'scenario.id', 'mood_log_scenario.scenario_id')
     .select(['scenario.name'])
     .where('mood_log_id', '=', id)
+    .execute();
+}
+
+async function getStreak(userId: string) {
+  return await db
+    .with('days', (db) =>
+      db.selectNoFrom((eb) =>
+        eb
+          .fn<Date>('generate_series', [
+            sql`date_trunc('day', now()) - '90 day'::interval`,
+            sql`date_trunc('day', now())`,
+            sql`'1 day'::interval`,
+          ])
+          .as('day')
+      )
+    )
+    .selectFrom('days')
+    .leftJoin('mood_log', (eb) =>
+      eb
+        .onRef('days.day', '=', sql`date_trunc('day', mood_log.log_date)`)
+        .on('mood_log.user_id', '=', userId)
+    )
+    .select([
+      'days.day as log_date',
+      sql<boolean>`CASE WHEN count(mood_log.id) > 0 THEN true ELSE false END`.as('has_mood_log'),
+    ])
+    .groupBy('days.day')
+    .orderBy('days.day', 'desc')
     .execute();
 }
 
@@ -93,6 +121,7 @@ const MoodLogRepository = {
   findById,
   findByIdAndUserId,
   findScenariosById,
+  getStreak,
   deleteById,
   deleteByIdAndUserId,
   updateWithScenarios,
