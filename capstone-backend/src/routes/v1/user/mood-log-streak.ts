@@ -16,8 +16,8 @@ moodLogStreak.get('/', async (c) => {
     R.reduce((acc, st) => {
       return R.conditional(
         st,
-        [R.isTruthy, (st) => acc + 1],
-        R.conditional.defaultCase((st) => acc)
+        [R.isTruthy, () => acc + 1],
+        R.conditional.defaultCase(() => 0)
       );
     }, 0)
   );
