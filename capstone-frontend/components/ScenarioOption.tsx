@@ -10,6 +10,7 @@ interface ScenarioOption extends GetProps<LucideIcon> {
   bg?: string;
   IconSize?: string;
   scenario: Scenario;
+  scenarioIsExist?: boolean;
 }
 
 export default function ScenarioOption({
@@ -19,10 +20,10 @@ export default function ScenarioOption({
   Icon,
   IconSize,
   scenario,
+  scenarioIsExist,
 }: ScenarioOption) {
   const theme = useTheme();
-  const [isChosen, toggleChosen] = useState(false);
-
+  const [isChosen, toggleChosen] = useState(scenarioIsExist);
   return (
     <YStack alignItems="center" gap={'$2'}>
       <Button

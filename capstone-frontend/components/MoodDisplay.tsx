@@ -35,9 +35,10 @@ import {
 } from '@tamagui/lucide-icons';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteMoodLog } from '@/actions/user';
+import { deleteMoodLog, updateMoodLog } from '@/actions/user';
 import { categories } from '@/interfaces/categories';
 import { Scenario, Scenarios } from '@/interfaces/scenario';
+import { MoodLogUpdate } from '@/interfaces/moodLog';
 
 interface MoodDisplayProps {
   mood: string;
@@ -95,12 +96,19 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: updateMoodLog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mood-log'] });
+    },
+  });
+
   const getCategory = (category: Scenario) => {
     const categoryData = categories.find((item) => item.key === category);
     return categoryData;
   };
   return (
-    <ScrollView px={'$4'} py={'$4'} backgroundColor={'$white'}>
+    <YStack px={'$4'} py={'$4'} backgroundColor={'$white'}>
       <XStack elevation={2} backgroundColor={'$white3'} borderRadius={4}>
         <YStack flex={1}>
           <Card size={'$4'} backgroundColor={'$white3'} padded>
@@ -195,6 +203,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                     justifyContent="flex-start"
                     onPress={() => {
                       setSheetOpen(true);
+                      // console.log('id', id);
                       onEdit(id);
                     }}
                   >
@@ -233,7 +242,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           </Popover>
         </YStack>
       </XStack>
-    </ScrollView>
+    </YStack>
   );
 };
 

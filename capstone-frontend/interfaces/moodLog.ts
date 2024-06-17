@@ -5,7 +5,7 @@ export type Mood = 'awful' | 'bad' | 'good' | 'meh' | 'rad';
 export interface LegacyMoodData {
   mood: string;
   digitTime: string;
-  scenarios: string;
+  scenarios: Scenarios;
   year: number;
   month: number;
   date: number;
@@ -29,6 +29,7 @@ export interface MoodLogCreate {
 }
 
 export interface MoodLogUpdate {
+  id:string;
   log_date?: string;
   mood?: Mood;
   note?: string | null;
