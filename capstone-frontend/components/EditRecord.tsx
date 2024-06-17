@@ -23,6 +23,8 @@ import { router } from 'expo-router';
 import { Scenarios } from '@/interfaces/scenario';
 import { Mood } from '@/interfaces/moodLog';
 import { LucideIcon } from '@/interfaces/base';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateMoodLog } from '@/actions/user';
 interface EditRecordProps {
   id: string;
   log_date: string;
@@ -51,6 +53,17 @@ const EditRecord: React.FC<EditRecordProps> = ({
   const [emotion, setEmotion] = useState<'awful' | 'bad' | 'good' | 'meh' | 'rad'>(mood);
   const [modifiedScenario, setModifiedScenario] = useState<Scenarios>(scenario);
   useEffect(() => {}, [emotion]);
+  const queryClient = useQueryClient();
+  const updateMutation = useMutation({
+    mutationFn: updateMoodLog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mood-log'] });
+      router.push('/');
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
 
   const emotionConfig: EmotionConfig[] = [
     {
@@ -142,8 +155,16 @@ const EditRecord: React.FC<EditRecordProps> = ({
           backgroundColor={'$white0'}
           icon={<ArrowRightCircle size={'$3'} color={'yellowgreen'} />}
           onPress={() => {
-            // console.log('scenario', modifiedScenario);
-            // handlePreceding();
+            const updatedMoodLog = {
+              id: id,
+              mood: emotion,
+              log_date: specificDate.toISOString(),
+              note,
+              scenario: modifiedScenario,
+            };
+            updateMutation.mutate(updatedMoodLog);
+            router.push('/');
+            handlePreceding();
           }}
         ></Button>
       </YStack>
