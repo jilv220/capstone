@@ -31,7 +31,7 @@ async function getStreak(userId: string) {
       db.selectNoFrom((eb) =>
         eb
           .fn<Date>('generate_series', [
-            sql`date_trunc('day', now()) - '90 day'::interval`,
+            sql`date_trunc('day', now()) - '365 day'::interval`,
             sql`date_trunc('day', now())`,
             sql`'1 day'::interval`,
           ])

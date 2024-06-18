@@ -10,19 +10,33 @@ moodLogStreak.get('/', async (c) => {
   const user = c.var.user;
   const streak = await MoodLogRepository.getStreak(user.id);
 
+  let counter = 0;
   const res = R.pipe(
     streak,
     R.map(R.prop('has_mood_log')),
-    R.reduce((acc, st) => {
+    R.reduce((arr: number[], hasMoodLog) => {
       return R.conditional(
-        st,
-        [R.isTruthy, () => acc + 1],
-        R.conditional.defaultCase(() => 0)
+        hasMoodLog,
+        [
+          R.isTruthy,
+          () => {
+            counter += 1;
+            return arr;
+          },
+        ],
+        R.conditional.defaultCase(() => {
+          const nextGroup = counter === 0 ? arr : R.concat(arr, [counter]);
+          counter = 0;
+          return nextGroup;
+        })
       );
-    }, 0)
+    }, [])
   );
 
-  return c.json(res);
+  return c.json({
+    current: R.first(res),
+    longest: R.firstBy(res, [R.identity(), 'desc']),
+  });
 });
 
 export default moodLogStreak;
