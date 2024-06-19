@@ -25,7 +25,7 @@ export default function ScenarioOption({
   const theme = useTheme();
   const [isChosen, toggleChosen] = useState(scenarioIsExist);
   return (
-    <YStack alignItems="center" gap={'$2'}>
+    <YStack alignItems="center" gap={'$1.5'}>
       <Button
         size={'$4'}
         bg={isChosen ? 'yellowgreen' : '$color0'}

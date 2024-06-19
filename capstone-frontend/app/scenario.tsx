@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { Scenarios } from '@/interfaces/scenario';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createMoodLog } from '@/actions/user';
+import BackButton from '@/components/navigation/BackButton';
 
 const ScenarioScreen: React.FC = () => {
   const router = useRouter();
@@ -30,21 +31,8 @@ const ScenarioScreen: React.FC = () => {
 
   return (
     <View flex={1}>
-      <ScrollView px={'$4'} pt={'$6'}>
-        <XStack flex={1} justifyContent="space-between">
-          <YStack>
-            <Button
-              icon={<ChevronLeft size={'$2'} color={'$grey'} />}
-              onPress={() => {
-                router.back();
-              }}
-            ></Button>
-          </YStack>
-          <YStack>
-            <Button icon={<ChevronRight size={'$2'} color={'$grey'} />}></Button>
-          </YStack>
-        </XStack>
-
+      <ScrollView px={'$4'} pt={'$10'}>
+        <BackButton />
         <YStack alignItems="center">
           <SizableText fontWeight={'bold'}>What have you been up to?</SizableText>
         </YStack>
@@ -71,9 +59,6 @@ const ScenarioScreen: React.FC = () => {
               createMutation.mutate(newMoodLog);
             }}
           ></Button>
-          {/* <SizableText size={'$1'} color={'$green9'}>
-            Save
-          </SizableText> */}
         </YStack>
       </ScrollView>
     </View>

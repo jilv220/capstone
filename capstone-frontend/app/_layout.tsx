@@ -45,6 +45,7 @@ export default function RootLayout() {
                 <Stack.Screen name="sign-in" options={{ headerShown: false }} />
                 <Stack.Screen name="scenario" options={{ headerShown: false }} />
                 <Stack.Screen name="resources" options={{ headerShown: false }} />
+                <Stack.Screen name="fullnote" options={{ headerShown: false }} />
                 <Stack.Screen name="+not-found" />
               </Stack>
             </QueryClientProvider>

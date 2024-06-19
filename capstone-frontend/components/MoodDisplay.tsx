@@ -39,6 +39,7 @@ import { deleteMoodLog, updateMoodLog } from '@/actions/user';
 import { categories } from '@/interfaces/categories';
 import { Scenario, Scenarios } from '@/interfaces/scenario';
 import { MoodLogUpdate } from '@/interfaces/moodLog';
+import { router } from 'expo-router';
 
 interface MoodDisplayProps {
   mood: string;
@@ -212,7 +213,6 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                     justifyContent="flex-start"
                     onPress={() => {
                       setSheetOpen(true);
-                      // console.log('id', id);
                       onEdit(id);
                     }}
                   >
@@ -227,7 +227,13 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                     borderRadius={0}
                     borderBottomColor={'$gray10Light'}
                     justifyContent="flex-start"
-                    onPress={() => {}}
+                    onPress={() => {
+                      console.log('note', note);
+                      router.push({
+                        pathname: '/fullnote',
+                        params: { note: note, id: id },
+                      });
+                    }}
                   >
                     <SizableText fontSize={'$5'}>Add Note</SizableText>
                   </Button>

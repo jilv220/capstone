@@ -95,82 +95,87 @@ const EditRecord: React.FC<EditRecordProps> = ({
   ];
 
   return (
-    <YStack backgroundColor={'white'} flex={1}>
-      <Button
-        size={'$5'}
-        backgroundColor={'$white0'}
-        icon={<Calendar size={'$1'} />}
-        color={'yellowgreen'}
-        onPress={() => {
-          setDatePickerOpen(true);
-        }}
-      >
-        <SizableText color={'green'} size={'$4'} fontWeight={100} textDecorationLine="underline">
-          {specificDate.toDateString() + ' at ' + specificDate.toLocaleTimeString()}
-        </SizableText>
-      </Button>
-
-      <DatePicker
-        modal
-        mode="datetime"
-        open={datePickerOpen}
-        date={specificDate}
-        onConfirm={(date) => {
-          setDatePickerOpen(false);
-          setDate(date);
-        }}
-        onCancel={() => {
-          setDatePickerOpen(false);
-        }}
-      />
-      <XStack
-        px={'$3'}
-        justifyContent="space-between"
-        py={'$3'}
-        borderBlockColor={'grey'}
-        borderBottomWidth={'$0.5'}
-      >
-        {emotionConfig.map((eConfig, index) => {
-          return (
-            <MoodPickerOption
-              key={index}
-              bg={(eConfig.mood === emotion && eConfig.bg) || 'grey'}
-              Icon={eConfig.Icon}
-              onPressHandler={() => {
-                setEmotion(eConfig.mood);
-              }}
-            >
-              {eConfig.mood}
-            </MoodPickerOption>
-          );
-        })}
-      </XStack>
-      <YStack>
-        <ScenariosOptions onOptionClick={setModifiedScenario} currentScenarios={modifiedScenario} />
-      </YStack>
-      <YStack>
-        <QuickNote bgColor="$white0" onChangeText={setModifiedNote} note={note || ''} />
-      </YStack>
-      <YStack py={'$3'}>
+    <ScrollView>
+      <YStack backgroundColor={'white'} flex={1}>
         <Button
+          size={'$5'}
           backgroundColor={'$white0'}
-          icon={<ArrowRightCircle size={'$3'} color={'yellowgreen'} />}
+          icon={<Calendar size={'$1'} />}
+          color={'yellowgreen'}
           onPress={() => {
-            const updatedMoodLog = {
-              id: id,
-              mood: emotion,
-              log_date: specificDate.toISOString(),
-              note: modifiedNote,
-              scenario: modifiedScenario,
-            };
-            console.log(updatedMoodLog);
-            updateMutation.mutate(updatedMoodLog);
-            router.push('/');
-            handlePreceding();
+            setDatePickerOpen(true);
           }}
-        ></Button>
+        >
+          <SizableText color={'green'} size={'$4'} fontWeight={100} textDecorationLine="underline">
+            {specificDate.toDateString() + ' at ' + specificDate.toLocaleTimeString()}
+          </SizableText>
+        </Button>
+
+        <DatePicker
+          modal
+          mode="datetime"
+          open={datePickerOpen}
+          date={specificDate}
+          onConfirm={(date) => {
+            setDatePickerOpen(false);
+            setDate(date);
+          }}
+          onCancel={() => {
+            setDatePickerOpen(false);
+          }}
+        />
+        <XStack
+          px={'$3'}
+          justifyContent="space-between"
+          py={'$3'}
+          borderBlockColor={'grey'}
+          borderBottomWidth={'$0.5'}
+        >
+          {emotionConfig.map((eConfig, index) => {
+            return (
+              <MoodPickerOption
+                key={index}
+                bg={(eConfig.mood === emotion && eConfig.bg) || 'grey'}
+                Icon={eConfig.Icon}
+                onPressHandler={() => {
+                  setEmotion(eConfig.mood);
+                }}
+              >
+                {eConfig.mood}
+              </MoodPickerOption>
+            );
+          })}
+        </XStack>
+        <YStack>
+          <ScenariosOptions
+            onOptionClick={setModifiedScenario}
+            currentScenarios={modifiedScenario}
+          />
+        </YStack>
+        <YStack>
+          <QuickNote bgColor="$white0" onChangeText={setModifiedNote} note={note} />
+        </YStack>
+        <YStack py={'$3'}>
+          <Button
+            backgroundColor={'$white0'}
+            icon={<ArrowRightCircle size={'$3'} color={'yellowgreen'} />}
+            onPress={() => {
+              const updatedMoodLog = {
+                id: id,
+                mood: emotion,
+                log_date: specificDate.toISOString(),
+                note: modifiedNote,
+                scenario: modifiedScenario,
+              };
+              console.log(updatedMoodLog);
+              updateMutation.mutate(updatedMoodLog);
+              router.push('/');
+              handlePreceding();
+            }}
+          ></Button>
+        </YStack>
       </YStack>
-    </YStack>
+    </ScrollView>
   );
 };
 
