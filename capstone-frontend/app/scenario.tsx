@@ -54,7 +54,7 @@ const ScenarioScreen: React.FC = () => {
                 log_date: dateInScenario as string,
                 mood: moodInScenario as Mood,
                 scenario: scenarios,
-                note: note,
+                note: note || undefined,
               };
               createMutation.mutate(newMoodLog);
             }}

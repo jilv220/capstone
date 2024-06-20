@@ -99,13 +99,6 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: updateMoodLog,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['mood-log'] });
-    },
-  });
-
   const getCategory = (category: Scenario) => {
     const categoryData = categories.find((item) => item.key === category);
     return categoryData;
@@ -141,21 +134,21 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
               {digitTime}
             </SizableText>
           </XStack>
-          <XStack flexWrap="wrap">
+          <XStack flexWrap="wrap" mt={'$2'}>
             {scenarios.map((scenario: Scenario) => {
               const category = getCategory(scenario);
               return (
-                <XStack key={category?.key}>
+                <XStack key={category?.key} ai={'center'}>
                   <YStack>
                     <Button
                       icon={category?.icon}
-                      size={'$3'}
+                      size={'$2'}
                       backgroundColor={'$white0'}
                       color={'yellowgreen'}
                     />
                   </YStack>
                   <YStack>
-                    <SizableText color={'$gray10Light'} py={'$2'} fontSize={'$1'}>
+                    <SizableText color={'$gray10Light'} fontSize={'$1'}>
                       {category?.text}
                     </SizableText>
                   </YStack>
@@ -165,7 +158,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           </XStack>
           {note && (
             <XStack>
-              <SizableText color={'$black075'} py={'$2'} fontSize={'$1'}>
+              <SizableText color={'$black075'} px={'$2'} py={'$2'} fontSize={'$1'}>
                 {note}
               </SizableText>
             </XStack>
@@ -235,7 +228,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                       });
                     }}
                   >
-                    <SizableText fontSize={'$5'}>Add Note</SizableText>
+                    <SizableText fontSize={'$5'}>{note ? 'Edit Note' : 'Add Note'}</SizableText>
                   </Button>
                 </Popover.Close>
 

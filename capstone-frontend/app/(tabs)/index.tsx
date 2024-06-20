@@ -54,7 +54,8 @@ export default function HomeScreen() {
     return legacyData;
   };
 
-  const moodTestData = data.map((log) => {
+  const sortedData = data.sort((a, b) => (a.log_date < b.log_date ? 1 : -1));
+  const moodTestData = sortedData.map((log) => {
     return convertDataToLegacyData(log);
   });
 
@@ -89,18 +90,19 @@ export default function HomeScreen() {
           );
         })}
         <Sheet
-          forceRemoveScrollEnabled={open}
           open={open}
           onOpenChange={() => {
             setOpen(false);
             setEditKey(Date.now());
           }}
-          dismissOnSnapToBottom
           position={position}
           onPositionChange={setPosition}
           zIndex={100_000}
           snapPoints={[96, 100]}
           animation="medium"
+          modal
+          dismissOnSnapToBottom
+          forceRemoveScrollEnabled
         >
           <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
 
