@@ -4,7 +4,7 @@ import { scenarioResponseSchema } from './scenario.ts';
 export const moodLogCreateSchema = z.object({
   log_date: z.string().datetime(),
   mood: z.enum(['awful', 'bad', 'good', 'meh', 'rad']),
-  note: z.string().optional(),
+  note: z.string().nullable(),
   scenario: scenarioResponseSchema,
 });
 
