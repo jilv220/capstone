@@ -1,48 +1,29 @@
-import { View, Text } from 'react-native';
 import React from 'react';
 import MoodPickerOption from '@/components/MoodPickerOption';
 
+import { Button, Card, Popover, SizableText, XStack, YStack } from 'tamagui';
 import {
-  Avatar,
-  Button,
-  Card,
-  Circle,
-  Label,
-  Popover,
-  ScrollView,
-  Sheet,
-  SizableText,
-  XStack,
-  YStack,
-} from 'tamagui';
-import {
-  Calendar,
-  X,
-  Music4,
-  Heart,
   PlusCircle,
   Edit3,
   Trash2,
   NotebookPen,
-  ChevronDown,
   Laugh,
   Smile,
   Meh,
-  Annoyed,
   Angry,
   AlertCircle,
   Frown,
 } from '@tamagui/lucide-icons';
-import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteMoodLog, updateMoodLog } from '@/actions/user';
+import { deleteMoodLog } from '@/actions/user';
 import { categories } from '@/interfaces/categories';
 import { Scenario, Scenarios } from '@/interfaces/scenario';
-import { MoodLogUpdate } from '@/interfaces/moodLog';
+import { Mood } from '@/interfaces/moodLog';
 import { router } from 'expo-router';
+import { moodToBgColor, moodToIcon } from '@/lib/mood';
 
 interface MoodDisplayProps {
-  mood: string;
+  mood: Mood;
   digitTime: string;
   scenarios: Scenarios;
   year: number;
@@ -65,33 +46,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
   setSheetOpen,
   onEdit,
 }) => {
-  const bgColors: { [key: string]: string } = {
-    rad: '$green9Light',
-    good: 'limegreen',
-    meh: '$yellow9Dark',
-    bad: 'orange',
-    awful: 'red',
-  };
-
-  const returnIcon = (mood: string) => {
-    switch (mood) {
-      case 'rad':
-        return Laugh;
-      case 'good':
-        return Smile;
-      case 'meh':
-        return Meh;
-      case 'bad':
-        return Frown;
-      case 'awful':
-        return Angry;
-      default:
-        return AlertCircle;
-    }
-  };
-
   const queryClient = useQueryClient();
-
   const deleteMutation = useMutation({
     mutationFn: deleteMoodLog,
     onSuccess: () => {
@@ -109,7 +64,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
         <YStack flex={1}>
           <Card size={'$4'} backgroundColor={'$white3'} padded>
             <Card.Header padded alignSelf="center" pb={'$1'}></Card.Header>
-            <MoodPickerOption Icon={returnIcon(mood)} bg={bgColors[mood]}>
+            <MoodPickerOption Icon={moodToIcon(mood)} bg={moodToBgColor(mood)}>
               {mood}
             </MoodPickerOption>
           </Card>

@@ -1,20 +1,13 @@
-import { View, Text } from 'react-native';
 import React, { useEffect } from 'react';
-import MoodPickerOption from '@/components/MoodPickerOption';
-import { Avatar, Button, Card, Circle, ScrollView, SizableText, XStack, YStack } from 'tamagui';
-import {
-  Calendar,
-  Laugh,
-  Meh,
-  Smile,
-  Annoyed,
-  Angry,
-  Frown,
-  ArrowRightCircle,
-} from '@tamagui/lucide-icons';
+import { Button, Card, ScrollView, SizableText, XStack } from 'tamagui';
+import { Calendar, ArrowRightCircle } from '@tamagui/lucide-icons';
 import { useState } from 'react';
+import { router } from 'expo-router';
+import { buildMoodOptions } from '@/lib/mood';
+
+import MoodPickerOption from '@/components/MoodPickerOption';
 import DatePicker from 'react-native-date-picker';
-import { router, useNavigation } from 'expo-router';
+
 interface MoodSelectProps {
   handleClose: () => void;
 }
@@ -22,33 +15,7 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
   const [date, setDate] = useState(new Date());
   const [mood, setMood] = useState('rad');
   const [open, setOpen] = useState(false);
-  const moodOptions = [
-    {
-      mood: 'rad',
-      bg: '$green9Light',
-      Icon: Laugh,
-    },
-    {
-      mood: 'good',
-      bg: 'limegreen',
-      Icon: Smile,
-    },
-    {
-      mood: 'meh',
-      bg: '$yellow9Dark',
-      Icon: Meh,
-    },
-    {
-      mood: 'bad',
-      bg: 'orange',
-      Icon: Frown,
-    },
-    {
-      mood: 'awful',
-      bg: 'red',
-      Icon: Angry,
-    },
-  ];
+  const moodOptions = buildMoodOptions();
 
   const onMoodSelect = (mood: string) => {
     setMood(mood);
@@ -94,7 +61,7 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
               <MoodPickerOption
                 key={index}
                 bg={(option.mood === mood && option.bg) || 'grey'}
-                Icon={option.Icon}
+                Icon={option.icon}
                 onPressHandler={() => {
                   onMoodSelectHandler(option.mood);
                 }}

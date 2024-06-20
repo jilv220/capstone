@@ -98,7 +98,7 @@ export default function HomeScreen() {
           position={position}
           onPositionChange={setPosition}
           zIndex={100_000}
-          snapPoints={[96, 100]}
+          snapPoints={[92, 100]}
           animation="medium"
           modal
           dismissOnSnapToBottom
