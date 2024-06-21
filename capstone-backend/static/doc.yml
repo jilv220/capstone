@@ -127,7 +127,7 @@ paths:
           description: Mood log not found.
       tags:
         - Mood Log
-  /api/v1/user/mood-log-streak:
+  /api/v1/user/mood-log/streak:
     get:
       summary: Get user's mood log streak (Tracking 1 year)
       security:
