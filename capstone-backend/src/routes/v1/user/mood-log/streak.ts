@@ -4,9 +4,9 @@ import { Hono } from 'hono';
 
 import * as R from 'remeda';
 
-const moodLogStreak = new Hono<AuthMiddlewareEnv>().basePath('/mood-log-streak');
+const streak = new Hono<AuthMiddlewareEnv>().basePath('/streak');
 
-moodLogStreak.get('/', async (c) => {
+streak.get('/', async (c) => {
   const user = c.var.user;
   const streak = await MoodLogRepository.getStreak(user.id);
 
@@ -39,4 +39,4 @@ moodLogStreak.get('/', async (c) => {
   });
 });
 
-export default moodLogStreak;
+export default streak;
