@@ -4,15 +4,29 @@ import { SizableText, YStack, Text, Card, XStack, ZStack, Circle } from 'tamagui
 import HalfPieChart from './ui/HalfPieChart';
 import MoodPickerOption from './MoodPickerOption';
 import MoodCounterBadge from './MoodCounterBadge';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getMoodCount } from '@/actions/moodLog';
 
 export default function MoodCounter() {
+  const {
+    data: moodCount,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ['mood-log', 'count'],
+    queryFn: getMoodCount,
+  });
+
+  if (isPending) return <Text>loading...</Text>;
+  if (isError) return <Text>Error fetching mood count data</Text>;
+
   const moodOptions = buildMoodOptions();
   const data = [
-    { value: 5, color: moodToBgColor('rad', false) },
-    { value: 4, color: moodToBgColor('good', false) },
-    { value: 3, color: moodToBgColor('meh', false) },
-    { value: 2, color: moodToBgColor('bad', false) },
-    { value: 1, color: moodToBgColor('awful', false) },
+    { value: moodCount.rad, color: moodToBgColor('rad', false) },
+    { value: moodCount.good, color: moodToBgColor('good', false) },
+    { value: moodCount.meh, color: moodToBgColor('meh', false) },
+    { value: moodCount.bad, color: moodToBgColor('bad', false) },
+    { value: moodCount.awful, color: moodToBgColor('awful', false) },
   ];
 
   const moodOptionsWithData = moodOptions.map((moodOption, index) => {
@@ -23,16 +37,8 @@ export default function MoodCounter() {
   });
 
   return (
-    <Card
-      elevate
-      elevation={2}
-      size={'$4'}
-      backgroundColor={'$white3'}
-      borderRadius={4}
-      padded
-      mx={'$4'}
-    >
-      <SizableText size={'$8'} fontWeight={'bold'} pb={'$2'}>
+    <Card elevate elevation={2} size={'$4'} borderRadius={4} padded mx={'$4'}>
+      <SizableText size={'$8'} fontWeight={'bold'} pb={'$3'}>
         Mood Count
       </SizableText>
       <HalfPieChart pb={'$4'} data={data} />

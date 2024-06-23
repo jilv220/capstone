@@ -36,3 +36,7 @@ export interface MoodLogUpdate {
   note?: string | null;
   scenario?: Scenarios;
 }
+
+export type MoodCount = {
+  [key in Mood]: number 
+}
