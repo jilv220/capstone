@@ -102,6 +102,19 @@ async function getMoodCountByMonth(userId: string, prev?: number, next?: number)
   return await query.groupBy('mood').execute();
 }
 
+async function getMoodByMonth(userId: string, prev?: number, next?: number) {
+  return await db
+    .selectFrom('mood_log')
+    .select((eb) => ['mood', eb.fn<Date>('date_trunc', [eb.val('day'), 'log_date']).as('log_date')])
+    .where('user_id', '=', userId)
+    .where((eb) => {
+      const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
+      const current_month = eb.fn<Date>('date_trunc', [eb.val('month'), sql`now()`]);
+      return eb(log_month, '=', current_month);
+    })
+    .execute();
+}
+
 async function deleteById(id: string) {
   return await db.deleteFrom('mood_log').where('id', '=', id).executeTakeFirst();
 }
@@ -171,6 +184,7 @@ const MoodLogRepository = {
   findByIdAndUserId,
   findScenariosById,
   getStreak,
+  getMoodByMonth,
   getMoodCountByMonth,
   deleteById,
   deleteByIdAndUserId,
