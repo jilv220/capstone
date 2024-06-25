@@ -11,12 +11,14 @@ import type { MoodLogScenario } from 'kysely-codegen';
 import { generateIdFromEntropySize } from 'lucia';
 
 import * as R from 'remeda';
+import avg from './avg.ts';
 import count from './count.ts';
 import streak from './streak.ts';
 
 const moodLog = new Hono<AuthMiddlewareEnv>().basePath('/mood-log');
 moodLog.route('/', count);
 moodLog.route('/', streak);
+moodLog.route('/', avg);
 
 moodLog.get('/', async (c) => {
   const user = c.var.user;
