@@ -13,7 +13,7 @@ export default function MoodCounter() {
     isPending,
     isError,
   } = useQuery({
-    queryKey: ['mood-log', 'count'],
+    queryKey: ['mood-log', 'mood-count'],
     queryFn: getMoodCount,
   });
 
