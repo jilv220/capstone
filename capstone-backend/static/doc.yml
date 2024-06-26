@@ -145,7 +145,66 @@ paths:
                   longest: 
                     type: number
       tags:
-       - Mood Log
+       - Mood Log Metrics
+  /api/v1/user/mood-log/mood-avg:
+    get:
+      summary: Get a series of user's daily average mood score (Default to current month)
+      security:
+      - bearerAuth: []
+      parameters:
+        - in: query
+          name: prev
+          schema:
+            type: integer
+          description: previous n month
+      responses:
+        '200':
+          description: A JSON object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    log_date:
+                      type: string
+                      format: date-time
+                    avg_score:
+                      type: number
+      tags:
+       - Mood Log Metrics
+  /api/v1/user/mood-log/mood-count:
+    get:
+      summary: Get categorized mood count (Default to current month)
+      security:
+      - bearerAuth: []
+      parameters:
+        - in: query
+          name: prev
+          schema:
+            type: integer
+          description: previous n month
+      responses:
+        '200':
+          description: A JSON object
+          content:
+            application/json:
+              schema:
+                type: object 
+                properties:
+                  rad:
+                    type: number 
+                  good:
+                    type: number 
+                  meh:
+                    type: number 
+                  bad:
+                    type: number 
+                  awful:
+                    type: number 
+      tags:
+       - Mood Log Metrics
 components:
   securitySchemes:
     bearerAuth:
