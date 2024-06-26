@@ -54,22 +54,11 @@ async function getStreak(userId: string) {
     .execute();
 }
 
-/**
- * Can throw ```NotValidMonthError``` if both prev and next passed
- * @param userId
- * @param prev
- * @param next
- * @returns
- */
-async function getMoodCountByMonth(userId: string, prev?: number, next?: number) {
+async function getMoodCountByMonth(userId: string, prev?: number) {
   let query = db
     .selectFrom('mood_log')
     .select((eb) => ['mood', eb.fn<string>('count', ['mood']).as('mood_count')])
     .where('user_id', '=', userId);
-
-  if (prev && next) {
-    throw new NotValidMonthError(`param 'prev' and 'next' cannot present at the same time`);
-  }
 
   if (prev) {
     const prevNMonth = sql.lit(`${prev} month`);
@@ -81,32 +70,42 @@ async function getMoodCountByMonth(userId: string, prev?: number, next?: number)
       ]);
       return eb(log_month, '=', past_month);
     });
-  } else if (next) {
-    const nextNMonth = sql.lit(`${next} month`);
-    query = query.where((eb) => {
-      const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
-      const future_month = eb.fn<Date>('date_trunc', [
-        eb.val('month'),
-        sql`now() + interval ${nextNMonth}`,
-      ]);
-      return eb(log_month, '=', future_month);
-    });
-  } else {
-    query = query.where((eb) => {
+
+    return await query.groupBy('mood').execute();
+  }
+
+  return await query
+    .where((eb) => {
       const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
       const current_month = eb.fn<Date>('date_trunc', [eb.val('month'), sql`now()`]);
       return eb(log_month, '=', current_month);
-    });
-  }
-
-  return await query.groupBy('mood').execute();
+    })
+    .groupBy('mood')
+    .execute();
 }
 
-async function getMoodByMonth(userId: string, prev?: number, next?: number) {
-  return await db
+async function getMoodByMonth(userId: string, prev?: number) {
+  let query = db
     .selectFrom('mood_log')
     .select((eb) => ['mood', eb.fn<Date>('date_trunc', [eb.val('day'), 'log_date']).as('log_date')])
-    .where('user_id', '=', userId)
+    .where('user_id', '=', userId);
+
+  // Only prev is possible...
+  if (prev) {
+    const prevNMonth = sql.lit(`${prev} month`);
+    query = query.where((eb) => {
+      const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
+      const past_month = eb.fn<Date>('date_trunc', [
+        eb.val('month'),
+        sql`now() - interval ${prevNMonth}`,
+      ]);
+      return eb(log_month, '=', past_month);
+    });
+
+    return await query.execute();
+  }
+
+  return await query
     .where((eb) => {
       const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
       const current_month = eb.fn<Date>('date_trunc', [eb.val('month'), sql`now()`]);

@@ -1,20 +1,19 @@
 import type { AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import { MoodLogRepository } from '@/repos/moodLog.repo.ts';
-import { moodLogCountQuerySchema } from '@/schemas/mood_log.ts';
+import { moodAvgQuerySchema } from '@/schemas/mood_log.ts';
 import { moodToScore } from '@/utils/moodlog.ts';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 
 import * as R from 'remeda';
 
-const avg = new Hono<AuthMiddlewareEnv>().basePath('/avg');
+const avg = new Hono<AuthMiddlewareEnv>().basePath('/mood-avg');
 
-avg.get('/', zValidator('query', moodLogCountQuerySchema), async (c) => {
+avg.get('/', zValidator('query', moodAvgQuerySchema), async (c) => {
   const user = c.var.user;
   const prev = c.req.valid('query').prev;
-  const next = c.req.valid('query').next;
 
-  const moods = await MoodLogRepository.getMoodByMonth(user.id, prev, next);
+  const moods = await MoodLogRepository.getMoodByMonth(user.id, prev);
   const moodScores = R.pipe(
     moods,
     R.map(({ log_date, mood }) => {

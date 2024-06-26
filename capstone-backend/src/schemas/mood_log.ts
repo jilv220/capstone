@@ -10,8 +10,9 @@ export const moodLogCreateSchema = z.object({
 
 export const moodLogCountQuerySchema = z.object({
   prev: z.coerce.number().positive().optional(),
-  next: z.coerce.number().positive().optional(),
 });
+
+export const moodAvgQuerySchema = moodLogCountQuerySchema;
 
 export const moodLogUpdateSchema = moodLogCreateSchema.partial();
 type t2 = z.infer<typeof moodLogUpdateSchema>;
