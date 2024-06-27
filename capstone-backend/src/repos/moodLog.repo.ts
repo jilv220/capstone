@@ -2,10 +2,14 @@ import { db } from '@/db/db.ts';
 import { NotValidMonthError } from '@/interfaces/base.ts';
 import type { MoodLogCreate, MoodLogUpdate } from '@/interfaces/moodLog.ts';
 import { type Insertable, type Updateable, sql } from 'kysely';
-import type { MoodLog, MoodLogScenario } from 'kysely-codegen';
+import type { Category, MoodLog, MoodLogScenario, Scenario } from 'kysely-codegen';
 
 async function findById(id: string) {
   return await db.selectFrom('mood_log').selectAll().where('id', '=', id).executeTakeFirst();
+}
+
+async function findByUserId(userId: string) {
+  return await db.selectFrom('mood_log').selectAll().where('user_id', '=', userId).execute();
 }
 
 async function findByIdAndUserId(id: string, userId: string) {
@@ -17,12 +21,20 @@ async function findByIdAndUserId(id: string, userId: string) {
     .executeTakeFirst();
 }
 
-async function findScenariosById(id: string) {
+async function findScenarioByName(name: Category) {
+  return await db
+    .selectFrom('scenario')
+    .select('id')
+    .where('name', '=', name)
+    .executeTakeFirstOrThrow();
+}
+
+async function findScenariosByMoodLogId(moodLogId: string) {
   return await db
     .selectFrom('mood_log_scenario')
     .innerJoin('scenario', 'scenario.id', 'mood_log_scenario.scenario_id')
     .select(['scenario.name'])
-    .where('mood_log_id', '=', id)
+    .where('mood_log_id', '=', moodLogId)
     .execute();
 }
 
@@ -180,8 +192,10 @@ async function updateWithScenarios(
 
 const MoodLogRepository = {
   findById,
+  findByUserId,
   findByIdAndUserId,
-  findScenariosById,
+  findScenarioByName,
+  findScenariosByMoodLogId,
   getStreak,
   getMoodByMonth,
   getMoodCountByMonth,

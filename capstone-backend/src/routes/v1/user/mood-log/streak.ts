@@ -1,5 +1,6 @@
 import type { AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import { MoodLogRepository } from '@/repos/moodLog.repo.ts';
+import { MoodLogService } from '@/services/moodLog.ts';
 import { Hono } from 'hono';
 
 import * as R from 'remeda';
@@ -8,35 +9,8 @@ const streak = new Hono<AuthMiddlewareEnv>().basePath('/streak');
 
 streak.get('/', async (c) => {
   const user = c.var.user;
-  const streak = await MoodLogRepository.getStreak(user.id);
-
-  let counter = 0;
-  const res = R.pipe(
-    streak,
-    R.map(R.prop('has_mood_log')),
-    R.reduce((arr: number[], hasMoodLog) => {
-      return R.conditional(
-        hasMoodLog,
-        [
-          R.isTruthy,
-          () => {
-            counter += 1;
-            return arr;
-          },
-        ],
-        R.conditional.defaultCase(() => {
-          const nextGroup = counter === 0 ? arr : R.concat(arr, [counter]);
-          counter = 0;
-          return nextGroup;
-        })
-      );
-    }, [])
-  );
-
-  return c.json({
-    current: R.first(res),
-    longest: R.firstBy(res, [R.identity(), 'desc']),
-  });
+  const res = R.pipe(await MoodLogRepository.getStreak(user.id), MoodLogService.getStreakHistory);
+  return c.json(res);
 });
 
 export default streak;
