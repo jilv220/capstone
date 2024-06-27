@@ -1,13 +1,20 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Avatar, Bubble, SystemMessage, Message, MessageText } from 'react-native-gifted-chat';
+import {
+  Avatar,
+  Bubble,
+  SystemMessage,
+  Message,
+  MessageText,
+  Time,
+} from 'react-native-gifted-chat';
 import { BubbleProps } from 'react-native-gifted-chat';
 
 const AI_BackgoundColor = '#f90949';
 const User_BackgoundColor = '#ffffff';
 const AI_TextColor = '#ffffff';
 const User_TextColor = '#f90949';
-const Date_Color = '#eeeeee';
+const Date_Color = '#000000';
 export const renderAvatar = (props: any) => (
   <Avatar
     {...props}
@@ -63,6 +70,16 @@ export const renderMessage = (props: any) => (
   />
 );
 
+export const renderTime = (props: any) => (
+  <Time
+    {...props}
+    timeTextStyle={{
+      left: { color: Date_Color },
+      right: { color: Date_Color },
+    }}
+  />
+);
+
 export const renderMessageText = (props: any) => (
   <MessageText
     {...props}
@@ -88,4 +105,8 @@ export const renderMessageText = (props: any) => (
 //   </View>
 // );
 
-export const renderUsername = (props: BubbleProps<any>) => {};
+// export const renderUsername = (props: BubbleProps<any>) => (
+//   <View style={{}}>
+//     <Text>{props.currentMessage.user.name}</Text>
+//   </View>
+// );
