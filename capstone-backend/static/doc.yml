@@ -127,6 +127,84 @@ paths:
           description: Mood log not found.
       tags:
         - Mood Log
+  /api/v1/user/mood-log/streak:
+    get:
+      summary: Get user's mood log streak (Tracking 1 year)
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: A JSON object of user's mood log streak
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current: 
+                    type: number
+                  longest: 
+                    type: number
+      tags:
+       - Mood Log Metrics
+  /api/v1/user/mood-log/mood-avg:
+    get:
+      summary: Get a series of user's daily average mood score (Default to current month)
+      security:
+      - bearerAuth: []
+      parameters:
+        - in: query
+          name: prev
+          schema:
+            type: integer
+          description: previous n month
+      responses:
+        '200':
+          description: A JSON object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    log_date:
+                      type: string
+                      format: date-time
+                    avg_score:
+                      type: number
+      tags:
+       - Mood Log Metrics
+  /api/v1/user/mood-log/mood-count:
+    get:
+      summary: Get categorized mood count (Default to current month)
+      security:
+      - bearerAuth: []
+      parameters:
+        - in: query
+          name: prev
+          schema:
+            type: integer
+          description: previous n month
+      responses:
+        '200':
+          description: A JSON object
+          content:
+            application/json:
+              schema:
+                type: object 
+                properties:
+                  rad:
+                    type: number 
+                  good:
+                    type: number 
+                  meh:
+                    type: number 
+                  bad:
+                    type: number 
+                  awful:
+                    type: number 
+      tags:
+       - Mood Log Metrics
 components:
   securitySchemes:
     bearerAuth:
@@ -134,9 +212,6 @@ components:
       scheme: bearer
   schemas:
     ScenarioResponse:
-      type: object
-      properties:
-        scenarios:
           type: array
           items:
             type: string

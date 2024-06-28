@@ -1,10 +1,15 @@
 import { db } from '@/db/db.ts';
+import { NotValidMonthError } from '@/interfaces/base.ts';
 import type { MoodLogCreate, MoodLogUpdate } from '@/interfaces/moodLog.ts';
-import type { Insertable, Updateable } from 'kysely';
-import type { MoodLog, MoodLogScenario } from 'kysely-codegen';
+import { type Insertable, type Updateable, sql } from 'kysely';
+import type { Category, MoodLog, MoodLogScenario, Scenario } from 'kysely-codegen';
 
 async function findById(id: string) {
   return await db.selectFrom('mood_log').selectAll().where('id', '=', id).executeTakeFirst();
+}
+
+async function findByUserId(userId: string) {
+  return await db.selectFrom('mood_log').selectAll().where('user_id', '=', userId).execute();
 }
 
 async function findByIdAndUserId(id: string, userId: string) {
@@ -16,12 +21,108 @@ async function findByIdAndUserId(id: string, userId: string) {
     .executeTakeFirst();
 }
 
-async function findScenariosById(id: string) {
+async function findScenarioByName(name: Category) {
+  return await db
+    .selectFrom('scenario')
+    .select('id')
+    .where('name', '=', name)
+    .executeTakeFirstOrThrow();
+}
+
+async function findScenariosByMoodLogId(moodLogId: string) {
   return await db
     .selectFrom('mood_log_scenario')
     .innerJoin('scenario', 'scenario.id', 'mood_log_scenario.scenario_id')
     .select(['scenario.name'])
-    .where('mood_log_id', '=', id)
+    .where('mood_log_id', '=', moodLogId)
+    .execute();
+}
+
+async function getStreak(userId: string) {
+  return await db
+    .with('days', (db) =>
+      db.selectNoFrom((eb) =>
+        eb
+          .fn<Date>('generate_series', [
+            sql`date_trunc('day', now()) - '365 day'::interval`,
+            sql`date_trunc('day', now())`,
+            sql`'1 day'::interval`,
+          ])
+          .as('day')
+      )
+    )
+    .selectFrom('days')
+    .leftJoin('mood_log', (eb) =>
+      eb
+        .onRef('days.day', '=', sql`date_trunc('day', mood_log.log_date)`)
+        .on('mood_log.user_id', '=', userId)
+    )
+    .select([
+      'days.day as log_date',
+      sql<boolean>`CASE WHEN count(mood_log.id) > 0 THEN true ELSE false END`.as('has_mood_log'),
+    ])
+    .groupBy('days.day')
+    .orderBy('days.day', 'desc')
+    .execute();
+}
+
+async function getMoodCountByMonth(userId: string, prev?: number) {
+  let query = db
+    .selectFrom('mood_log')
+    .select((eb) => ['mood', eb.fn<string>('count', ['mood']).as('mood_count')])
+    .where('user_id', '=', userId);
+
+  if (prev) {
+    const prevNMonth = sql.lit(`${prev} month`);
+    query = query.where((eb) => {
+      const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
+      const past_month = eb.fn<Date>('date_trunc', [
+        eb.val('month'),
+        sql`now() - interval ${prevNMonth}`,
+      ]);
+      return eb(log_month, '=', past_month);
+    });
+
+    return await query.groupBy('mood').execute();
+  }
+
+  return await query
+    .where((eb) => {
+      const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
+      const current_month = eb.fn<Date>('date_trunc', [eb.val('month'), sql`now()`]);
+      return eb(log_month, '=', current_month);
+    })
+    .groupBy('mood')
+    .execute();
+}
+
+async function getMoodByMonth(userId: string, prev?: number) {
+  let query = db
+    .selectFrom('mood_log')
+    .select((eb) => ['mood', eb.fn<Date>('date_trunc', [eb.val('day'), 'log_date']).as('log_date')])
+    .where('user_id', '=', userId);
+
+  // Only prev is possible...
+  if (prev) {
+    const prevNMonth = sql.lit(`${prev} month`);
+    query = query.where((eb) => {
+      const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
+      const past_month = eb.fn<Date>('date_trunc', [
+        eb.val('month'),
+        sql`now() - interval ${prevNMonth}`,
+      ]);
+      return eb(log_month, '=', past_month);
+    });
+
+    return await query.execute();
+  }
+
+  return await query
+    .where((eb) => {
+      const log_month = eb.fn<Date>('date_trunc', [eb.val('month'), 'log_date']);
+      const current_month = eb.fn<Date>('date_trunc', [eb.val('month'), sql`now()`]);
+      return eb(log_month, '=', current_month);
+    })
     .execute();
 }
 
@@ -91,8 +192,13 @@ async function updateWithScenarios(
 
 const MoodLogRepository = {
   findById,
+  findByUserId,
   findByIdAndUserId,
-  findScenariosById,
+  findScenarioByName,
+  findScenariosByMoodLogId,
+  getStreak,
+  getMoodByMonth,
+  getMoodCountByMonth,
   deleteById,
   deleteByIdAndUserId,
   updateWithScenarios,

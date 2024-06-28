@@ -20,40 +20,53 @@ import { green } from 'react-native-reanimated/lib/typescript/reanimated2/Colors
 import ScenariosOptions from './ScenariosOptions';
 import QuickNote from './QuickNote';
 import { router } from 'expo-router';
+import { Scenarios } from '@/interfaces/scenario';
+import { Mood } from '@/interfaces/moodLog';
+import { LucideIcon } from '@/interfaces/base';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateMoodLog } from '@/actions/user';
 interface EditRecordProps {
-  mood: string;
-  digitTime: string;
-  moodReason: string;
-  year: number;
-  month: number;
-  date: number;
   id: string;
+  log_date: string;
+  mood: Mood;
+  note?: string | null;
+  user_id: string;
+  scenario: Scenarios;
   handlePreceding: () => void;
+}
+interface EmotionConfig {
+  mood: Mood;
+  bg: string;
+  Icon: LucideIcon;
 }
 const EditRecord: React.FC<EditRecordProps> = ({
   mood,
-  digitTime,
-  moodReason,
-  year,
-  month,
-  date,
+  log_date,
+  note,
+  user_id,
+  scenario,
   id,
   handlePreceding,
 }) => {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
-  const [specificDate, setDate] = useState(
-    new Date(
-      year,
-      month,
-      date,
-      parseInt(digitTime.split(':')[0]),
-      parseInt(digitTime.split(':')[1])
-    )
-  );
-  const [emotion, setEmotion] = useState(mood);
+  const [specificDate, setDate] = useState(new Date(log_date));
+  const [emotion, setEmotion] = useState<'awful' | 'bad' | 'good' | 'meh' | 'rad'>(mood);
+  const [modifiedScenario, setModifiedScenario] = useState<Scenarios>(scenario);
+  const [modifiedNote, setModifiedNote] = useState<string | null>(note || null);
   useEffect(() => {}, [emotion]);
+  const queryClient = useQueryClient();
+  const updateMutation = useMutation({
+    mutationFn: updateMoodLog,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mood-log'] });
+      router.push('/');
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
 
-  const emotionConfig = [
+  const emotionConfig: EmotionConfig[] = [
     {
       mood: 'rad',
       bg: '$green9Light',
@@ -83,7 +96,7 @@ const EditRecord: React.FC<EditRecordProps> = ({
 
   return (
     <ScrollView>
-      <YStack justifyContent="flex-start" flexDirection="column">
+      <YStack backgroundColor={'white'} flex={1}>
         <Button
           size={'$5'}
           backgroundColor={'$white0'}
@@ -112,7 +125,7 @@ const EditRecord: React.FC<EditRecordProps> = ({
           }}
         />
         <XStack
-          px={'$1'}
+          px={'$3'}
           justifyContent="space-between"
           py={'$3'}
           borderBlockColor={'grey'}
@@ -133,17 +146,30 @@ const EditRecord: React.FC<EditRecordProps> = ({
             );
           })}
         </XStack>
-        <XStack>
-          <ScenariosOptions />
-        </XStack>
         <YStack>
-          <QuickNote bgColor="$white0" />
+          <ScenariosOptions
+            onOptionClick={setModifiedScenario}
+            currentScenarios={modifiedScenario}
+          />
+        </YStack>
+        <YStack>
+          <QuickNote bgColor="$white0" onChangeText={setModifiedNote} note={note} />
         </YStack>
         <YStack py={'$3'}>
           <Button
             backgroundColor={'$white0'}
             icon={<ArrowRightCircle size={'$3'} color={'yellowgreen'} />}
             onPress={() => {
+              const updatedMoodLog = {
+                id: id,
+                mood: emotion,
+                log_date: specificDate.toISOString(),
+                note: modifiedNote,
+                scenario: modifiedScenario,
+              };
+              console.log(updatedMoodLog);
+              updateMutation.mutate(updatedMoodLog);
+              router.push('/');
               handlePreceding();
             }}
           ></Button>

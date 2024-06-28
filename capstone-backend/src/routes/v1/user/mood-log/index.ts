@@ -11,19 +11,21 @@ import type { MoodLogScenario } from 'kysely-codegen';
 import { generateIdFromEntropySize } from 'lucia';
 
 import * as R from 'remeda';
+import avg from './mood-avg.ts';
+import count from './mood-count.ts';
+import streak from './streak.ts';
 
 const moodLog = new Hono<AuthMiddlewareEnv>().basePath('/mood-log');
+moodLog.route('/', count);
+moodLog.route('/', streak);
+moodLog.route('/', avg);
 
 moodLog.get('/', async (c) => {
   const user = c.var.user;
-  const moodLogs = await db
-    .selectFrom('mood_log')
-    .selectAll()
-    .where('user_id', '=', user.id)
-    .execute();
+  const moodLogs = await MoodLogRepository.findByUserId(user.id);
 
   const scenariosByMoodLogPromise = R.map(moodLogs, (log) =>
-    MoodLogRepository.findScenariosById(log.id)
+    MoodLogRepository.findScenariosByMoodLogId(log.id)
   );
   const scenariosByMoodLog = R.pipe(
     await Promise.all(scenariosByMoodLogPromise),
@@ -87,7 +89,7 @@ moodLog.get('/:id', async (c) => {
     if (!result) return c.notFound();
 
     const scenarios = R.pipe(
-      await MoodLogRepository.findScenariosById(moodLogId),
+      await MoodLogRepository.findScenariosByMoodLogId(moodLogId),
       ScenarioService.pluckName
     );
 

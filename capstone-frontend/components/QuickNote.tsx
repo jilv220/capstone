@@ -1,17 +1,18 @@
 import { View, Text } from 'react-native';
-import { XStack, YStack, Button, SizableText, Input } from 'tamagui';
+import { XStack, YStack, Button, SizableText, Input, Sheet, TextArea } from 'tamagui';
 import { NotebookPen } from '@tamagui/lucide-icons';
 import { ReactSetStateType } from '@/interfaces/base';
-import { router } from 'expo-router';
-
+import { router, useLocalSearchParams } from 'expo-router';
+import fullnote from '../app/fullnote';
 import React from 'react';
-import fullnote from '@/app/fullnote';
-  
+
 interface QuickNoteProps {
   bgColor?: string;
-  onChangeText: ReactSetStateType<string>;
+  note?: string | null;
+  onChangeText: ReactSetStateType<string | null>;
 }
-const QuickNote: React.FC<QuickNoteProps> = ({ bgColor, onChangeText }) => {
+const QuickNote: React.FC<QuickNoteProps> = ({ bgColor, onChangeText, note }) => {
+  const [isTextArea, changeToTextArea] = React.useState(false);
   return (
     <YStack>
       <XStack py="$3" justifyContent="space-between" flexDirection="row">
@@ -25,21 +26,34 @@ const QuickNote: React.FC<QuickNoteProps> = ({ bgColor, onChangeText }) => {
         <Button
           backgroundColor={bgColor || '$background'}
           onPress={() => {
-            router.push('/fullnote');
+            changeToTextArea(!isTextArea);
           }}
         >
           <SizableText color={'green'}>Open Full Note</SizableText>
         </Button>
       </XStack>
       <XStack>
-        <Input
-          size={'$4'}
-          placeholder="Add Note..."
-          flex={1}
-          onChangeText={(newText) => {
-            onChangeText(newText);
-          }}
-        ></Input>
+        {isTextArea ? (
+          <TextArea
+            flex={1}
+            minHeight={'$15'}
+            placeholder="Add note..."
+            onChangeText={onChangeText}
+          >
+            {note || ''}
+          </TextArea>
+        ) : (
+          <Input
+            size={'$4'}
+            placeholder="Add Note..."
+            flex={1}
+            onChangeText={(newText) => {
+              onChangeText(newText);
+            }}
+          >
+            {note || ''}
+          </Input>
+        )}
       </XStack>
     </YStack>
   );

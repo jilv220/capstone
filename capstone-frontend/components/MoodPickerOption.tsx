@@ -1,6 +1,4 @@
-import { Laugh } from '@tamagui/lucide-icons';
-import { router } from 'expo-router';
-import { YStack, Text, Circle, CircleProps, useTheme, Button } from 'tamagui';
+import { YStack, Text, CircleProps, useTheme, Button } from 'tamagui';
 
 interface MoodPickerOption extends CircleProps {
   onPressHandler?: () => void;
@@ -27,6 +25,7 @@ export default function MoodPickerOption({
         size={'$4'}
         bg={bg}
         onPress={onPressHandler}
+        disabled={onPressHandler === undefined}
         circular
         icon={Icon && <Icon size={IconSize || '$4'} color={IconColor || 'white'} />}
       ></Button>

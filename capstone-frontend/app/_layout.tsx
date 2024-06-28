@@ -2,7 +2,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { SplashScreen, Stack } from 'expo-router';
 import { useColorScheme } from 'react-native';
 import { useFonts } from 'expo-font';
-import { TamaguiProvider, Theme, useTheme } from 'tamagui';
+import { PortalProvider, TamaguiProvider, Theme, useTheme } from 'tamagui';
 import { useEffect } from 'react';
 import { AuthProvider } from '@/contexts/auth';
 import tamaguiConfig from '@/tamagui.config';
@@ -35,22 +35,25 @@ export default function RootLayout() {
   }
 
   return (
-    <TamaguiProvider config={tamaguiConfig}>
-      <Theme name={colorScheme}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <AuthProvider>
-            <QueryClientProvider client={queryClient}>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-                <Stack.Screen name="scenario" options={{ headerShown: false }} />
-                <Stack.Screen name="resources" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            </QueryClientProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </Theme>
-    </TamaguiProvider>
+    <PortalProvider shouldAddRootHost>
+      <TamaguiProvider config={tamaguiConfig}>
+        <Theme name={colorScheme}>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <AuthProvider>
+              <QueryClientProvider client={queryClient}>
+                <Stack>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+                  <Stack.Screen name="scenario" options={{ headerShown: false }} />
+                  <Stack.Screen name="resources" options={{ headerShown: false }} />
+                  <Stack.Screen name="fullnote" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+              </QueryClientProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </Theme>
+      </TamaguiProvider>
+    </PortalProvider>
   );
 }

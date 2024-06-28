@@ -5,7 +5,6 @@ export const scenarioResponseSchema = z.array(
     'bad_habits',
     'beauty',
     'chores',
-    'emotions',
     'food',
     'health',
     'hobbies',

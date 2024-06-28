@@ -1,4 +1,4 @@
-import { MoodLog, MoodLogCreate } from '@/interfaces/moodLog';
+import { MoodLog, MoodLogCreate, MoodLogUpdate } from '@/interfaces/moodLog';
 import ky from '@/lib/kySingleton';
 
 export async function getUser() {
@@ -27,4 +27,10 @@ export async function createMoodLog(moodlog: MoodLogCreate) {
 
 export async function deleteMoodLog(id: string) {
   return await ky.getInstance().delete(`user/mood-log/${id}`);
+}
+
+export async function updateMoodLog(moodlogUpdated:MoodLogUpdate){
+  return await ky.getInstance().patch(`user/mood-log/${moodlogUpdated.id}`,{
+    json:moodlogUpdated
+  });
 }

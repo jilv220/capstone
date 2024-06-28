@@ -2,7 +2,7 @@ import authMiddleware, { type AuthMiddlewareEnv } from '@/middlewares/auth.ts';
 import { Hono } from 'hono';
 
 import debug from 'debug';
-import moodLog from './mood-log.ts';
+import moodLog from './mood-log/index.ts';
 
 const user = new Hono<AuthMiddlewareEnv>().basePath('/user');
 const Debug = debug('app:api:user');

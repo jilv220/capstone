@@ -1,93 +1,52 @@
-import { View, Text } from 'react-native';
 import React from 'react';
 import MoodPickerOption from '@/components/MoodPickerOption';
 
+import { Button, Card, Popover, SizableText, XStack, YStack } from 'tamagui';
 import {
-  Avatar,
-  Button,
-  Card,
-  Circle,
-  Label,
-  Popover,
-  ScrollView,
-  Sheet,
-  SizableText,
-  XStack,
-  YStack,
-} from 'tamagui';
-import {
-  Calendar,
-  X,
-  Music4,
-  Heart,
   PlusCircle,
   Edit3,
   Trash2,
   NotebookPen,
-  ChevronDown,
   Laugh,
   Smile,
   Meh,
-  Annoyed,
   Angry,
   AlertCircle,
   Frown,
 } from '@tamagui/lucide-icons';
-import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteMoodLog } from '@/actions/user';
+import { categories } from '@/interfaces/categories';
+import { Scenario, Scenarios } from '@/interfaces/scenario';
+import { Mood } from '@/interfaces/moodLog';
+import { router } from 'expo-router';
+import { moodToBgColor, moodToIcon } from '@/lib/mood';
 
 interface MoodDisplayProps {
-  mood: string;
+  mood: Mood;
   digitTime: string;
-  moodReason: string;
+  scenarios: Scenarios;
   year: number;
   month: number;
   date: number;
   id: string;
+  note: string;
   setSheetOpen: (value: boolean) => void;
-  onDelete: (id: string) => void;
   onEdit: (id: string) => void;
 }
 const MoodDisplay: React.FC<MoodDisplayProps> = ({
   mood,
   digitTime,
-  moodReason,
+  scenarios,
   year,
   month,
   date,
   id,
+  note,
   setSheetOpen,
-  onDelete,
   onEdit,
 }) => {
-  const bgColors: { [key: string]: string } = {
-    rad: '$green9Light',
-    good: 'limegreen',
-    meh: '$yellow9Dark',
-    bad: 'orange',
-    awful: 'red',
-  };
-
-  const returnIcon = (mood: string) => {
-    switch (mood) {
-      case 'rad':
-        return Laugh;
-      case 'good':
-        return Smile;
-      case 'meh':
-        return Meh;
-      case 'bad':
-        return Frown;
-      case 'awful':
-        return Angry;
-      default:
-        return AlertCircle;
-    }
-  };
-
   const queryClient = useQueryClient();
-
   const deleteMutation = useMutation({
     mutationFn: deleteMoodLog,
     onSuccess: () => {
@@ -95,13 +54,17 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
     },
   });
 
+  const getCategory = (category: Scenario) => {
+    const categoryData = categories.find((item) => item.key === category);
+    return categoryData;
+  };
   return (
-    <ScrollView px={'$4'} py={'$4'} backgroundColor={'$white'}>
+    <YStack px={'$4'} py={'$4'} backgroundColor={'$white'}>
       <XStack elevation={2} backgroundColor={'$white3'} borderRadius={4}>
         <YStack flex={1}>
           <Card size={'$4'} backgroundColor={'$white3'} padded>
             <Card.Header padded alignSelf="center" pb={'$1'}></Card.Header>
-            <MoodPickerOption Icon={returnIcon(mood)} bg={bgColors[mood]}>
+            <MoodPickerOption Icon={moodToIcon(mood)} bg={moodToBgColor(mood)}>
               {mood}
             </MoodPickerOption>
           </Card>
@@ -126,21 +89,35 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
               {digitTime}
             </SizableText>
           </XStack>
-          <XStack>
+          <XStack flexWrap="wrap" mt={'$2'}>
+            {scenarios.map((scenario: Scenario) => {
+              const category = getCategory(scenario);
+              return (
+                <XStack key={category?.key} ai={'center'}>
+                  <YStack>
+                    <Button
+                      icon={category?.icon}
+                      size={'$2'}
+                      backgroundColor={'$white0'}
+                      color={'yellowgreen'}
+                    />
+                  </YStack>
+                  <YStack>
+                    <SizableText color={'$gray10Light'} fontSize={'$1'}>
+                      {category?.text}
+                    </SizableText>
+                  </YStack>
+                </XStack>
+              );
+            })}
+          </XStack>
+          {note && (
             <XStack>
-              <Button
-                icon={Heart}
-                size={'$3'}
-                backgroundColor={'$white0'}
-                color={'yellowgreen'}
-              ></Button>
-            </XStack>
-            <XStack>
-              <SizableText color={'$gray10Light'} py={'$2'}>
-                {moodReason}
+              <SizableText color={'$black075'} px={'$2'} py={'$2'} fontSize={'$1'}>
+                {note}
               </SizableText>
             </XStack>
-          </XStack>
+          )}
         </YStack>
         <YStack flex={1}>
           <Popover size={'$8'} allowFlip placement="bottom">
@@ -198,9 +175,15 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                     borderRadius={0}
                     borderBottomColor={'$gray10Light'}
                     justifyContent="flex-start"
-                    onPress={() => {}}
+                    onPress={() => {
+                      console.log('note', note);
+                      router.push({
+                        pathname: '/fullnote',
+                        params: { note: note, id: id },
+                      });
+                    }}
                   >
-                    <SizableText fontSize={'$5'}>Add Note</SizableText>
+                    <SizableText fontSize={'$5'}>{note ? 'Edit Note' : 'Add Note'}</SizableText>
                   </Button>
                 </Popover.Close>
 
@@ -222,7 +205,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           </Popover>
         </YStack>
       </XStack>
-    </ScrollView>
+    </YStack>
   );
 };
 
