@@ -4,8 +4,8 @@
 To verify if users can edit their existing mood log entries.
 
 ## Pre-Conditions
-- The user is logged in.
-- The user has existing mood log entries.
+The user is logged in.
+The user has existing mood log entries.
 
 ## Test Steps
 1. Navigate to the "Mood History" screen.
@@ -15,10 +15,10 @@ To verify if users can edit their existing mood log entries.
 5. Save the changes.
 
 ## Expected Results
-- The edited information is saved and displayed correctly.
-- Confirmation message is shown.
-- Changes persist after re-login.
+The edited information is saved and displayed correctly.
+A confirmation message is shown.
+The changes persist after re-login.
 
 ## Post-Conditions
-- The mood log entry is updated with the new information.
+The mood log entry is updated with the new information.
 
