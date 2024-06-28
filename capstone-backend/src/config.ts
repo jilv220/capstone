@@ -12,6 +12,7 @@ const Env = createEnv({
     GOOGLE_REDIRECT_URI: z.string().default(''),
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
+    OPENAI_API_KEY: z.string(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
