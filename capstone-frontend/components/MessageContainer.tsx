@@ -7,6 +7,7 @@ import {
   Message,
   MessageText,
   Time,
+  SystemMessageProps,
 } from 'react-native-gifted-chat';
 import { BubbleProps } from 'react-native-gifted-chat';
 
