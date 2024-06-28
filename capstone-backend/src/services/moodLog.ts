@@ -1,9 +1,31 @@
 import { moodToScore } from '@/utils/moodLog.ts';
 import debug from 'debug';
-import type { Mood } from 'kysely-codegen';
+import type { Selectable } from 'kysely';
+import type { Category, Mood, MoodLog } from 'kysely-codegen';
 import * as R from 'remeda';
+import { ScenarioService } from './scenarios.ts';
 
 const Debug = debug('service:moodLog');
+
+async function getMoodLogWithScenarios(
+  moodLogs: Selectable<MoodLog>[],
+  scenariosByMoodLogPromise: Promise<
+    {
+      name: Category;
+    }[]
+  >[]
+) {
+  const scenariosByMoodLog = R.pipe(
+    await Promise.all(scenariosByMoodLogPromise),
+    R.map((sc) => ScenarioService.pluckName(sc))
+  );
+
+  return R.map(moodLogs, (log, idx) =>
+    R.merge(log, {
+      scenario: scenariosByMoodLog[idx],
+    })
+  );
+}
 
 function getStreakHistory(
   streakData: {
@@ -111,6 +133,7 @@ function getDailyAvgScores(
 }
 
 const MoodLogService = {
+  getMoodLogWithScenarios,
   getStreakHistory,
   getDailyAvgScores,
   aggregateMoodScores,
