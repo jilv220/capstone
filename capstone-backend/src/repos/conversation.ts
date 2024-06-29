@@ -1,4 +1,6 @@
 import { db } from '@/db/db.ts';
+import type { Kysely, Transaction, Updateable } from 'kysely';
+import type { AiConversation, DB } from 'kysely-codegen';
 
 import { v7 as uuidv7 } from 'uuid';
 
@@ -21,6 +23,18 @@ async function create(userId: string) {
     .executeTakeFirst();
 }
 
-const ConversationRepository = { findById, findByUserId, create };
+async function update(
+  conversation: Omit<Updateable<AiConversation>, 'id'> & { id: string },
+  dbOrTx: Kysely<DB> | Transaction<DB> = db
+) {
+  return await dbOrTx
+    .updateTable('ai_conversation')
+    .set(conversation)
+    .where('id', '=', conversation.id)
+    .returningAll()
+    .executeTakeFirst();
+}
+
+const ConversationRepository = { findById, findByUserId, create, update };
 
 export { ConversationRepository };

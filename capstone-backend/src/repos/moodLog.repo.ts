@@ -204,5 +204,6 @@ const MoodLogRepository = {
   updateWithScenarios,
   createWithScenarios,
 };
+type TMoodLogRepository = typeof MoodLogRepository;
 
-export { MoodLogRepository };
+export { MoodLogRepository, type TMoodLogRepository };
