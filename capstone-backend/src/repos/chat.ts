@@ -29,5 +29,6 @@ async function findByConversationId(conversationId: string) {
 }
 
 const ChatRepository = { findByConversationId, create };
+type TChatRepository = typeof ChatRepository;
 
-export { ChatRepository };
+export { ChatRepository, type TChatRepository };

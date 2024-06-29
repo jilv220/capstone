@@ -1,20 +1,22 @@
+import { MoodLogRepository, type TMoodLogRepository } from '@/repos/moodLog.repo.ts';
 import { moodToScore } from '@/utils/moodLog.ts';
-import debug from 'debug';
-import type { Selectable } from 'kysely';
-import type { Category, Mood, MoodLog } from 'kysely-codegen';
-import * as R from 'remeda';
+import type { Mood, MoodLog } from 'kysely-codegen';
 import { ScenarioService } from './scenarios.ts';
+
+import debug from 'debug';
+import * as R from 'remeda';
 
 const Debug = debug('service:moodLog');
 
-async function getMoodLogWithScenarios(
-  moodLogs: Selectable<MoodLog>[],
-  scenariosByMoodLogPromise: Promise<
-    {
-      name: Category;
-    }[]
-  >[]
+async function getMoodLogsWithScenarios(
+  userId: string,
+  repository: TMoodLogRepository = MoodLogRepository
 ) {
+  const moodLogs = await repository.findByUserId(userId);
+  const scenariosByMoodLogPromise = R.map(moodLogs, (log) =>
+    MoodLogRepository.findScenariosByMoodLogId(log.id)
+  );
+
   const scenariosByMoodLog = R.pipe(
     await Promise.all(scenariosByMoodLogPromise),
     R.map((sc) => ScenarioService.pluckName(sc))
@@ -133,7 +135,7 @@ function getDailyAvgScores(
 }
 
 const MoodLogService = {
-  getMoodLogWithScenarios,
+  getMoodLogsWithScenarios,
   getStreakHistory,
   getDailyAvgScores,
   aggregateMoodScores,

@@ -10,6 +10,7 @@ import { type Insertable, NoResultError } from 'kysely';
 import type { MoodLogScenario } from 'kysely-codegen';
 import { generateIdFromEntropySize } from 'lucia';
 
+import { MoodLogService } from '@/services/moodLog.ts';
 import * as R from 'remeda';
 import avg from './mood-avg.ts';
 import count from './mood-count.ts';
@@ -22,22 +23,7 @@ moodLog.route('/', avg);
 
 moodLog.get('/', async (c) => {
   const user = c.var.user;
-  const moodLogs = await MoodLogRepository.findByUserId(user.id);
-
-  const scenariosByMoodLogPromise = R.map(moodLogs, (log) =>
-    MoodLogRepository.findScenariosByMoodLogId(log.id)
-  );
-  const scenariosByMoodLog = R.pipe(
-    await Promise.all(scenariosByMoodLogPromise),
-    R.map((sc) => ScenarioService.pluckName(sc))
-  );
-
-  const res = R.map(moodLogs, (log, idx) =>
-    R.merge(log, {
-      scenario: scenariosByMoodLog[idx],
-    })
-  );
-
+  const res = await MoodLogService.getMoodLogsWithScenarios(user.id);
   return c.json(res);
 });
 
