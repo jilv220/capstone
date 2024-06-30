@@ -3,16 +3,16 @@ Week 1-4:
 Confirmed Testing cases:
 User Registration and Login
 User Enters a Mood Entry
-Viewing Mood History and Trends
- Receiving AI-Driven Chat Support
-Accessing Local Mental Health Resources
+User Views Mood History and Trends
+User Receives AI-Driven Chat Support
+User Accesses Local Mental Health Resources
 Notifications and Reminders
 
 
-Ongoing Testing Cases (Week 5 and 6):
+Ongoing Testing Cases (Weeks 5 and 6):
 Mood Entry Deletion
-Mood log editing 
-Node adding
+Mood Log Editing 
+Node Adding
 
 
 Testing cases on hold:
@@ -21,4 +21,4 @@ User Feedback and Support
 Custom Reminders Setup
 AI Chat Assistant Sentiment Analysis
 
-Details of each tseting stories will be posted.
+Details of each testing story will be posted under the doc folder.
