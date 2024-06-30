@@ -1,7 +1,7 @@
 # Testing Story 4: User Receives AI-Driven Chat Support
 
 ## Objective
-if a user can receive personalized AI-driven chat support.
+To verify if a user can receive personalized AI-driven chat support.
 
 ## Pre-Conditions
 The user has logged a mood entry and requests chat support.
