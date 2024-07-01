@@ -277,6 +277,8 @@ paths:
           required: true
           schema:
             type: string
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
