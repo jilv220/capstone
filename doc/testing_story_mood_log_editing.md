@@ -15,9 +15,9 @@ The user has existing mood log entries.
 5. Save the changes.
 
 ## Expected Results
-The edited information is saved and displayed correctly.
-A confirmation message is shown.
-The changes persist after re-login.
+ The edited information is saved and displayed correctly.
+ A confirmation message is shown.
+ The changes persist after re-login.
 
 ## Post-Conditions
 The mood log entry is updated with the new information.
