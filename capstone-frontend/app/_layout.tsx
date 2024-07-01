@@ -1,22 +1,20 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { SplashScreen, Stack } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { Animated, useColorScheme } from 'react-native';
 import { useFonts } from 'expo-font';
 import { PortalProvider, TamaguiProvider, Theme, useTheme } from 'tamagui';
 import { useEffect } from 'react';
 import { AuthProvider } from '@/contexts/auth';
 import tamaguiConfig from '@/tamagui.config';
-import { useUserStore } from '@/stores/userStore';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useColorMode } from '@/hooks/useColorMode';
 
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
   // This is from Native
   const colorScheme = useColorScheme();
-
-  const theme = useUserStore((state) => state.theme);
-  const initTheme = useUserStore((state) => state.initTheme);
+  useColorMode();
 
   const [loaded] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
@@ -26,7 +24,6 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
-      initTheme(colorScheme);
     }
   }, [loaded]);
 
