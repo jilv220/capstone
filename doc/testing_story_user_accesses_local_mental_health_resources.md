@@ -7,11 +7,11 @@ To verify if a user a user can search for and access local mental health resourc
 The application is integrated with a database of local mental health resources.
 
 ## Test Steps
-1.The user navigates to the "Local Resources" screen.
-2.The user enters a search term related to the types of local health resources needed.
-3.The application recognizes the user’s location and provides a list of nearby local health resources.
-4.The user reviews the list of available local health resources matching their search criteria.
-5.The user selects a specific resource to view the detailed information, including address, contact details, opening hours, and available services.
+1. The user navigates to the "Local Resources" screen.
+2. The user enters a search term related to the types of local health resources needed.
+3. The application recognizes the user’s location and provides a list of nearby local health resources.
+4. The user reviews the list of available local health resources matching their search criteria.
+5. The user selects a specific resource to view the detailed information, including address, contact details, opening hours, and available services.
 
 
 ## Expected Results
@@ -21,4 +21,4 @@ The user can find and use the local support options through the application.
 
 
 ## Post-Conditions
-The requested local mental health resources are correctly listed in the search result.
+The requested local mental health resources are correctly listed in the search results.
