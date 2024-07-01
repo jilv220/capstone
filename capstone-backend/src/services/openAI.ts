@@ -1,7 +1,6 @@
 import { Conf } from '@/config.ts';
 import type { ValidChatMessageRole } from '@/interfaces/base.ts';
 
-import { ChatRepository, TChatRepository } from '@/repos/chat.ts';
 import OpenAI from 'openai';
 import * as R from 'remeda';
 import { ChatService } from './chat.ts';
@@ -79,7 +78,8 @@ async function generateChatResponse({
   const systemMessage = buildChatCompletionMessage(
     'system',
     'You are a professional and compassionate therapy assistant. \
-    Use the following mood logs to provide context-aware support to the user.'
+    Use the following mood logs to provide context-aware support to the user.\
+    Please respond in a conversational style and avoid using bullet points.'
   );
   const summaryMessage = buildChatCompletionMessage('system', moodLogSummary);
   const userMessage = buildChatCompletionMessage('user', content);
@@ -87,6 +87,8 @@ async function generateChatResponse({
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [systemMessage, summaryMessage, ...chatHistory, userMessage],
+    // Around two secs for 3.5 turbo, still too slow. Consider streaming?
+    max_tokens: 128,
   });
 
   return completion.choices[0].message.content;
