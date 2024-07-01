@@ -7,10 +7,10 @@ To verify if a user can view the logged moods and analyze trends over time.
 The user has logged multiple mood entries.
 
 ## Test Steps
-1.The user navigates to the "Mood History" screen.
-2.The user views the calendar showing mood entries for each day.
-3.The user selects a specific day period to view detailed mood entries.
-4.The user clicks the "Trends" tab to see graph of their mood in the selected peroid.
+1. The user navigates to the "Mood History" screen.
+2. The user views the calendar showing mood entries for each day.
+3. The user selects a specific day period to view detailed mood entries.
+4. The user clicks the "Trends" tab to see the graph of the mood in the selected period.
 
 
 ## Expected Results
