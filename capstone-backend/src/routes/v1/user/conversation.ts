@@ -49,17 +49,20 @@ conversation.post('/:id', zValidator('json', chatJsonSchema), async (c) => {
   const existingConversation = await ConversationRepository.findById(conversationId);
   if (!existingConversation) return c.notFound();
 
+  // Updates the title only if no chat in conversation
+  const existingChats = await ChatRepository.findByConversationId(conversationId);
+  const isFirstChat = existingChats.length === 0;
+
   const chatResponseP = OpenAIService.generateChatResponse({
     userId: user.id,
     conversationId,
     content,
   });
   const titleP = OpenAIService.generateTitle(content);
-  const [chatResponse, title] = await Promise.all([chatResponseP, titleP]);
-
-  // Updates the title only if no chat in conversation
-  const existingChats = await ChatRepository.findByConversationId(conversationId);
-  const isFirstChat = existingChats.length === 0;
+  const [chatResponse, title] = await Promise.all([
+    chatResponseP,
+    isFirstChat ? titleP : undefined,
+  ]);
 
   const updatedConversation = await db.transaction().execute(async (tx) => {
     await ChatRepository.create(
