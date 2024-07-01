@@ -1,7 +1,7 @@
 import React from 'react';
 import MoodPickerOption from '@/components/MoodPickerOption';
 
-import { Button, Card, Popover, SizableText, XStack, YStack } from 'tamagui';
+import { Button, Card, Popover, SizableText, XStack, YStack, useTheme } from 'tamagui';
 import {
   PlusCircle,
   Edit3,
@@ -53,16 +53,24 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
       queryClient.invalidateQueries({ queryKey: ['mood-log'] });
     },
   });
-
+  const theme = useTheme();
   const getCategory = (category: Scenario) => {
     const categoryData = categories.find((item) => item.key === category);
     return categoryData;
   };
   return (
-    <YStack px={'$4'} py={'$4'} backgroundColor={'$white'}>
-      <XStack elevation={2} backgroundColor={'$white3'} borderRadius={4}>
+    <YStack px={'$4'} py={'$4'}>
+      <XStack
+        elevation={2}
+        backgroundColor={theme.background.val === '#050505' ? 'gray' : '$white3'}
+        borderRadius={4}
+      >
         <YStack flex={1}>
-          <Card size={'$4'} backgroundColor={'$white3'} padded>
+          <Card
+            size={'$4'}
+            backgroundColor={theme.background.val === '#050505' ? 'gray' : '$white3'}
+            padded
+          >
             <Card.Header padded alignSelf="center" pb={'$1'}></Card.Header>
             <MoodPickerOption Icon={moodToIcon(mood)} bg={moodToBgColor(mood)}>
               {mood}
@@ -71,7 +79,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
         </YStack>
         <YStack flex={2}>
           <XStack px={'$2'} py={'$4'}>
-            <SizableText color={'$gray10Light'} fontWeight={300} fontFamily={'$mono'}>
+            <SizableText fontWeight={300} fontFamily={'$mono'}>
               {new Date(
                 year,
                 month,
@@ -85,9 +93,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
             <SizableText color={'yellowgreen'} fontWeight={700} fontSize={25}>
               {mood}
             </SizableText>
-            <SizableText color={'$gray10Light'} px={'$2'}>
-              {digitTime}
-            </SizableText>
+            <SizableText px={'$2'}>{digitTime}</SizableText>
           </XStack>
           <XStack flexWrap="wrap" mt={'$2'}>
             {scenarios.map((scenario: Scenario) => {
@@ -103,9 +109,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                     />
                   </YStack>
                   <YStack>
-                    <SizableText color={'$gray10Light'} fontSize={'$1'}>
-                      {category?.text}
-                    </SizableText>
+                    <SizableText fontSize={'$1'}>{category?.text}</SizableText>
                   </YStack>
                 </XStack>
               );
@@ -124,9 +128,8 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
             <Popover.Trigger asChild>
               <Button
                 icon={PlusCircle}
-                backgroundColor={'$white3'}
+                backgroundColor={theme.background.val === '#050505' ? 'gray' : '$white3'}
                 size={'$7'}
-                color={'gray10Light'}
                 justifyContent="center"
               ></Button>
             </Popover.Trigger>

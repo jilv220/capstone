@@ -25,10 +25,10 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
   };
   useEffect(() => {}, [mood]);
   return (
-    <ScrollView px={'$4'} backgroundColor={'$white'}>
-      <Card elevate size={'$4'} backgroundColor={'$white3'}>
+    <ScrollView px={'$4'}>
+      <Card elevate size={'$4'}>
         <Card.Header padded alignSelf="center" pb={'$1'}>
-          <SizableText size={'$7'} fontWeight={700} color={'$black5'} textAlign="center">
+          <SizableText size={'$7'} fontWeight={700} textAlign="center">
             How are you?
           </SizableText>
           <Button

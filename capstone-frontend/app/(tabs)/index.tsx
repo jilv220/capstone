@@ -70,8 +70,6 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <XStack h={'$9'}></XStack>
-
         {moodTestData.map((moodData, index) => {
           return (
             <MoodDisplay

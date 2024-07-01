@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import MoodSelect from './MoodSelect';
 import DatePicker from 'react-native-date-picker';
-import { ScrollView, Button, SizableText, XStack, YStack, Input } from 'tamagui';
+import { ScrollView, Button, SizableText, XStack, YStack, Input, useTheme } from 'tamagui';
 import {
   AlertCircle,
   Angry,
@@ -96,7 +96,7 @@ const EditRecord: React.FC<EditRecordProps> = ({
 
   return (
     <ScrollView>
-      <YStack backgroundColor={'white'} flex={1}>
+      <YStack flex={1}>
         <Button
           size={'$5'}
           backgroundColor={'$white0'}
