@@ -7,9 +7,9 @@ To verify if a user can successfully log a mood entry in the application.
 The user has a registered account and is logged into the application.
 
 ## Test Steps
-1.The user navigates to the "Mood Log" screen.
-2.The user selects their current mood from predefined options (rad, meh, bad, Awful).
-3.The user clicks the "Save" button.
+1. The user navigates to the "Mood Log" screen.
+2. The user selects their current mood from predefined options (rad, meh, bad, Awful).
+3. The user clicks the "Save" button.
 
 
 
