@@ -5,10 +5,13 @@ import { Platform } from 'react-native';
 import {
   renderAvatar,
   renderBubble,
+  // renderFooter,
+  renderInputToolbar,
   renderMessage,
   renderMessageText,
   renderSystemMessage,
   renderTime,
+  FootComponent,
 } from '@/components/MessageContainer';
 
 const ChatContainer = () => {
@@ -54,17 +57,6 @@ const ChatContainer = () => {
         avatar: require('../assets/images/ai_avatar.png'),
       },
     },
-    // {
-    //   _id: 999,
-    //   text: 'welcome to the AI chatbot',
-    //   createdAt: new Date('2024-06-25T03:24:00'),
-    //   user: {
-    //     _id: 2,
-    //     name: 'Chatty',
-    //     avatar: require('../../assets/images/ai_avatar.png'),
-    //   },
-    //   system: true,
-    // },
   ];
 
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -77,6 +69,20 @@ const ChatContainer = () => {
     setMessages((previousMessages) => GiftedChat.append(previousMessages, messages));
   }, []);
 
+  const handleQuickOptions = (option: string) => {
+    onSend([
+      {
+        _id: new Date().toISOString(),
+        text: option,
+        createdAt: new Date(),
+        user: {
+          _id: 1,
+          name: 'Ivy',
+          avatar: require('../assets/images/user_avatar.png'),
+        },
+      },
+    ]);
+  };
   return (
     <GiftedChat
       messages={messages}
@@ -90,6 +96,8 @@ const ChatContainer = () => {
       showUserAvatar={true}
       isLoadingEarlier={true}
       renderTime={renderTime}
+      renderInputToolbar={renderInputToolbar}
+      renderFooter={() => <FootComponent onPressQuickOptions={handleQuickOptions} />}
       user={{
         _id: 1,
         name: 'ivy',

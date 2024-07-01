@@ -1,5 +1,5 @@
+import { active } from 'd3';
 import React from 'react';
-import { View, Text } from 'react-native';
 import {
   Avatar,
   Bubble,
@@ -8,8 +8,10 @@ import {
   MessageText,
   Time,
   SystemMessageProps,
+  InputToolbar,
 } from 'react-native-gifted-chat';
 import { BubbleProps } from 'react-native-gifted-chat';
+import { YStack, Button, XStack, View, Footer } from 'tamagui';
 
 const AI_BackgoundColor = '#f90949';
 const User_BackgoundColor = '#ffffff';
@@ -100,14 +102,41 @@ export const renderMessageText = (props: any) => (
   />
 );
 
-// export const renderCustomView = (props: BubbleProps<any>) => (
-//   <View style={{ minHeight: 20, alignItems: 'center' }}>
-//     <Text>{props.user?.name}</Text>
-//   </View>
-// );
+export const renderInputToolbar = (props: any) => <InputToolbar {...props} containerStyle={{}} />;
 
-// export const renderUsername = (props: BubbleProps<any>) => (
-//   <View style={{}}>
-//     <Text>{props.currentMessage.user.name}</Text>
-//   </View>
-// );
+const quickOptions = [
+  'feel sad',
+  'anxious',
+  'lonely',
+  'in flashback',
+  'self-harm',
+  'suicidal thoughts',
+];
+export const FootComponent = ({ onPressQuickOptions }: any) => (
+  <YStack>
+    <XStack flexWrap="wrap" justifyContent="space-evenly">
+      {quickOptions.map((option, index) => {
+        return (
+          <Button
+            key={index}
+            marginTop={1}
+            flexBasis={'32%'}
+            fontFamily={'$heading'}
+            fontSize={'$1'}
+            borderColor={'#B0B0B0'}
+            backgroundColor={'#E0E0E0'}
+            color={'#333333'}
+            borderWidth={'$1'}
+            marginHorizontal={1}
+            pressStyle={{ borderColor: AI_BackgoundColor }}
+            onPress={() => {
+              onPressQuickOptions(option);
+            }}
+          >
+            {option}
+          </Button>
+        );
+      })}
+    </XStack>
+  </YStack>
+);
