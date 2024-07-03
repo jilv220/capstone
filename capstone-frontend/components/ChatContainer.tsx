@@ -19,7 +19,7 @@ const ChatContainer: React.FC<chatProps> = ({ initialMessages, saveMessages }) =
   const theme = useTheme();
 
   useEffect(() => {
-    setMessages(initialMessages);
+    setMessages(initialMessages.reverse());
   }, [initialMessages]);
 
   const onSend = useCallback((messages: IMessage[] = []) => {
@@ -44,7 +44,6 @@ const ChatContainer: React.FC<chatProps> = ({ initialMessages, saveMessages }) =
   return (
     <GiftedChat
       messages={messages}
-      inverted={false}
       onSend={(messages) => onSend(messages)}
       renderBubble={renderBubble}
       renderAvatar={renderAvatar}
