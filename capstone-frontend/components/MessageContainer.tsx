@@ -9,15 +9,17 @@ import {
   Time,
   SystemMessageProps,
   InputToolbar,
+  Composer,
 } from 'react-native-gifted-chat';
 import { BubbleProps } from 'react-native-gifted-chat';
-import { YStack, Button, XStack, View, Footer } from 'tamagui';
+import { YStack, Button, XStack, View, Footer, useTheme } from 'tamagui';
 
 const AI_BackgoundColor = '#f90949';
 const User_BackgoundColor = '#ffffff';
 const AI_TextColor = '#ffffff';
 const User_TextColor = '#f90949';
 const Date_Color = '#000000';
+
 export const renderAvatar = (props: any) => (
   <Avatar
     {...props}
@@ -102,7 +104,24 @@ export const renderMessageText = (props: any) => (
   />
 );
 
-export const renderInputToolbar = (props: any) => <InputToolbar {...props} containerStyle={{}} />;
+export const renderInputToolbar = (props: any, theme: any) => {
+  return (
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        backgroundColor: theme.background.val === '#050505' ? '#050505' : 'white',
+      }}
+      renderComposer={(composerProps) => (
+        <Composer
+          {...composerProps}
+          textInputStyle={{
+            color: theme.background.val === '#050505' ? 'white' : 'black',
+          }}
+        />
+      )}
+    />
+  );
+};
 
 const quickOptions = [
   'feel sad',
@@ -114,12 +133,12 @@ const quickOptions = [
 ];
 export const FootComponent = ({ onPressQuickOptions }: any) => (
   <YStack>
-    <XStack flexWrap="wrap" justifyContent="space-evenly">
+    <XStack flexWrap="wrap" justifyContent="space-evenly" margin={1}>
       {quickOptions.map((option, index) => {
         return (
           <Button
             key={index}
-            marginTop={1}
+            margin={1}
             flexBasis={'32%'}
             fontFamily={'$heading'}
             fontSize={'$1'}

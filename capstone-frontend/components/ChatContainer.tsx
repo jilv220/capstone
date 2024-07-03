@@ -5,7 +5,6 @@ import { Platform } from 'react-native';
 import {
   renderAvatar,
   renderBubble,
-  // renderFooter,
   renderInputToolbar,
   renderMessage,
   renderMessageText,
@@ -60,6 +59,7 @@ const ChatContainer = () => {
   ];
 
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const theme = useTheme();
 
   useEffect(() => {
     setMessages(initialMessages);
@@ -83,6 +83,7 @@ const ChatContainer = () => {
       },
     ]);
   };
+
   return (
     <GiftedChat
       messages={messages}
@@ -96,7 +97,7 @@ const ChatContainer = () => {
       showUserAvatar={true}
       isLoadingEarlier={true}
       renderTime={renderTime}
-      renderInputToolbar={renderInputToolbar}
+      renderInputToolbar={(props) => renderInputToolbar(props, theme)}
       renderFooter={() => <FootComponent onPressQuickOptions={handleQuickOptions} />}
       user={{
         _id: 1,
