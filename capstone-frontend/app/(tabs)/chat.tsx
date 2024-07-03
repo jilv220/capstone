@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChatContainer from '@/components/ChatContainer';
 import {
   SizableText,
@@ -11,59 +11,94 @@ import {
   useTheme,
   Separator,
 } from 'tamagui';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { AlignJustify, Bold, Edit3, Plus } from '@tamagui/lucide-icons';
-import { blue } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
-import { Modal, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import { conversation } from '@/interfaces/chat';
 import { IMessage } from 'react-native-gifted-chat';
+import { useQuery } from '@tanstack/react-query';
+import {
+  convertConversation,
+  createConversation,
+  getAllMessages,
+  getConversation,
+} from '@/actions/chat';
 
 const chat = () => {
+  //get conversation, if there's no conversation, create a new one
+  //if there's a conversation, get messages from the first conversation
+  const [selectedConversation, setSelectedConversation] = useState<conversation | null>(null);
+  const [selectedConversationId, setSelectedConversationId] = useState<string>('');
+  const [createConversationFlag, setCreateConversationFlag] = useState(false);
+
+  const {
+    data: conversations,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ['conversation'],
+    queryFn: getConversation,
+  });
+  // if there's conversation, set the first conversation as selected conversation
+  // if there's no conversation, create a new conversation
+  useEffect(() => {
+    if (conversations) {
+      setSelectedConversation(conversations[0]);
+      setSelectedConversationId(conversations[0].id);
+    } else {
+      setCreateConversationFlag(true);
+    }
+  }, [conversations]);
+
+  //create a new conversation if there's no conversation
+
+  useEffect(() => {
+    if (createConversationFlag) {
+      const createNewConversation = async () => {
+        try {
+          const newConversation = await createConversation();
+          setSelectedConversation(newConversation);
+          setSelectedConversationId(newConversation.id);
+          setCreateConversationFlag(false);
+        } catch (err) {
+          console.log('error to create new conversation', err);
+        }
+        createNewConversation();
+      };
+    }
+  }, [createConversationFlag]);
+
+  //get messages from conversation
+  const [initialMessages, setInitialMessages] = useState<IMessage[]>([]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        if (selectedConversationId) {
+          const allMessages = await getAllMessages(selectedConversationId);
+          setInitialMessages(convertConversation(allMessages));
+        }
+      } catch (err) {
+        console.log('error to get messages', err);
+      }
+    };
+    getMessages();
+  }, [selectedConversationId]);
+
   const [openHistory, setOpenHistory] = useState(false);
   const theme = useTheme();
-  const initialMessages: IMessage[] = [
-    {
-      _id: 1,
-      text: "hello,I'm Ivy, and I feel a little bit down today.",
-      createdAt: new Date(),
-      user: {
-        _id: 1,
-        name: 'Ivy',
-        avatar: require('../../assets/images/user_avatar.png'),
-      },
-    },
-  ];
+
   const saveMessages = (messages: IMessage[]) => {};
-  const conversations: conversation[] = [
-    {
-      id: '1001',
-      title: 'I want to talk to you',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      user_id: '1',
-    },
-    {
-      id: '1001',
-      title: 'I want to talk to you too',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      user_id: '1',
-    },
-    {
-      id: '1001',
-      title: 'I want to talk to you',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      user_id: '1',
-    },
-    {
-      id: '1003',
-      title: 'I want to talk to you too',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      user_id: '1',
-    },
-  ];
+
+  useEffect(() => {
+    console.log('initailmessage', initialMessages);
+  }, [initialMessages]);
+  useEffect(() => {
+    console.log('selectedConversationId', selectedConversationId);
+  }, [selectedConversationId]);
+
+  if (isPending) return <Text>Loading...</Text>;
+  if (isError) return <Text>Error fetching conversation data</Text>;
+
   return (
     <YStack flex={1}>
       <XStack flexDirection="row" justifyContent="space-between" alignItems="center" pt={'$8'}>
@@ -116,17 +151,19 @@ const chat = () => {
             <View>
               <TouchableOpacity onPress={() => {}}>
                 <YGroup bordered pt={'$10'} size="$4">
-                  {conversations.map((conversation, index) => {
+                  {conversations?.map((conversation, index) => {
                     return (
                       <YGroup.Item key={index}>
                         <ListItem
                           bordered
                           hoverTheme
                           pressTheme
-                          title={conversation.title}
+                          title={conversation.title || 'new Conversation'}
                           subTitle={new Date(conversation.updated_at).toLocaleDateString()}
                           onPress={() => {
                             setOpenHistory(false);
+                            setSelectedConversation(conversation);
+                            // console.log('conversation', conversation);
                           }}
                         />
                       </YGroup.Item>

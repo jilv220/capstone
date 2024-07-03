@@ -13,7 +13,7 @@ export interface message{
     text:string,
     createdAt:Date,
     user:{
-        _id:string,
+        _id:number,
         name:string,
         avatar:string
     }
@@ -30,3 +30,4 @@ export interface chatProps{
     initialMessages:IMessage[],
     saveMessages:(messages:IMessage[])=>void
 }
+
