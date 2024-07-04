@@ -5,103 +5,59 @@ import {
   XStack,
   YStack,
   Button,
-  Sheet,
   YGroup,
   ListItem,
   useTheme,
-  Separator,
+  ScrollView,
 } from 'tamagui';
-import { AlignJustify, Bold, Edit3, Plus } from '@tamagui/lucide-icons';
+import { AlignJustify, Edit3 } from '@tamagui/lucide-icons';
 import { Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
-import { conversation } from '@/interfaces/chat';
-import { IMessage } from 'react-native-gifted-chat';
-import { useQuery } from '@tanstack/react-query';
-import {
-  convertConversation,
-  createConversation,
-  getAllMessages,
-  getConversation,
-} from '@/actions/chat';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { createConversation, getConversations } from '@/actions/chat';
+import { Conversation } from '@/interfaces/chat';
 
-const chat = () => {
-  //get conversation, if there's no conversation, create a new one
-  //if there's a conversation, get messages from the first conversation
-  const [selectedConversation, setSelectedConversation] = useState<conversation | null>(null);
-  const [selectedConversationId, setSelectedConversationId] = useState<string>('');
-  const [createConversationFlag, setCreateConversationFlag] = useState(false);
+const ChatScreen = () => {
+  // useState need to be on top...
+  const [openHistory, setOpenHistory] = useState(false);
+  const [conversationId, setConversationId] = useState<string | undefined>(undefined);
 
+  const theme = useTheme();
+
+  const queryClient = useQueryClient();
   const {
     data: conversations,
     isPending,
     isError,
   } = useQuery({
     queryKey: ['conversation'],
-    queryFn: getConversation,
+    queryFn: getConversations,
   });
-  // if there's conversation, set the first conversation as selected conversation
-  // if there's no conversation, create a new conversation
+
+  const createConversationMutation = useMutation({
+    mutationFn: createConversation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversation'] });
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
+  const toSorted = (conversations: Conversation[]) =>
+    conversations.sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
+
   useEffect(() => {
-    if (conversations) {
-      setSelectedConversation(conversations[0]);
-      setSelectedConversationId(conversations[0].id);
-    } else {
-      setCreateConversationFlag(true);
+    if (conversations && conversations[0]) {
+      setConversationId(toSorted(conversations)[0].id);
     }
   }, [conversations]);
 
-  //create a new conversation if there's no conversation
-
-  useEffect(() => {
-    if (createConversationFlag) {
-      const createNewConversation = async () => {
-        try {
-          const newConversation = await createConversation();
-          setSelectedConversation(newConversation);
-          setSelectedConversationId(newConversation.id);
-          setCreateConversationFlag(false);
-        } catch (err) {
-          console.log('error to create new conversation', err);
-        }
-        createNewConversation();
-      };
-    }
-  }, [createConversationFlag]);
-
-  //get messages from conversation
-  const [initialMessages, setInitialMessages] = useState<IMessage[]>([]);
-
-  useEffect(() => {
-    const getMessages = async () => {
-      try {
-        if (selectedConversationId) {
-          const allMessages = await getAllMessages(selectedConversationId);
-          setInitialMessages(convertConversation(allMessages));
-        }
-      } catch (err) {
-        console.log('error to get messages', err);
-      }
-    };
-    getMessages();
-  }, [selectedConversationId]);
-
-  const [openHistory, setOpenHistory] = useState(false);
-  const theme = useTheme();
-
-  const saveMessages = (messages: IMessage[]) => {};
-
-  useEffect(() => {
-    console.log('initailmessage', initialMessages);
-  }, [initialMessages]);
-  useEffect(() => {
-    console.log('selectedConversationId', selectedConversationId);
-  }, [selectedConversationId]);
-
-  if (isPending) return <Text>Loading...</Text>;
-  if (isError) return <Text>Error fetching conversation data</Text>;
+  if (isPending) return <Text>Loading conversations...</Text>;
+  if (isError) return <Text>Error fetching conversations...</Text>;
 
   return (
     <YStack flex={1}>
-      <XStack flexDirection="row" justifyContent="space-between" alignItems="center" pt={'$8'}>
+      <XStack flexDirection="row" justifyContent="space-between" alignItems="center" pt={'$6'}>
         <Button
           backgroundColor={'$colorTransparent'}
           icon={AlignJustify}
@@ -123,13 +79,18 @@ const chat = () => {
         <Button
           icon={Edit3}
           backgroundColor={'$colorTransparent'}
-          color={initialMessages.length > 0 ? theme.color : 'gray'}
-          onPress={() => {}}
+          onPress={() => {
+            createConversationMutation.mutate(undefined, {
+              onSuccess: ({ id }) => {
+                setConversationId(id);
+              },
+            });
+          }}
         >
           new
         </Button>
       </XStack>
-      <ChatContainer initialMessages={initialMessages} saveMessages={saveMessages} />
+      <ChatContainer conversationId={conversationId} />
 
       <Modal
         animationType="fade"
@@ -148,22 +109,21 @@ const chat = () => {
           <View
             style={theme.background.val === '#050505' ? styles.sideBarGray : styles.sideBarWhite}
           >
-            <View>
+            <ScrollView>
               <TouchableOpacity onPress={() => {}}>
                 <YGroup bordered pt={'$10'} size="$4">
-                  {conversations?.map((conversation, index) => {
+                  {toSorted(conversations).map((conversation, index) => {
                     return (
                       <YGroup.Item key={index}>
                         <ListItem
                           bordered
                           hoverTheme
                           pressTheme
-                          title={conversation.title || 'new Conversation'}
+                          title={conversation.title || 'New Conversation'}
                           subTitle={new Date(conversation.updated_at).toLocaleDateString()}
                           onPress={() => {
                             setOpenHistory(false);
-                            setSelectedConversation(conversation);
-                            // console.log('conversation', conversation);
+                            setConversationId(conversation.id);
                           }}
                         />
                       </YGroup.Item>
@@ -171,7 +131,7 @@ const chat = () => {
                   })}
                 </YGroup>
               </TouchableOpacity>
-            </View>
+            </ScrollView>
           </View>
         </TouchableOpacity>
       </Modal>
@@ -197,4 +157,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'gray',
   },
 });
-export default chat;
+export default ChatScreen;
