@@ -29,8 +29,8 @@ export async function deleteMoodLog(id: string) {
   return await ky.getInstance().delete(`user/mood-log/${id}`);
 }
 
-export async function updateMoodLog(moodlogUpdated:MoodLogUpdate){
-  return await ky.getInstance().patch(`user/mood-log/${moodlogUpdated.id}`,{
-    json:moodlogUpdated
+export async function updateMoodLog(moodlogUpdated: MoodLogUpdate) {
+  return await ky.getInstance().patch(`user/mood-log/${moodlogUpdated.id}`, {
+    json: moodlogUpdated,
   });
 }

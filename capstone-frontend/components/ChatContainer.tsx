@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text, YStack, useTheme } from 'tamagui';
+import { useEffect, useState } from 'react';
+import { Text, useTheme } from 'tamagui';
 import { GiftedChat, IMessage } from 'react-native-gifted-chat';
-import { Platform } from 'react-native';
 import {
   renderAvatar,
   renderBubble,
@@ -12,19 +11,87 @@ import {
   renderTime,
   FootComponent,
 } from '@/components/MessageContainer';
-import { chatProps } from '@/interfaces/chat';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  convertConversation,
+  createConversation,
+  createMessage,
+  getAllMessages,
+  getConversations,
+} from '@/actions/chat';
 
-const ChatContainer: React.FC<chatProps> = ({ initialMessages, saveMessages }) => {
-  const [messages, setMessages] = useState<IMessage[]>([]);
+type ChatContainerProps = {
+  conversationId?: string;
+};
+
+const ChatContainer: React.FC<ChatContainerProps> = ({ conversationId }) => {
+  // Have to use useState here. We have no internal access to the gifted chat component...
+  const [initialMessages, setInitialMessages] = useState<IMessage[]>([]);
+
   const theme = useTheme();
 
-  useEffect(() => {
-    setMessages(initialMessages.reverse());
-  }, [initialMessages]);
+  const queryClient = useQueryClient();
+  const createConversationMutation = useMutation({
+    mutationFn: createConversation,
+    onError: (e) => {
+      console.error(e);
+    },
+  });
 
-  const onSend = useCallback((messages: IMessage[] = []) => {
-    setMessages((previousMessages) => GiftedChat.append(previousMessages, messages));
-  }, []);
+  const createMessageMutation = useMutation({
+    mutationFn: createMessage,
+    onSuccess: (_, variable) => {
+      queryClient.invalidateQueries({ queryKey: ['conversation', variable.conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversation'] });
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
+  const { data: messagesFromServer, isError } = useQuery({
+    queryKey: ['conversation', conversationId],
+    queryFn: ({ queryKey }) => getAllMessages(queryKey[1]!),
+    enabled: !!conversationId,
+  });
+
+  useEffect(() => {
+    if (messagesFromServer) {
+      setInitialMessages(convertConversation(messagesFromServer).reverse());
+    }
+  }, [messagesFromServer]);
+
+  const onSend = async (messages: IMessage[] = []) => {
+    let conversationIdLocal = conversationId;
+
+    // Create conversation if there is none
+    if (conversationId === undefined) {
+      try {
+        const { id } = await createConversationMutation.mutateAsync();
+        conversationIdLocal = id;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Optimistic update
+    let oldMessages: IMessage[] = [];
+    setInitialMessages((prevMessages) => {
+      oldMessages = prevMessages;
+      return GiftedChat.append(prevMessages, messages);
+    });
+    createMessageMutation.mutate(
+      {
+        conversationId: conversationIdLocal!,
+        message: messages[0].text,
+      },
+      {
+        onError: () => {
+          setInitialMessages(() => GiftedChat.append(oldMessages, []));
+        },
+      }
+    );
+  };
 
   const handleQuickOptions = (option: string) => {
     onSend([
@@ -41,9 +108,11 @@ const ChatContainer: React.FC<chatProps> = ({ initialMessages, saveMessages }) =
     ]);
   };
 
+  if (isError) return <Text>Error fetching messages...</Text>;
+
   return (
     <GiftedChat
-      messages={messages}
+      messages={initialMessages}
       onSend={(messages) => onSend(messages)}
       renderBubble={renderBubble}
       renderAvatar={renderAvatar}
