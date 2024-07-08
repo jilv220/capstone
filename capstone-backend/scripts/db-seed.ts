@@ -65,7 +65,7 @@ async function seedResources(db: Kysely<DB>): Promise<void> {
       .execute();
   }
 
-  // Sample resource articles
+  // TODO: Buggy, should not be random uuid
   const resourceArticles: Insertable<ResourceArticle>[] = [
     {
       id: uuidv7(),

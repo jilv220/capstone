@@ -9,8 +9,8 @@ async function findWithPhoneNumberAndArticles(
 ) {
   let query = dbOrTrx
     .selectFrom('resource')
-    .innerJoin('resource_article as ra', 'ra.resource_name', 'resource.name')
-    .innerJoin('resource_phone_number as rpn', 'rpn.resource_name', 'resource.name')
+    .leftJoin('resource_article as ra', 'ra.resource_name', 'resource.name')
+    .leftJoin('resource_phone_number as rpn', 'rpn.resource_name', 'resource.name')
     .select([
       'ra.resource_name',
       'rpn.id as phone_number_id',

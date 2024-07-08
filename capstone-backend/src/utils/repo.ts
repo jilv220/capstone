@@ -21,6 +21,12 @@ export function createOne<T extends keyof DB>(table: T) {
   };
 }
 
+export function findAll<T extends keyof DB>(table: T) {
+  return async (dbOrTrx: Kysely<DB> | Transaction<DB> = db) => {
+    return await dbOrTrx.selectFrom(table).selectAll().execute();
+  };
+}
+
 export async function findBy<T extends keyof DB>(
   table: T,
   { lhs, rhs, dbOrTrx = db }: TRepoFindByArg<T>
