@@ -3,8 +3,9 @@ import { z } from 'zod';
 
 const Env = createEnv({
   server: {
-    port: z.coerce.number().max(65535).default(4036),
+    PORT: z.coerce.number().max(65535).default(4036),
     NODE_ENV: z.enum(['development', 'staging', 'production', 'test']).default('development'),
+    HEALTH_LINK_SECRET: z.string(),
     DATABASE_URL: z.string().url().default('postgres://postgres:postgres@localhost:5432/postgres'),
     NATIVE_APP_PACKAGE_NAME: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
