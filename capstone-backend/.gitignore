@@ -4,3 +4,4 @@ node_modules/
 # dev
 .postgres
 .env
+.data.ms
