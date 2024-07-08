@@ -40,3 +40,8 @@ export interface MoodLogUpdate {
 export type MoodCount = {
   [key in Mood]: number 
 }
+
+export interface MoodChart{
+  log_date:string;
+  avg_score:number;
+}

@@ -57,7 +57,7 @@ const ChatScreen = () => {
 
   return (
     <YStack flex={1}>
-      <XStack flexDirection="row" justifyContent="space-between" alignItems="center" pt={'$6'}>
+      <XStack flexDirection="row" justifyContent="space-between" alignItems="center" pt={'$8'}>
         <Button
           backgroundColor={'$colorTransparent'}
           icon={AlignJustify}
@@ -93,7 +93,6 @@ const ChatScreen = () => {
       <ChatContainer conversationId={conversationId} />
 
       <Modal
-        animationType="fade"
         transparent={true}
         visible={openHistory}
         onRequestClose={() => {
