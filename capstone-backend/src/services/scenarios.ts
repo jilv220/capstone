@@ -1,13 +1,14 @@
 import { db } from '@/db/db.ts';
 import { MoodLogRepository } from '@/repos/moodLog.repo.ts';
 import type { Scenarios } from '@/schemas/scenario.ts';
+import { pluck } from '@/utils/base.ts';
 import { NoResultError, type Selectable } from 'kysely';
 import type { Scenario } from 'kysely-codegen';
 
 import * as R from 'remeda';
 
 function pluckName(scenarios: Omit<Selectable<Scenario>, 'id'>[]) {
-  return R.map(scenarios, (sc) => R.prop(sc, 'name'));
+  return pluck(scenarios, 'name');
 }
 
 async function buildMoodLogScenarios(scenarios: Scenarios, mood_log_id: string) {
