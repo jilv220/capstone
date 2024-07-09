@@ -8,7 +8,6 @@ const Env = createEnv({
     HEALTH_LINK_SECRET: z.string(),
     DATABASE_URL: z.string().url().default('postgres://postgres:postgres@localhost:5432/postgres'),
     MEILI_HOST_URL: z.string(),
-    MEILI_MASTER_KEY: z.string(),
     MEILI_ADMIN_API_KEY: z.string(),
     NATIVE_APP_PACKAGE_NAME: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
