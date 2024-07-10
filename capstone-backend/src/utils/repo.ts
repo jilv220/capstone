@@ -15,15 +15,49 @@ type TRepoFindByArg<T extends keyof DB> = {
 /**
  * Currying to make repository less verbose
  */
-export function createOne<T extends keyof DB>(table: T) {
+export function createRepository<T extends keyof DB>(
+  table: T,
+  dbOrTrx: Kysely<DB> | Transaction<DB> = db
+) {
+  return {
+    insert: async (insertables: InsertObject<DB, T>[]) => {
+      return await dbOrTrx.insertInto(table).values(insertables).returningAll().execute();
+    },
+
+    insertOne: async (insertable: InsertObject<DB, T>) => {
+      return await dbOrTrx.insertInto(table).values(insertable).returningAll().executeTakeFirst();
+    },
+
+    find: async () => {
+      return await dbOrTrx.selectFrom(table).selectAll().execute();
+    },
+
+    findOne: async () => {
+      return await dbOrTrx.selectFrom(table).selectAll().executeTakeFirst();
+    },
+
+    findBy: async ({ lhs, rhs }: TRepoFindByArg<T>) => {
+      return await dbOrTrx.selectFrom(table).selectAll().where(lhs, '=', rhs).execute();
+    },
+  };
+}
+
+// TODO: Migrate legacy code
+export function insertOne<T extends keyof DB>(table: T) {
   return async (insertable: InsertObject<DB, T>, dbOrTrx: Kysely<DB> | Transaction<DB> = db) => {
     return await dbOrTrx.insertInto(table).values(insertable).returningAll().executeTakeFirst();
   };
 }
 
-export function findAll<T extends keyof DB>(table: T) {
+export function find<T extends keyof DB>(table: T) {
   return async (dbOrTrx: Kysely<DB> | Transaction<DB> = db) => {
     return await dbOrTrx.selectFrom(table).selectAll().execute();
+  };
+}
+
+export function findOne<T extends keyof DB>(table: T) {
+  return async (dbOrTrx: Kysely<DB> | Transaction<DB> = db) => {
+    return await dbOrTrx.selectFrom(table).selectAll().executeTakeFirst();
   };
 }
 

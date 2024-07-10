@@ -67,7 +67,7 @@ resource.post(
   async (c) => {
     const resourceName = c.req.valid('json').resource_name;
     try {
-      const res = await ResourceRepository.createOne({
+      const res = await ResourceRepository.insertOne({
         name: resourceName,
       });
       return c.json(res);
