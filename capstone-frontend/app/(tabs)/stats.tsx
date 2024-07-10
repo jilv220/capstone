@@ -6,7 +6,7 @@ import MoodChart from '@/components/MoodChart';
 
 const stats = () => {
   return (
-    <ScrollView py={'$10'}>
+    <ScrollView mt={'$7'}>
       <MoodChart />
       <MoodCounter />
     </ScrollView>

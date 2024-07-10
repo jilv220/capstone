@@ -1,4 +1,4 @@
-import { ListItem, ScrollView, YGroup } from 'tamagui';
+import { ListItem, ScrollView, Separator, SizableText, YGroup } from 'tamagui';
 import { LogOut, FolderHeart, SunMoon } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/auth';
@@ -8,7 +8,7 @@ export default function ResourcesScreen() {
   const { signOut } = useAuth();
 
   return (
-    <ScrollView px={'$4'} py={'$7'}>
+    <ScrollView px={'$4'} mt={'$7'}>
       <YGroup pb={'$3'}>
         <YGroup.Item>
           <ListItem
@@ -20,6 +20,7 @@ export default function ResourcesScreen() {
             Resources
           </ListItem>
         </YGroup.Item>
+        <Separator />
         <YGroup.Item>
           <ColorModeDialog>
             <ListItem icon={SunMoon}>Color Mode</ListItem>
