@@ -31,7 +31,7 @@ const ScenarioScreen: React.FC = () => {
 
   return (
     <View flex={1}>
-      <ScrollView px={'$4'} pt={'$10'}>
+      <ScrollView px={'$4'} mt={'$7'}>
         <BackButton />
         <YStack alignItems="center">
           <SizableText fontWeight={'bold'}>What have you been up to?</SizableText>

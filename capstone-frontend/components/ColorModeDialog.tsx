@@ -37,7 +37,9 @@ export default function ColorModeDialog({ children }: ColorModeDialogProps) {
 
   return (
     <AlertDialog>
-      <AlertDialog.Trigger asChild>{children}</AlertDialog.Trigger>
+      <AlertDialog.Trigger asChild borderBottomLeftRadius={'$4'} borderBottomRightRadius={'$4'}>
+        {children}
+      </AlertDialog.Trigger>
 
       <AlertDialog.Portal>
         <AlertDialog.Overlay

@@ -56,8 +56,16 @@ const ChatScreen = () => {
   if (isError) return <Text>Error fetching conversations...</Text>;
 
   return (
-    <YStack flex={1}>
-      <XStack flexDirection="row" justifyContent="space-between" alignItems="center" pt={'$8'}>
+    <YStack flex={1} mt={'$7'}>
+      <XStack
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        borderColor={'$colorHover'}
+        borderWidth={StyleSheet.hairlineWidth}
+        borderLeftWidth={0}
+        borderRightWidth={0}
+      >
         <Button
           backgroundColor={'$colorTransparent'}
           icon={AlignJustify}
