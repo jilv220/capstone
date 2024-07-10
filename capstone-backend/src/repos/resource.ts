@@ -1,5 +1,5 @@
 import { db } from '@/db/db.ts';
-import { createOne, findBy } from '@/utils/repo.ts';
+import { findBy, insertOne } from '@/utils/repo.ts';
 import type { Kysely, Transaction } from 'kysely';
 import type { DB } from 'kysely-codegen';
 
@@ -32,7 +32,7 @@ async function findWithPhoneNumberAndArticles(
 
 const ResourceRepository = {
   findBy: findBy.bind(null, 'resource'),
-  createOne: createOne('resource'),
+  insertOne: insertOne('resource'),
   findWithPhoneNumberAndArticles,
 };
 type TResourceRepository = typeof ResourceRepository;

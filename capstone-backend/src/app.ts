@@ -8,7 +8,7 @@ import { cors } from 'hono/cors';
 import { MeiliSearch } from 'meilisearch';
 import { Conf } from './config.ts';
 import { RESOURCE_ARTICLE_INDEX } from './interfaces/base.ts';
-import { ResourceArticleRepo } from './repos/resourceArticle.ts';
+import { ResourceArticleRepository } from './repos/resourceArticle.ts';
 
 const app = new Hono<Env>();
 app.use('*', cors({ origin: '*' }));
@@ -51,7 +51,7 @@ const hasNoIndex = indexRes.results.length === 0;
 if (hasNoIndex) {
   await meili.createIndex(RESOURCE_ARTICLE_INDEX);
 }
-const articles = await ResourceArticleRepo.findAll();
+const articles = await ResourceArticleRepository.find();
 meili
   .index(RESOURCE_ARTICLE_INDEX)
   .addDocuments(articles)
