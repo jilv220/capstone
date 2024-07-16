@@ -148,4 +148,32 @@ export class AuthService {
 
     return lucia.createSession(userId, {});
   }
+
+  async createTestUserSession() {
+    const testUserEmail = Conf.testUser.email;
+    const testUser = await UserRepository.findBy({ email: testUserEmail });
+
+    if (testUser) {
+      return lucia.createSession(testUser.id, {});
+    }
+
+    const userId = generateId(15);
+    const username = Conf.testUser.username;
+
+    await UserRepository.createWithOAuth(
+      {
+        id: userId,
+        username,
+        email: testUserEmail,
+        avatar_url: Conf.testUser.avatarUrl,
+      },
+      {
+        provider_user_id: 'test',
+        provider_id: 'test',
+        user_id: userId,
+      }
+    );
+
+    return lucia.createSession(userId, {});
+  }
 }

@@ -2,12 +2,18 @@ import debug from 'debug';
 
 import { Conf } from '@/config.ts';
 import { AuthService } from '@/services/auth.ts';
+import { serverError } from '@/utils/hono.ts';
 import { zValidator } from '@hono/zod-validator';
 import { generateState } from 'arctic';
 import { Hono } from 'hono';
 import { getCookie, setCookie } from 'hono/cookie';
 import type { Session } from 'lucia';
-import { loginJsonSchema, loginParamSchema, loginRedirectSchema } from '../../schemas/login.ts';
+import {
+  loginJsonSchema,
+  loginParamSchema,
+  loginParamTestSchema,
+  loginRedirectSchema,
+} from '../../schemas/login.ts';
 
 const signIn = new Hono().basePath('/sign-in');
 const Debug = debug('app:api:sign-in');
@@ -51,36 +57,54 @@ signIn.get(
   }
 );
 
-signIn.get(':provider/callback', zValidator('param', loginParamSchema), async (c) => {
-  const provider = c.req.valid('param').provider;
-  const redirect = getCookie(c, 'redirect');
-  const auth = new AuthService();
+signIn.get(
+  ':provider/callback',
+  zValidator('param', Conf.isProduction ? loginParamSchema : loginParamTestSchema),
+  async (c) => {
+    const provider = c.req.valid('param').provider;
+    const auth = new AuthService();
 
-  const url = new URL(c.req.url);
-  const state = url.searchParams.get('state');
-  const code = url.searchParams.get('code');
-  const stateCookie = getCookie(c, `${provider}_oauth_state`);
+    const url = new URL(c.req.url);
+    const state = url.searchParams.get('state');
+    const code = url.searchParams.get('code');
 
-  if (!state || !stateCookie || !code || stateCookie !== state || !redirect) {
-    return c.json({ error: 'Invalid request' }, 400);
-  }
+    const redirect = getCookie(c, 'redirect');
+    const stateCookie = getCookie(c, `${provider}_oauth_state`);
 
-  switch (provider) {
-    case 'github': {
-      const session = await auth.createGithubSession(code);
-      if (!session) {
-        return c.json({}, 400);
+    const isInvalidRequest = !state || !stateCookie || !code || stateCookie !== state || !redirect;
+    switch (provider) {
+      case 'github': {
+        if (isInvalidRequest) {
+          return c.json({ error: 'Invalid request' }, 400);
+        }
+
+        const session = await auth.createGithubSession(code);
+        if (!session) {
+          return c.json({}, 400);
+        }
+
+        const redirectUrl = new URL(redirect);
+        redirectUrl.searchParams.append('token', session.id);
+
+        return c.redirect(redirectUrl.toString());
       }
+      case 'test': {
+        const session = await auth.createTestUserSession();
+        if (!session) {
+          return c.json({}, 400);
+        }
 
-      const redirectUrl = new URL(redirect);
-      redirectUrl.searchParams.append('token', session.id);
-
-      return c.redirect(redirectUrl.toString());
+        const redirectUrl = new URL(`http://localhost:${Conf.PORT}`);
+        redirectUrl.searchParams.append('token', session.id);
+        return c.redirect(redirectUrl.toString());
+      }
+      default:
+        break;
     }
-    default:
-      break;
+
+    return serverError(c);
   }
-});
+);
 
 signIn.post(
   ':provider',
