@@ -1,4 +1,4 @@
-import { Text } from 'react-native';
+import { KeyboardAvoidingView, Text } from 'react-native';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { ScrollView, Sheet, XStack, YStack } from 'tamagui';
@@ -107,20 +107,26 @@ export default function HomeScreen() {
           <Sheet.Handle />
 
           <Sheet.Frame px="$2.5" flex={1}>
-            {editData && (
-              <EditRecord
-                key={editKey}
-                id={editData.id}
-                mood={editData.mood}
-                user_id={editData.user_id}
-                note={editData.note}
-                log_date={editData.log_date}
-                scenario={editData.scenario}
-                handlePreceding={() => {
-                  setOpen(false);
-                }}
-              />
-            )}
+            <KeyboardAvoidingView
+              style={{ flex: 1 }}
+              behavior="position"
+              keyboardVerticalOffset={40}
+            >
+              {editData && (
+                <EditRecord
+                  key={editKey}
+                  id={editData.id}
+                  mood={editData.mood}
+                  user_id={editData.user_id}
+                  note={editData.note}
+                  log_date={editData.log_date}
+                  scenario={editData.scenario}
+                  handlePreceding={() => {
+                    setOpen(false);
+                  }}
+                />
+              )}
+            </KeyboardAvoidingView>
           </Sheet.Frame>
         </Sheet>
       </ScrollView>

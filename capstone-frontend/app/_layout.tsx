@@ -11,6 +11,7 @@ import { useColorMode } from '@/hooks/useColorMode';
 import { instantMeiliSearch } from '@meilisearch/instant-meilisearch';
 import { Conf } from '@/config';
 import { InstantSearch } from 'react-instantsearch-core';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const queryClient = new QueryClient();
 const { searchClient } = instantMeiliSearch(Conf.meiliHostUrl, Conf.meiliSearchApikey);
@@ -37,26 +38,28 @@ export default function RootLayout() {
 
   return (
     <PortalProvider shouldAddRootHost>
-      <TamaguiProvider config={tamaguiConfig}>
-        <Theme name={colorScheme}>
-          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <AuthProvider>
-              <QueryClientProvider client={queryClient}>
-                <InstantSearch searchClient={searchClient} indexName="resource_article">
-                  <Stack>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-                    <Stack.Screen name="scenario" options={{ headerShown: false }} />
-                    <Stack.Screen name="resources" options={{ headerShown: false }} />
-                    <Stack.Screen name="fullnote" options={{ headerShown: false }} />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                </InstantSearch>
-              </QueryClientProvider>
-            </AuthProvider>
-          </ThemeProvider>
-        </Theme>
-      </TamaguiProvider>
+      <SafeAreaProvider>
+        <TamaguiProvider config={tamaguiConfig}>
+          <Theme name={colorScheme}>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+              <AuthProvider>
+                <QueryClientProvider client={queryClient}>
+                  <InstantSearch searchClient={searchClient} indexName="resource_article">
+                    <Stack>
+                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                      <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+                      <Stack.Screen name="scenario" options={{ headerShown: false }} />
+                      <Stack.Screen name="resources" options={{ headerShown: false }} />
+                      <Stack.Screen name="fullnote" options={{ headerShown: false }} />
+                      <Stack.Screen name="+not-found" />
+                    </Stack>
+                  </InstantSearch>
+                </QueryClientProvider>
+              </AuthProvider>
+            </ThemeProvider>
+          </Theme>
+        </TamaguiProvider>
+      </SafeAreaProvider>
     </PortalProvider>
   );
 }

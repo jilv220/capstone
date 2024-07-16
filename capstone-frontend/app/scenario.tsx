@@ -10,9 +10,12 @@ import { Scenarios } from '@/interfaces/scenario';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createMoodLog } from '@/actions/user';
 import BackButton from '@/components/navigation/BackButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView } from 'react-native';
 
 const ScenarioScreen: React.FC = () => {
   const router = useRouter();
+
   const { moodInScenario, dateInScenario } = useLocalSearchParams();
   const [scenarios, setScenarios] = useState<Scenarios>([]);
   const [note, setNote] = useState<string | null>(null);
@@ -30,38 +33,40 @@ const ScenarioScreen: React.FC = () => {
   });
 
   return (
-    <View flex={1}>
-      <ScrollView px={'$4'} mt={'$7'}>
-        <BackButton />
-        <YStack alignItems="center">
-          <SizableText fontWeight={'bold'}>What have you been up to?</SizableText>
-        </YStack>
-        <YStack>
-          <ScenariosOptions onOptionClick={setScenarios} />
-        </YStack>
-        <YStack pb={'$3'}>
-          <QuickNote onChangeText={setNote} note={note || ''} />
-        </YStack>
-        <YStack flex={1} ai={'center'}>
-          <Button
-            icon={Check}
-            backgroundColor={'yellowgreen'}
-            color={'white'}
-            size={50}
-            circular
-            onPress={() => {
-              const newMoodLog: MoodLogCreate = {
-                log_date: dateInScenario as string,
-                mood: moodInScenario as Mood,
-                scenario: scenarios,
-                note: note || undefined,
-              };
-              createMutation.mutate(newMoodLog);
-            }}
-          ></Button>
-        </YStack>
-      </ScrollView>
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
+        <ScrollView px={'$4'} pt={'$4'}>
+          <BackButton />
+          <YStack alignItems="center">
+            <SizableText fontWeight={'bold'}>What have you been up to?</SizableText>
+          </YStack>
+          <YStack>
+            <ScenariosOptions onOptionClick={setScenarios} />
+          </YStack>
+          <YStack pb={'$3'}>
+            <QuickNote onChangeText={setNote} note={note || ''} />
+          </YStack>
+          <YStack flex={1} ai={'center'}>
+            <Button
+              icon={Check}
+              backgroundColor={'yellowgreen'}
+              color={'white'}
+              size={50}
+              circular
+              onPress={() => {
+                const newMoodLog: MoodLogCreate = {
+                  log_date: dateInScenario as string,
+                  mood: moodInScenario as Mood,
+                  scenario: scenarios,
+                  note: note || undefined,
+                };
+                createMutation.mutate(newMoodLog);
+              }}
+            ></Button>
+          </YStack>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

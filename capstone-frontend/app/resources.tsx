@@ -5,6 +5,7 @@ import { SearchBox } from '@/components/search/SearchBox';
 import { useRef } from 'react';
 import { useRefinementList } from 'react-instantsearch-core';
 import { FlatList, KeyboardAvoidingView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, ScrollView, SizableText, XGroup, XStack, YStack } from 'tamagui';
 
 export default function ResourcesScreen() {
@@ -20,8 +21,8 @@ export default function ResourcesScreen() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }}>
-      <YStack px={'$4'} mt={'$7'} flex={1}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <YStack px={'$4'} pt={'$4'} flex={1}>
         <XStack>
           <BackButton />
         </XStack>
@@ -51,7 +52,7 @@ export default function ResourcesScreen() {
           <InfiniteHits hitComponent={Hit} ref={listRef} />
         </YStack>
       </YStack>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

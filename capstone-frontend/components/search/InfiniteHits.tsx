@@ -17,10 +17,6 @@ export const InfiniteHits = forwardRef<FlatList, React.PropsWithChildren<Infinit
 
     return (
       <FlatList
-        style={{
-          paddingRight: 10,
-        }}
-        contentContainerStyle={{}}
         ref={ref}
         data={items}
         keyExtractor={(item) => item.id}

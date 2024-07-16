@@ -15,6 +15,7 @@ import { Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createConversation, getConversations } from '@/actions/chat';
 import { Conversation } from '@/interfaces/chat';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ChatScreen = () => {
   // useState need to be on top...
@@ -56,93 +57,95 @@ const ChatScreen = () => {
   if (isError) return <Text>Error fetching conversations...</Text>;
 
   return (
-    <YStack flex={1} mt={'$7'}>
-      <XStack
-        flexDirection="row"
-        justifyContent="space-between"
-        alignItems="center"
-        borderColor={'$colorHover'}
-        borderWidth={StyleSheet.hairlineWidth}
-        borderLeftWidth={0}
-        borderRightWidth={0}
-      >
-        <Button
-          backgroundColor={'$colorTransparent'}
-          icon={AlignJustify}
-          onPress={() => {
-            setOpenHistory(true);
-          }}
+    <SafeAreaView style={{ flex: 1 }}>
+      <YStack flex={1} pt={'$4'}>
+        <XStack
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+          borderColor={'$colorHover'}
+          borderWidth={StyleSheet.hairlineWidth}
+          borderLeftWidth={0}
+          borderRightWidth={0}
         >
-          history
-        </Button>
-        <SizableText
-          textAlign="center"
-          fontSize={'$2'}
-          fontFamily={'$heading'}
-          fontWeight={'bold'}
-          color={'#f90949'}
-        >
-          AI-Chatbox
-        </SizableText>
-        <Button
-          icon={Edit3}
-          backgroundColor={'$colorTransparent'}
-          onPress={() => {
-            createConversationMutation.mutate(undefined, {
-              onSuccess: ({ id }) => {
-                setConversationId(id);
-              },
-            });
-          }}
-        >
-          new
-        </Button>
-      </XStack>
-      <ChatContainer conversationId={conversationId} />
+          <Button
+            backgroundColor={'$colorTransparent'}
+            icon={AlignJustify}
+            onPress={() => {
+              setOpenHistory(true);
+            }}
+          >
+            history
+          </Button>
+          <SizableText
+            textAlign="center"
+            fontSize={'$2'}
+            fontFamily={'$heading'}
+            fontWeight={'bold'}
+            color={'#f90949'}
+          >
+            AI-Chatbox
+          </SizableText>
+          <Button
+            icon={Edit3}
+            backgroundColor={'$colorTransparent'}
+            onPress={() => {
+              createConversationMutation.mutate(undefined, {
+                onSuccess: ({ id }) => {
+                  setConversationId(id);
+                },
+              });
+            }}
+          >
+            new
+          </Button>
+        </XStack>
+        <ChatContainer conversationId={conversationId} />
 
-      <Modal
-        transparent={true}
-        visible={openHistory}
-        onRequestClose={() => {
-          setOpenHistory(false);
-        }}
-      >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          onPress={() => {
+        <Modal
+          transparent={true}
+          visible={openHistory}
+          onRequestClose={() => {
             setOpenHistory(false);
           }}
         >
-          <View
-            style={theme.background.val === '#050505' ? styles.sideBarGray : styles.sideBarWhite}
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            onPress={() => {
+              setOpenHistory(false);
+            }}
           >
-            <ScrollView>
-              <TouchableOpacity onPress={() => {}}>
-                <YGroup bordered pt={'$10'} size="$4">
-                  {toSorted(conversations).map((conversation, index) => {
-                    return (
-                      <YGroup.Item key={index}>
-                        <ListItem
-                          bordered
-                          hoverTheme
-                          pressTheme
-                          title={conversation.title || 'New Conversation'}
-                          subTitle={new Date(conversation.updated_at).toLocaleDateString()}
-                          onPress={() => {
-                            setOpenHistory(false);
-                            setConversationId(conversation.id);
-                          }}
-                        />
-                      </YGroup.Item>
-                    );
-                  })}
-                </YGroup>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-    </YStack>
+            <View
+              style={theme.background.val === '#050505' ? styles.sideBarGray : styles.sideBarWhite}
+            >
+              <ScrollView>
+                <TouchableOpacity onPress={() => {}}>
+                  <YGroup bordered pt={'$10'} size="$4">
+                    {toSorted(conversations).map((conversation, index) => {
+                      return (
+                        <YGroup.Item key={index}>
+                          <ListItem
+                            bordered
+                            hoverTheme
+                            pressTheme
+                            title={conversation.title || 'New Conversation'}
+                            subTitle={new Date(conversation.updated_at).toLocaleDateString()}
+                            onPress={() => {
+                              setOpenHistory(false);
+                              setConversationId(conversation.id);
+                            }}
+                          />
+                        </YGroup.Item>
+                      );
+                    })}
+                  </YGroup>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      </YStack>
+    </SafeAreaView>
   );
 };
 

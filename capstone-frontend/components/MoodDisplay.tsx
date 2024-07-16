@@ -58,19 +58,12 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
     const categoryData = categories.find((item) => item.key === category);
     return categoryData;
   };
+
   return (
     <YStack px={'$4'} py={'$4'}>
-      <XStack
-        elevation={2}
-        backgroundColor={theme.background.val === '#050505' ? 'gray' : '$white3'}
-        borderRadius={4}
-      >
+      <XStack elevation={2} backgroundColor={theme.color2.val} borderRadius={4}>
         <YStack flex={1}>
-          <Card
-            size={'$4'}
-            backgroundColor={theme.background.val === '#050505' ? 'gray' : '$white3'}
-            padded
-          >
+          <Card size={'$4'} backgroundColor={theme.color2.val} padded>
             <Card.Header padded alignSelf="center" pb={'$1'}></Card.Header>
             <MoodPickerOption Icon={moodToIcon(mood)} bg={moodToBgColor(mood)}>
               {mood}
@@ -117,7 +110,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
           </XStack>
           {note && (
             <XStack>
-              <SizableText color={'$black075'} px={'$2'} py={'$2'} fontSize={'$1'}>
+              <SizableText color={theme.color11} px={'$2'} py={'$2'} fontSize={'$1'}>
                 {note}
               </SizableText>
             </XStack>
@@ -128,7 +121,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
             <Popover.Trigger asChild>
               <Button
                 icon={PlusCircle}
-                backgroundColor={theme.background.val === '#050505' ? 'gray' : '$white3'}
+                backgroundColor={theme.color2.val}
                 size={'$7'}
                 justifyContent="center"
               ></Button>
