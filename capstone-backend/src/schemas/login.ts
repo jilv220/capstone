@@ -6,6 +6,10 @@ export const loginParamSchema = z.object({
 });
 export type AuthProvider = z.infer<typeof loginParamSchema>['provider'];
 
+export const loginParamTestSchema = loginParamSchema.extend({
+  provider: z.enum(['google', 'github', 'test']),
+});
+
 export const loginJsonSchema = z.object({
   idToken: z.string(),
   user: z
@@ -19,6 +23,6 @@ export const loginJsonSchema = z.object({
 export const loginRedirectSchema = z.object({
   redirect: z
     // TODO: Domain should be configuarble
-    .enum([`${Conf.expoRedirectURI}`, `http://localhost:${Conf.port}`])
-    .default(`http://localhost:${Conf.port}`),
+    .enum([`${Conf.expoRedirectURI}`, `http://localhost:${Conf.PORT}`])
+    .default(`http://localhost:${Conf.PORT}`),
 });

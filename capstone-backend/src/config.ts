@@ -32,6 +32,13 @@ const Conf = {
   get expoRedirectURI() {
     return `${Env.NATIVE_APP_PACKAGE_NAME}://`;
   },
+  get testUser() {
+    return {
+      email: 'test@mail.com',
+      username: 'testuser',
+      avatarUrl: '',
+    };
+  },
   get googleOAuth() {
     return {
       clientId: Env.GOOGLE_CLIENT_ID,
