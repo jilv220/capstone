@@ -5,3 +5,6 @@ node_modules/
 .postgres
 .env
 .data.ms
+.vscode
+
+**/__pycache__
