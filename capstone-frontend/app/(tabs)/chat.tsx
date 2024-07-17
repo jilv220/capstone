@@ -9,6 +9,7 @@ import {
   ListItem,
   useTheme,
   ScrollView,
+  Input,
 } from 'tamagui';
 import { AlignJustify, Edit3 } from '@tamagui/lucide-icons';
 import { Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
@@ -16,12 +17,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createConversation, getConversations } from '@/actions/chat';
 import { Conversation } from '@/interfaces/chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SearchBox } from '@/components/search/SearchBox';
 
 const ChatScreen = () => {
   // useState need to be on top...
   const [openHistory, setOpenHistory] = useState(false);
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
-
+  const [searchQuery, setSearchQuery] = useState('');
   const theme = useTheme();
 
   const queryClient = useQueryClient();
@@ -33,7 +35,6 @@ const ChatScreen = () => {
     queryKey: ['conversation'],
     queryFn: getConversations,
   });
-
   const createConversationMutation = useMutation({
     mutationFn: createConversation,
     onSuccess: () => {
@@ -47,6 +48,34 @@ const ChatScreen = () => {
   const toSorted = (conversations: Conversation[]) =>
     conversations.sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
 
+  const filteredConversations =
+    conversations && searchQuery
+      ? toSorted(conversations).filter((conversation) => {
+          return (
+            conversation.title &&
+            conversation.title.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        })
+      : [];
+
+  const conversationItems = (source: Conversation[]) =>
+    toSorted(source).map((conversation, index) => {
+      return (
+        <YGroup.Item key={index}>
+          <ListItem
+            bordered
+            hoverTheme
+            pressTheme
+            title={conversation.title || 'New Conversation'}
+            subTitle={new Date(conversation.updated_at).toLocaleDateString()}
+            onPress={() => {
+              setOpenHistory(false);
+              setConversationId(conversation.id);
+            }}
+          />
+        </YGroup.Item>
+      );
+    });
   useEffect(() => {
     if (conversations && conversations[0]) {
       setConversationId(toSorted(conversations)[0].id);
@@ -64,7 +93,7 @@ const ChatScreen = () => {
           justifyContent="space-between"
           alignItems="center"
           borderColor={'$colorHover'}
-          borderWidth={StyleSheet.hairlineWidth}
+          borderBottomWidth={1}
           borderLeftWidth={0}
           borderRightWidth={0}
         >
@@ -121,23 +150,19 @@ const ChatScreen = () => {
               <ScrollView>
                 <TouchableOpacity onPress={() => {}}>
                   <YGroup bordered pt={'$10'} size="$4">
-                    {toSorted(conversations).map((conversation, index) => {
-                      return (
-                        <YGroup.Item key={index}>
-                          <ListItem
-                            bordered
-                            hoverTheme
-                            pressTheme
-                            title={conversation.title || 'New Conversation'}
-                            subTitle={new Date(conversation.updated_at).toLocaleDateString()}
-                            onPress={() => {
-                              setOpenHistory(false);
-                              setConversationId(conversation.id);
-                            }}
-                          />
-                        </YGroup.Item>
-                      );
-                    })}
+                    <YGroup.Item>
+                      <Input
+                        placeholder="Search Conversations..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        marginBottom={'$1'}
+                        borderColor={'yellowgreen'}
+                        focusStyle={{ borderColor: 'yellowgreen', borderWidth: 3 }}
+                      />
+                    </YGroup.Item>
+                    {searchQuery
+                      ? conversationItems(filteredConversations)
+                      : conversationItems(conversations)}
                   </YGroup>
                 </TouchableOpacity>
               </ScrollView>
