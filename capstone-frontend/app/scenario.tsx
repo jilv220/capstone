@@ -32,6 +32,8 @@ const ScenarioScreen: React.FC = () => {
     },
   });
 
+  const isSaveBtnDisabled = scenarios.length === 0;
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
@@ -53,6 +55,10 @@ const ScenarioScreen: React.FC = () => {
               color={'white'}
               size={50}
               circular
+              disabled={isSaveBtnDisabled}
+              disabledStyle={{
+                backgroundColor: '$dimYellowgreen',
+              }}
               onPress={() => {
                 const newMoodLog: MoodLogCreate = {
                   log_date: dateInScenario as string,
