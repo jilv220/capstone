@@ -12,6 +12,7 @@ import { createMoodLog } from '@/actions/user';
 import BackButton from '@/components/navigation/BackButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView } from 'react-native';
+import SaveBtn from '@/components/SaveBtn';
 
 const ScenarioScreen: React.FC = () => {
   const router = useRouter();
@@ -49,17 +50,9 @@ const ScenarioScreen: React.FC = () => {
             <QuickNote onChangeText={setNote} note={note || ''} />
           </YStack>
           <YStack flex={1} ai={'center'}>
-            <Button
-              icon={Check}
-              backgroundColor={'yellowgreen'}
-              color={'white'}
-              size={50}
-              circular
+            <SaveBtn
               disabled={isSaveBtnDisabled}
-              disabledStyle={{
-                backgroundColor: '$dimYellowgreen',
-              }}
-              onPress={() => {
+              onSaveBtnPressed={() => {
                 const newMoodLog: MoodLogCreate = {
                   log_date: dateInScenario as string,
                   mood: moodInScenario as Mood,
@@ -68,7 +61,7 @@ const ScenarioScreen: React.FC = () => {
                 };
                 createMutation.mutate(newMoodLog);
               }}
-            ></Button>
+            />
           </YStack>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -158,7 +158,17 @@ const EditRecord: React.FC<EditRecordProps> = ({
         <YStack py={'$3'}>
           <Button
             backgroundColor={'$white0'}
-            icon={<ArrowRightCircle size={'$3'} color={'yellowgreen'} />}
+            icon={
+              <ArrowRightCircle
+                size={'$3'}
+                color={'yellowgreen'}
+                disabled={modifiedScenario.length === 0}
+                disabledStyle={{
+                  color: '$dimYellowgreen',
+                }}
+              />
+            }
+            disabled={modifiedScenario.length === 0}
             onPress={() => {
               const updatedMoodLog = {
                 id: id,
