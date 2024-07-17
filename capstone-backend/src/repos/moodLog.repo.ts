@@ -1,5 +1,4 @@
 import { db } from '@/db/db.ts';
-import { NotValidMonthError } from '@/interfaces/base.ts';
 import type { MoodLogCreate, MoodLogUpdate } from '@/interfaces/moodLog.ts';
 import { type Insertable, type Updateable, sql } from 'kysely';
 import type { Category, MoodLog, MoodLogScenario, Scenario } from 'kysely-codegen';
