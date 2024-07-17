@@ -7,6 +7,7 @@ from locust import HttpUser, LoadTestShape, between, task
 
 auth_headers: dict[str, str] | None = None
 mood_log_ids = []
+conversation_ids = []
 
 
 class LoadTester(HttpUser):
@@ -30,7 +31,7 @@ class LoadTester(HttpUser):
         "work",
     ]
 
-    def generate_test_note(self):
+    def generate_test_moodlog(self):
         datetime_with_zulu = (
             datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         )
@@ -44,18 +45,18 @@ class LoadTester(HttpUser):
             ],
         }
 
-    def get_random_note_id(self):
-        idx = randint(0, len(mood_log_ids) - 1)
-        return mood_log_ids[idx]
+    def get_random_id(self, arr: list):
+        idx = randint(0, len(arr) - 1)
+        return arr[idx]
 
-    @task
+    @task(2)
     def me(self):
         self.client.get("/user/me", headers=auth_headers)
 
-    @task
+    @task(10)
     def create_moodlog(self):
         resp = self.client.post(
-            "/user/mood-log", headers=auth_headers, json=self.generate_test_note()
+            "/user/mood-log", headers=auth_headers, json=self.generate_test_moodlog()
         )
         match resp.status_code:
             case 200:
@@ -64,27 +65,27 @@ class LoadTester(HttpUser):
             case _:
                 pass
 
-    @task
+    @task(5)
     def update_moodlog(self):
         match len(mood_log_ids):
             case 0:
                 pass
             case _:
-                id = self.get_random_note_id()
+                id = self.get_random_id(mood_log_ids)
                 self.client.patch(
                     f"/user/mood-log/{id}",
                     headers=auth_headers,
-                    json=self.generate_test_note(),
+                    json=self.generate_test_moodlog(),
                     name="/update-moodlog",
                 )
 
-    @task
+    @task(10)
     def delete_moodlog(self):
         match len(mood_log_ids):
             case 0:
                 pass
             case _:
-                id = self.get_random_note_id()
+                id = self.get_random_id(mood_log_ids)
                 resp = self.client.delete(
                     f"/user/mood-log/{id}",
                     headers=auth_headers,
@@ -93,9 +94,57 @@ class LoadTester(HttpUser):
                 if resp.status_code == 202:
                     mood_log_ids.remove(id)
 
-    @task
+    @task(6)
     def get_all_moodlogs(self):
         self.client.get("/user/mood-log", headers=auth_headers)
+
+    @task(4)
+    def mood_avg(self):
+        self.client.get("/user/mood-log/mood-avg", headers=auth_headers)
+
+    @task(4)
+    def mood_count(self):
+        self.client.get("/user/mood-log/mood-count", headers=auth_headers)
+
+    @task(2)
+    def get_conversation(self):
+        self.client.get("/user/conversation", headers=auth_headers)
+
+    @task(2)
+    def create_conversation(self):
+        resp = self.client.post("/user/conversation", headers=auth_headers)
+        match resp.status_code:
+            case 200:
+                res = resp.json()
+                conversation_ids.append(res["id"])
+            case _:
+                pass
+
+    @task(2)
+    def get_chat_messages(self):
+        match len(conversation_ids):
+            case 0:
+                pass
+            case _:
+                id = self.get_random_id(conversation_ids)
+                self.client.get(
+                    f"/user/conversation/{id}", headers=auth_headers, name="/get-chat"
+                )
+
+    @task(2)
+    def post_chat_messages(self):
+        match len(conversation_ids):
+            case 0:
+                pass
+            case _:
+                id = self.get_random_id(conversation_ids)
+                self.client.post(
+                    f"/user/conversation/{id}",
+                    headers=auth_headers,
+                    name="/create-chat",
+                    json={"content": "test ai chat message"},
+                )
+                sleep(1.5)
 
     def on_start(self) -> None:
         global auth_headers
