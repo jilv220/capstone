@@ -86,91 +86,92 @@ const ChatScreen = () => {
   if (isError) return <Text>Error fetching conversations...</Text>;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <YStack flex={1} pt={'$4'}>
-        <XStack
-          flexDirection="row"
-          justifyContent="space-between"
-          alignItems="center"
-          borderColor={'$colorHover'}
-          borderBottomWidth={1}
-          borderLeftWidth={0}
-          borderRightWidth={0}
+    // <SafeAreaView style={{ flex: 1 }}>
+    // there'll be a gap underneath the input field if we use SafeAreaView
+    <YStack flex={1} pt={'$8'}>
+      <XStack
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        borderColor={'$colorHover'}
+        borderBottomWidth={1}
+        borderLeftWidth={0}
+        borderRightWidth={0}
+      >
+        <Button
+          backgroundColor={'$colorTransparent'}
+          icon={AlignJustify}
+          onPress={() => {
+            setOpenHistory(true);
+          }}
         >
-          <Button
-            backgroundColor={'$colorTransparent'}
-            icon={AlignJustify}
-            onPress={() => {
-              setOpenHistory(true);
-            }}
-          >
-            history
-          </Button>
-          <SizableText
-            textAlign="center"
-            fontSize={'$2'}
-            fontFamily={'$heading'}
-            fontWeight={'bold'}
-            color={'#f90949'}
-          >
-            AI-Chatbox
-          </SizableText>
-          <Button
-            icon={Edit3}
-            backgroundColor={'$colorTransparent'}
-            onPress={() => {
-              createConversationMutation.mutate(undefined, {
-                onSuccess: ({ id }) => {
-                  setConversationId(id);
-                },
-              });
-            }}
-          >
-            new
-          </Button>
-        </XStack>
-        <ChatContainer conversationId={conversationId} />
+          history
+        </Button>
+        <SizableText
+          textAlign="center"
+          fontSize={'$2'}
+          fontFamily={'$heading'}
+          fontWeight={'bold'}
+          color={'#f90949'}
+        >
+          AI-Chatbox
+        </SizableText>
+        <Button
+          icon={Edit3}
+          backgroundColor={'$colorTransparent'}
+          onPress={() => {
+            createConversationMutation.mutate(undefined, {
+              onSuccess: ({ id }) => {
+                setConversationId(id);
+              },
+            });
+          }}
+        >
+          new
+        </Button>
+      </XStack>
+      <ChatContainer conversationId={conversationId} />
 
-        <Modal
-          transparent={true}
-          visible={openHistory}
-          onRequestClose={() => {
+      <Modal
+        transparent={true}
+        visible={openHistory}
+        onRequestClose={() => {
+          setOpenHistory(false);
+        }}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          onPress={() => {
             setOpenHistory(false);
           }}
         >
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            onPress={() => {
-              setOpenHistory(false);
-            }}
+          <View
+            style={theme.background.val === '#050505' ? styles.sideBarGray : styles.sideBarWhite}
           >
-            <View
-              style={theme.background.val === '#050505' ? styles.sideBarGray : styles.sideBarWhite}
-            >
-              <ScrollView>
-                <TouchableOpacity onPress={() => {}}>
-                  <YGroup bordered pt={'$10'} size="$4">
-                    <YGroup.Item>
-                      <Input
-                        placeholder="Search Conversations..."
-                        value={searchQuery}
-                        onChangeText={setSearchQuery}
-                        marginBottom={'$1'}
-                        borderColor={'yellowgreen'}
-                        focusStyle={{ borderColor: 'yellowgreen', borderWidth: 3 }}
-                      />
-                    </YGroup.Item>
-                    {searchQuery
-                      ? conversationItems(filteredConversations)
-                      : conversationItems(conversations)}
-                  </YGroup>
-                </TouchableOpacity>
-              </ScrollView>
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      </YStack>
-    </SafeAreaView>
+            <ScrollView>
+              <TouchableOpacity onPress={() => {}}>
+                <YGroup bordered pt={'$10'} size="$4">
+                  <YGroup.Item>
+                    <Input
+                      placeholder="Search Conversations..."
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                      marginBottom={'$1'}
+                      borderColor={'yellowgreen'}
+                      focusStyle={{ borderColor: 'yellowgreen', borderWidth: 3 }}
+                    />
+                  </YGroup.Item>
+                  {searchQuery
+                    ? conversationItems(filteredConversations)
+                    : conversationItems(conversations)}
+                </YGroup>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </YStack>
+    // </SafeAreaView>
   );
 };
 
