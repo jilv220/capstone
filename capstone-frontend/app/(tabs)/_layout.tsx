@@ -3,7 +3,7 @@ import { Redirect, Tabs } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { useTheme, Text } from 'tamagui';
+import { useTheme, Text, YStack, Spinner } from 'tamagui';
 import { useAuth } from '@/contexts/auth';
 import { Modal, View } from 'react-native';
 import { TouchableOpacity } from 'react-native';
@@ -22,7 +22,11 @@ export default function TabLayout() {
   }, []);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <YStack flex={1} alignItems="center" justifyContent="center">
+        <Spinner size="large" color={'$orange10'} />
+      </YStack>
+    );
   }
 
   if (!user) {

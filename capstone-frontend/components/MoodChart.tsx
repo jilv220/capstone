@@ -1,4 +1,4 @@
-import { Card, SizableText, XStack, YStack } from 'tamagui';
+import { Card, SizableText, Spinner, XStack, YStack } from 'tamagui';
 import LineChart from './ui/LineChart';
 import { useQuery } from '@tanstack/react-query';
 import { getMoodChart } from '@/actions/moodLog';
@@ -21,7 +21,12 @@ export default function MoodChart() {
       };
     });
   }
-  if (isPending) return <Text>loading...</Text>;
+  if (isPending)
+    return (
+      <YStack flex={1} alignItems="center" justifyContent="center">
+        <Spinner size="large" color={'$orange10'} />
+      </YStack>
+    );
   if (isError) return <Text>Error fetching mood chart data</Text>;
 
   return (

@@ -10,6 +10,7 @@ import {
   useTheme,
   ScrollView,
   Input,
+  Spinner,
 } from 'tamagui';
 import { AlignJustify, Edit3 } from '@tamagui/lucide-icons';
 import { Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
@@ -82,7 +83,12 @@ const ChatScreen = () => {
     }
   }, [conversations]);
 
-  if (isPending) return <Text>Loading conversations...</Text>;
+  if (isPending)
+    return (
+      <YStack flex={1} alignItems="center" justifyContent="center">
+        <Spinner size="large" color={'$orange10'} />
+      </YStack>
+    );
   if (isError) return <Text>Error fetching conversations...</Text>;
 
   return (

@@ -1,5 +1,5 @@
 import { buildMoodOptions, moodToBgColor } from '@/lib/mood';
-import { SizableText, YStack, Text, Card, XStack, ZStack, Circle } from 'tamagui';
+import { SizableText, YStack, Text, Card, XStack, ZStack, Circle, Spinner } from 'tamagui';
 
 import HalfPieChart from './ui/HalfPieChart';
 import MoodPickerOption from './MoodPickerOption';
@@ -17,7 +17,12 @@ export default function MoodCounter() {
     queryFn: getMoodCount,
   });
 
-  if (isPending) return <Text>loading...</Text>;
+  if (isPending)
+    return (
+      <YStack flex={1} alignItems="center" justifyContent="center">
+        <Spinner size="large" color={'$orange10'} />
+      </YStack>
+    );
   if (isError) return <Text>Error fetching mood count data</Text>;
 
   const moodOptions = buildMoodOptions();

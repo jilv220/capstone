@@ -4,7 +4,7 @@ import { InfiniteHits } from '@/components/search/InfiniteHits';
 import { SearchBox } from '@/components/search/SearchBox';
 import { useRef } from 'react';
 import { useRefinementList } from 'react-instantsearch-core';
-import { FlatList, KeyboardAvoidingView } from 'react-native';
+import { FlatList, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, ScrollView, SizableText, XGroup, XStack, YStack } from 'tamagui';
 

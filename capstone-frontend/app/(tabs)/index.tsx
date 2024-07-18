@@ -1,7 +1,7 @@
-import { KeyboardAvoidingView, Text } from 'react-native';
+import { ImageBackground, KeyboardAvoidingView, Text } from 'react-native';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { ScrollView, Sheet, XStack, YStack } from 'tamagui';
+import { ScrollView, Sheet, Spinner, XStack, YStack } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { getMoodLogs } from '@/actions/user';
@@ -15,11 +15,14 @@ export default function HomeScreen() {
   const [open, setOpen] = useState(false);
   const [editData, setEditData] = useState<MoodLog | null>(null);
   const [editKey, setEditKey] = useState(Date.now());
-  const { data, isPending, isError } = useQuery({ queryKey: ['mood-log'], queryFn: getMoodLogs });
+  const { data, isPending, isError } = useQuery({
+    queryKey: ['mood-log'],
+    queryFn: getMoodLogs,
+  });
   if (isPending) {
     return (
-      <YStack>
-        <Text>Loading...</Text>
+      <YStack flex={1} alignItems="center" justifyContent="center">
+        <Spinner size="large" color={'$orange10'} />
       </YStack>
     );
   }
@@ -67,6 +70,13 @@ export default function HomeScreen() {
     }
   };
 
+  const displayWhenNoData = () => {
+    return (
+      <YStack>
+        <Text>No data to display</Text>
+      </YStack>
+    );
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
