@@ -4,29 +4,18 @@ import { useQuery } from '@tanstack/react-query';
 import { getMoodChart } from '@/actions/moodLog';
 import { Text } from 'react-native';
 export default function MoodChart() {
-  const {
-    data: rawData,
-    isError,
-    isPending,
-  } = useQuery({
+  const { data: rawData, isError } = useQuery({
     queryKey: ['mood-log', 'mood-avg'],
     queryFn: getMoodChart,
   });
-  let data: { date: string; value: number }[] = [];
-  if (rawData) {
-    data = rawData.map((item) => {
-      return {
+
+  const data: { date: string; value: number }[] = rawData
+    ? rawData.map((item) => ({
         date: item.log_date,
         value: item.avg_score,
-      };
-    });
-  }
-  if (isPending)
-    return (
-      <YStack flex={1} alignItems="center" justifyContent="center">
-        <Spinner size="large" color={'$orange10'} />
-      </YStack>
-    );
+      }))
+    : [];
+
   if (isError) return <Text>Error fetching mood chart data</Text>;
 
   return (

@@ -4,15 +4,16 @@ import { router } from 'expo-router';
 import { useAuth } from '@/contexts/auth';
 import ColorModeDialog from '@/components/ColorModeDialog';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ImageBackground } from 'react-native';
+import { Appearance, ImageBackground } from 'react-native';
 
 export default function ResourcesScreen() {
   const { signOut } = useAuth();
-  const theme = useTheme();
+  const colorMode = Appearance.getColorScheme();
+
   return (
     <ImageBackground
       source={
-        theme.background.val === '#050505'
+        colorMode === 'dark'
           ? require('../../assets/images/bg-black.png')
           : require('../../assets/images/bg-white.png')
       }

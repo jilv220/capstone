@@ -8,31 +8,21 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getMoodCount } from '@/actions/moodLog';
 
 export default function MoodCounter() {
-  const {
-    data: moodCount,
-    isPending,
-    isError,
-  } = useQuery({
+  const { data: moodCount, isError } = useQuery({
     queryKey: ['mood-log', 'mood-count'],
     queryFn: getMoodCount,
   });
 
-  if (isPending)
-    return (
-      <YStack flex={1} alignItems="center" justifyContent="center">
-        <Spinner size="large" color={'$orange10'} />
-      </YStack>
-    );
-  if (isError) return <Text>Error fetching mood count data</Text>;
-
   const moodOptions = buildMoodOptions();
-  const data = [
-    { value: moodCount.rad, color: moodToBgColor('rad', false) },
-    { value: moodCount.good, color: moodToBgColor('good', false) },
-    { value: moodCount.meh, color: moodToBgColor('meh', false) },
-    { value: moodCount.bad, color: moodToBgColor('bad', false) },
-    { value: moodCount.awful, color: moodToBgColor('awful', false) },
-  ];
+  const data = moodCount
+    ? [
+        { value: moodCount.rad, color: moodToBgColor('rad', false) },
+        { value: moodCount.good, color: moodToBgColor('good', false) },
+        { value: moodCount.meh, color: moodToBgColor('meh', false) },
+        { value: moodCount.bad, color: moodToBgColor('bad', false) },
+        { value: moodCount.awful, color: moodToBgColor('awful', false) },
+      ]
+    : [];
 
   const moodOptionsWithData = moodOptions.map((moodOption, index) => {
     return {
@@ -40,6 +30,8 @@ export default function MoodCounter() {
       ...data[index],
     };
   });
+
+  if (isError) return <Text>Error fetching mood count data</Text>;
 
   return (
     <Card elevate elevation={2} size={'$4'} borderRadius={4} padded mx={'$4'}>

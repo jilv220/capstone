@@ -1,12 +1,21 @@
 import { GithubSignInBtn } from '@/components/GithubSignInBtn';
 import { GoogleSignInBtn } from '@/components/GoogleSignInBtn';
-import { ImageBackground } from 'react-native';
+import { Appearance, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Card, ScrollView, SizableText, YStack } from 'tamagui';
 
 export default function SignIn() {
+  const colorMode = Appearance.getColorScheme();
+
   return (
-    <ImageBackground source={require('../assets/images/bg-pink.png')} style={{ flex: 1 }}>
+    <ImageBackground
+      source={
+        colorMode === 'dark'
+          ? require('../assets/images/bg-pink-dark.png')
+          : require('../assets/images/bg-pink.png')
+      }
+      style={{ flex: 1 }}
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <YStack flex={1} ai="center" jc="center" mx={'$4'}>
           <Card py={'$3'} width={'100%'} minHeight={200}>
