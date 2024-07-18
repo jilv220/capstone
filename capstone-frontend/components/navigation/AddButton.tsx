@@ -1,13 +1,14 @@
 import { View, Text, Appearance } from 'react-native';
 import React from 'react';
 import { Plus } from '@tamagui/lucide-icons';
-import { Button, useTheme } from 'tamagui';
+import { Button, useTheme, useThemeName } from 'tamagui';
 interface AddButtonProps {
   handleClick: () => void;
 }
 const AddButton: React.FC<AddButtonProps> = ({ handleClick }) => {
   const theme = useTheme();
-  const colorMode = Appearance.getColorScheme();
+  const themeName = useThemeName();
+
   return (
     <Button
       icon={Plus}
@@ -17,7 +18,7 @@ const AddButton: React.FC<AddButtonProps> = ({ handleClick }) => {
       borderColor={'#F9476C'}
       borderWidth={2}
       borderRadius={200}
-      backgroundColor={colorMode === 'dark' ? theme.background : 'white'}
+      backgroundColor={themeName === 'dark' ? theme.background : 'white'}
       onPress={handleClick}
       color={'#F9476C'}
       size={'$5'}

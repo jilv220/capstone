@@ -1,4 +1,12 @@
-import { ListItem, ScrollView, Separator, SizableText, useTheme, YGroup } from 'tamagui';
+import {
+  ListItem,
+  ScrollView,
+  Separator,
+  SizableText,
+  useTheme,
+  useThemeName,
+  YGroup,
+} from 'tamagui';
 import { LogOut, FolderHeart, SunMoon } from '@tamagui/lucide-icons';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/auth';
@@ -8,12 +16,12 @@ import { Appearance, ImageBackground } from 'react-native';
 
 export default function ResourcesScreen() {
   const { signOut } = useAuth();
-  const colorMode = Appearance.getColorScheme();
+  const themeName = useThemeName();
 
   return (
     <ImageBackground
       source={
-        colorMode === 'dark'
+        themeName === 'dark'
           ? require('../../assets/images/bg-black.png')
           : require('../../assets/images/bg-white.png')
       }

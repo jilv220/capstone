@@ -12,7 +12,7 @@ import {
   Composer,
 } from 'react-native-gifted-chat';
 import { BubbleProps } from 'react-native-gifted-chat';
-import { YStack, Button, XStack, View, Footer, useTheme } from 'tamagui';
+import { YStack, Button, XStack, View, Footer, useTheme, useThemeName } from 'tamagui';
 
 const AI_BackgoundColor = '#f90949';
 const User_BackgoundColor = '#ffffff';
@@ -131,30 +131,35 @@ const quickOptions = [
   'self-harm',
   'suicidal thoughts',
 ];
-export const FootComponent = ({ onPressQuickOptions, theme }: any) => (
-  <YStack>
-    <XStack flexWrap="wrap" justifyContent="space-evenly" margin={1}>
-      {quickOptions.map((option, index) => {
-        return (
-          <Button
-            key={index}
-            margin={1}
-            flexBasis={'32%'}
-            fontFamily={'$heading'}
-            fontSize={'$1'}
-            backgroundImage={require('../assets/images/bubble.png')}
-            color={theme.background.val === '#050505' ? 'pink' : '#F9476C'}
-            borderWidth={'$1'}
-            marginHorizontal={1}
-            pressStyle={{ borderColor: AI_BackgoundColor }}
-            onPress={() => {
-              onPressQuickOptions(option);
-            }}
-          >
-            {option}
-          </Button>
-        );
-      })}
-    </XStack>
-  </YStack>
-);
+export const FootComponent = ({ onPressQuickOptions }: any) => {
+  const theme = useTheme();
+  const themeName = useThemeName();
+
+  return (
+    <YStack>
+      <XStack flexWrap="wrap" justifyContent="space-evenly" margin={1}>
+        {quickOptions.map((option, index) => {
+          return (
+            <Button
+              key={index}
+              margin={1}
+              flexBasis={'32%'}
+              fontFamily={'$heading'}
+              fontSize={'$1'}
+              backgroundColor={'$color2'}
+              color={themeName === 'dark' ? 'pink' : theme.buttonPink.val}
+              borderWidth={'$1'}
+              marginHorizontal={1}
+              pressStyle={{ borderColor: AI_BackgoundColor }}
+              onPress={() => {
+                onPressQuickOptions(option);
+              }}
+            >
+              {option}
+            </Button>
+          );
+        })}
+      </XStack>
+    </YStack>
+  );
+};

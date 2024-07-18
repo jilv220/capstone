@@ -3,12 +3,13 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { ScrollView, Sheet, Spinner, XStack, YStack } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { getMoodLogs } from '@/actions/user';
 import { LegacyMoodData, MoodLog } from '@/interfaces/moodLog';
 
 import MoodDisplay from '@/components/MoodDisplay';
 import EditRecord from '@/components/EditRecord';
+import { usePrefetchAllScreens } from '@/hooks/usePrefetchAllScreens';
 
 export default function HomeScreen() {
   const [position, setPosition] = useState(0);
@@ -19,6 +20,9 @@ export default function HomeScreen() {
     queryKey: ['mood-log'],
     queryFn: getMoodLogs,
   });
+
+  usePrefetchAllScreens();
+
   if (isPending) {
     return (
       <YStack flex={1} alignItems="center" justifyContent="center">

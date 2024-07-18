@@ -11,6 +11,7 @@ import {
   ScrollView,
   Input,
   Spinner,
+  useThemeName,
 } from 'tamagui';
 import { AlignJustify, Edit3 } from '@tamagui/lucide-icons';
 import { Appearance, Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
@@ -25,8 +26,9 @@ const ChatScreen = () => {
   const [openHistory, setOpenHistory] = useState(false);
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
-  const theme = useTheme();
-  const colorMode = Appearance.getColorScheme();
+
+  const themeName = useThemeName();
+
   const queryClient = useQueryClient();
   const {
     data: conversations,
@@ -46,6 +48,7 @@ const ChatScreen = () => {
     },
   });
 
+  // Should sort on the server...
   const toSorted = (conversations: Conversation[]) =>
     conversations.sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
 
@@ -151,7 +154,7 @@ const ChatScreen = () => {
             setOpenHistory(false);
           }}
         >
-          <View style={colorMode === 'dark' ? styles.sideBarGray : styles.sideBarWhite}>
+          <View style={themeName === 'dark' ? styles.sideBarGray : styles.sideBarWhite}>
             <ScrollView>
               <TouchableOpacity onPress={() => {}}>
                 <YGroup bordered pt={'$10'} size="$4">

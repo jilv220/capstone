@@ -2,15 +2,15 @@ import { GithubSignInBtn } from '@/components/GithubSignInBtn';
 import { GoogleSignInBtn } from '@/components/GoogleSignInBtn';
 import { Appearance, ImageBackground } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Card, ScrollView, SizableText, YStack } from 'tamagui';
+import { Button, Card, ScrollView, SizableText, useThemeName, YStack } from 'tamagui';
 
 export default function SignIn() {
-  const colorMode = Appearance.getColorScheme();
+  const themeName = useThemeName();
 
   return (
     <ImageBackground
       source={
-        colorMode === 'dark'
+        themeName === 'dark'
           ? require('../assets/images/bg-pink-dark.png')
           : require('../assets/images/bg-pink.png')
       }

@@ -17,7 +17,6 @@ import {
   createConversation,
   createMessage,
   getAllMessages,
-  getConversations,
 } from '@/actions/chat';
 
 type ChatContainerProps = {
@@ -124,7 +123,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ conversationId }) => {
       isLoadingEarlier={true}
       renderTime={renderTime}
       renderInputToolbar={(props) => renderInputToolbar(props, theme)}
-      renderFooter={() => <FootComponent onPressQuickOptions={handleQuickOptions} theme={theme} />}
+      renderFooter={() => <FootComponent onPressQuickOptions={handleQuickOptions} />}
       user={{
         _id: 1,
         name: 'ivy',
