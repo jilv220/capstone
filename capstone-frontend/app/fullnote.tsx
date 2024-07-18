@@ -43,7 +43,7 @@ const fullnote = () => {
                   router.push('/');
                 }
               }}
-              icon={<CheckCircle2 size={'$3'} color={'yellowgreen'} />}
+              icon={<CheckCircle2 size={'$3'} color={'#f9476c'} />}
             ></Button>
           </YStack>
         </KeyboardAvoidingView>
