@@ -104,18 +104,18 @@ export const renderMessageText = (props: any) => (
   />
 );
 
-export const renderInputToolbar = (props: any, theme: any) => {
+export const renderInputToolbar = (props: any, colorMode: any) => {
   return (
     <InputToolbar
       {...props}
       containerStyle={{
-        backgroundColor: theme.background.val === '#050505' ? '#050505' : 'white',
+        backgroundColor: colorMode === 'dark' ? '#050505' : 'white',
       }}
       renderComposer={(composerProps) => (
         <Composer
           {...composerProps}
           textInputStyle={{
-            color: theme.background.val === '#050505' ? 'white' : 'black',
+            color: colorMode === 'dark' ? 'white' : 'black',
           }}
         />
       )}
@@ -131,7 +131,7 @@ const quickOptions = [
   'self-harm',
   'suicidal thoughts',
 ];
-export const FootComponent = ({ onPressQuickOptions }: any) => (
+export const FootComponent = ({ onPressQuickOptions, colorMode }: any) => (
   <YStack>
     <XStack flexWrap="wrap" justifyContent="space-evenly" margin={1}>
       {quickOptions.map((option, index) => {
@@ -142,9 +142,8 @@ export const FootComponent = ({ onPressQuickOptions }: any) => (
             flexBasis={'32%'}
             fontFamily={'$heading'}
             fontSize={'$1'}
-            borderColor={'#B0B0B0'}
-            backgroundColor={'#E0E0E0'}
-            color={'#333333'}
+            backgroundImage={require('../assets/images/bubble.png')}
+            color={colorMode === 'dark' ? 'pink' : '#F9476C'}
             borderWidth={'$1'}
             marginHorizontal={1}
             pressStyle={{ borderColor: AI_BackgoundColor }}

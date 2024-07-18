@@ -28,7 +28,7 @@ export default function ScenarioOption({
     <YStack alignItems="center" gap={'$1.5'}>
       <Button
         size={'$4'}
-        bg={isChosen ? 'yellowgreen' : '$color0'}
+        bg={isChosen ? '#ff8195' : '$color0'}
         onPress={() => {
           if (!isChosen) {
             onPressHandler((prev) => [...prev, scenario]);
@@ -39,9 +39,7 @@ export default function ScenarioOption({
           toggleChosen(!isChosen);
         }}
         circular
-        icon={
-          Icon && <Icon size={IconSize || '$4'} color={isChosen ? '$background' : 'yellowgreen'} />
-        }
+        icon={Icon && <Icon size={IconSize || '$4'} color={isChosen ? '$background' : '#F9476C'} />}
       ></Button>
       <Text color={bg || theme.color} fontSize={'$1'} fow={100}>
         {children}

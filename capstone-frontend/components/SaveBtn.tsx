@@ -9,13 +9,13 @@ export default function SaveBtn({ disabled, onSaveBtnPressed, ...props }: SaveBt
   return (
     <Button
       icon={Check}
-      backgroundColor={'yellowgreen'}
+      backgroundColor={'#f9476c'}
       color={'white'}
       size={50}
       circular
       disabled={disabled}
       disabledStyle={{
-        backgroundColor: '$dimYellowgreen',
+        backgroundColor: '$dimButtonPink',
       }}
       {...props}
       onPress={onSaveBtnPressed}

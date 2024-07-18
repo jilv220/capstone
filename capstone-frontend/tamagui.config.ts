@@ -7,7 +7,9 @@ const tamaguiConfig = createTamagui({
     ...config.tokens,
     color: {
       ...config.tokens.color,
-      dimYellowgreen: '#5f8024'
+      dimYellowgreen: '#5f8024',
+      buttonPink:'#f9476c',
+      dimButtonPink:'#F2FAE8',
     }
   }
 });

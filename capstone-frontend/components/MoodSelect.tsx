@@ -33,7 +33,7 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
           </SizableText>
           <Button
             backgroundColor={'$white0'}
-            color={'$green10Dark'}
+            color={'#f9476c'}
             icon={<Calendar size="24" />}
             onPress={() => {
               setOpen(true);
@@ -72,7 +72,7 @@ const MoodSelect: React.FC<MoodSelectProps> = ({ handleClose }) => {
         <Button
           icon={ArrowRightCircle}
           backgroundColor={'$white0'}
-          color={'yellowgreen'}
+          color={'#f9476c'}
           size={55}
           onPress={() => {
             handleClose();

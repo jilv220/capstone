@@ -15,7 +15,7 @@ export default function FilterBtn({ item, onToggle }: FilterBtnProps) {
       size={'$3'}
       borderWidth={'$1'}
       borderColor={'$color6'}
-      bg={isInRefinementList ? 'yellowgreen' : '$background'}
+      bg={isInRefinementList ? 'pink' : '$background'}
       onPress={() => {
         onToggle();
         setIsInRefinementList((prev) => !prev);

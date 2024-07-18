@@ -28,8 +28,8 @@ export function SearchBox({ onChange, ...props }: SearchBoxProps) {
   return (
     <Input
       ref={inputRef}
-      borderColor={'yellowgreen'}
-      focusStyle={{ borderColor: 'yellowgreen', borderWidth: 3 }}
+      borderColor={'pink'}
+      focusStyle={{ borderColor: 'pink', borderWidth: 3 }}
       borderWidth={2}
       elevation={2}
       flex={1}

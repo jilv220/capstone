@@ -19,7 +19,7 @@ const QuickNote: React.FC<QuickNoteProps> = ({ bgColor, onChangeText, note }) =>
         <Button
           icon={<NotebookPen size={'$1'} />}
           backgroundColor={bgColor || '$background'}
-          color={'yellowgreen'}
+          color={'#f9476c'}
         >
           <SizableText>Quick Note</SizableText>
         </Button>
@@ -29,7 +29,7 @@ const QuickNote: React.FC<QuickNoteProps> = ({ bgColor, onChangeText, note }) =>
             changeToTextArea(!isTextArea);
           }}
         >
-          <SizableText color={'green'}>Open Full Note</SizableText>
+          <SizableText color={'#F9476C'}>Open Full Note</SizableText>
         </Button>
       </XStack>
       <XStack>

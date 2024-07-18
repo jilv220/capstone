@@ -101,12 +101,17 @@ const EditRecord: React.FC<EditRecordProps> = ({
           size={'$5'}
           backgroundColor={'$white0'}
           icon={<Calendar size={'$1'} />}
-          color={'yellowgreen'}
+          color={'pink'}
           onPress={() => {
             setDatePickerOpen(true);
           }}
         >
-          <SizableText color={'green'} size={'$4'} fontWeight={100} textDecorationLine="underline">
+          <SizableText
+            color={'#F9476C'}
+            size={'$4'}
+            fontWeight={100}
+            textDecorationLine="underline"
+          >
             {specificDate.toDateString() + ' at ' + specificDate.toLocaleTimeString()}
           </SizableText>
         </Button>
@@ -161,10 +166,10 @@ const EditRecord: React.FC<EditRecordProps> = ({
             icon={
               <ArrowRightCircle
                 size={'$3'}
-                color={'yellowgreen'}
+                color={'#f9476c'}
                 disabled={modifiedScenario.length === 0}
                 disabledStyle={{
-                  color: '$dimYellowgreen',
+                  color: '#F2FAE8',
                 }}
               />
             }

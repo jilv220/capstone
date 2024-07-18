@@ -83,7 +83,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
             </SizableText>
           </XStack>
           <XStack px={'$2'} marginTop={'$-2'}>
-            <SizableText color={'yellowgreen'} fontWeight={700} fontSize={25}>
+            <SizableText color={'#FF8195'} fontWeight={700} fontSize={25}>
               {mood}
             </SizableText>
             <SizableText px={'$2'}>{digitTime}</SizableText>
@@ -98,7 +98,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                       icon={category?.icon}
                       size={'$2'}
                       backgroundColor={'$white0'}
-                      color={'yellowgreen'}
+                      color={'#FF8195'}
                     />
                   </YStack>
                   <YStack>
@@ -186,6 +186,7 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                 <Popover.Close asChild fd={'row'}>
                   <Button
                     icon={Trash2}
+                    color={'red'}
                     size={'$5'}
                     borderRadius={0}
                     justifyContent="flex-start"
@@ -193,7 +194,9 @@ const MoodDisplay: React.FC<MoodDisplayProps> = ({
                       deleteMutation.mutate(id);
                     }}
                   >
-                    <SizableText fontSize={'$5'}>Delete</SizableText>
+                    <SizableText fontSize={'$5'} color={'red'}>
+                      Delete
+                    </SizableText>
                   </Button>
                 </Popover.Close>
               </YStack>

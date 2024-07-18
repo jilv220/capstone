@@ -13,7 +13,7 @@ import {
   Spinner,
 } from 'tamagui';
 import { AlignJustify, Edit3 } from '@tamagui/lucide-icons';
-import { Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
+import { Appearance, Modal, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createConversation, getConversations } from '@/actions/chat';
 import { Conversation } from '@/interfaces/chat';
@@ -26,7 +26,7 @@ const ChatScreen = () => {
   const [conversationId, setConversationId] = useState<string | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState('');
   const theme = useTheme();
-
+  const colorMode = Appearance.getColorScheme();
   const queryClient = useQueryClient();
   const {
     data: conversations,
@@ -151,9 +151,7 @@ const ChatScreen = () => {
             setOpenHistory(false);
           }}
         >
-          <View
-            style={theme.background.val === '#050505' ? styles.sideBarGray : styles.sideBarWhite}
-          >
+          <View style={colorMode === 'dark' ? styles.sideBarGray : styles.sideBarWhite}>
             <ScrollView>
               <TouchableOpacity onPress={() => {}}>
                 <YGroup bordered pt={'$10'} size="$4">
@@ -163,8 +161,8 @@ const ChatScreen = () => {
                       value={searchQuery}
                       onChangeText={setSearchQuery}
                       marginBottom={'$1'}
-                      borderColor={'yellowgreen'}
-                      focusStyle={{ borderColor: 'yellowgreen', borderWidth: 3 }}
+                      borderColor={'pink'}
+                      focusStyle={{ borderColor: 'pink', borderWidth: 3 }}
                     />
                   </YGroup.Item>
                   {searchQuery
