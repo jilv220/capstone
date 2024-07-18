@@ -19,7 +19,6 @@ import {
   getAllMessages,
   getConversations,
 } from '@/actions/chat';
-import { Appearance } from 'react-native';
 
 type ChatContainerProps = {
   conversationId?: string;
@@ -30,7 +29,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ conversationId }) => {
   const [initialMessages, setInitialMessages] = useState<IMessage[]>([]);
 
   const theme = useTheme();
-  const colorMode = Appearance.getColorScheme();
+
   const queryClient = useQueryClient();
   const createConversationMutation = useMutation({
     mutationFn: createConversation,
@@ -124,10 +123,8 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ conversationId }) => {
       showUserAvatar={true}
       isLoadingEarlier={true}
       renderTime={renderTime}
-      renderInputToolbar={(props) => renderInputToolbar(props, colorMode)}
-      renderFooter={() => (
-        <FootComponent onPressQuickOptions={handleQuickOptions} colorMode={colorMode} />
-      )}
+      renderInputToolbar={(props) => renderInputToolbar(props, theme)}
+      renderFooter={() => <FootComponent onPressQuickOptions={handleQuickOptions} theme={theme} />}
       user={{
         _id: 1,
         name: 'ivy',
