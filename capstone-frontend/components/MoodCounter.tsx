@@ -6,13 +6,9 @@ import MoodPickerOption from './MoodPickerOption';
 import MoodCounterBadge from './MoodCounterBadge';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getMoodCount } from '@/actions/moodLog';
+import { MoodCount } from '@/interfaces/moodLog';
 
-export default function MoodCounter() {
-  const { data: moodCount, isError } = useQuery({
-    queryKey: ['mood-log', 'mood-count'],
-    queryFn: getMoodCount,
-  });
-
+export default function MoodCounter({ moodCount }: { moodCount: MoodCount }) {
   const moodOptions = buildMoodOptions();
   const data = moodCount
     ? [
@@ -30,8 +26,6 @@ export default function MoodCounter() {
       ...data[index],
     };
   });
-
-  if (isError) return <Text>Error fetching mood count data</Text>;
 
   return (
     <Card elevate elevation={2} size={'$4'} borderRadius={4} padded mx={'$4'}>
