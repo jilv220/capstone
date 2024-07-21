@@ -52,7 +52,8 @@ const EditRecord: React.FC<EditRecordProps> = ({
   const [specificDate, setDate] = useState(new Date(log_date));
   const [emotion, setEmotion] = useState<'awful' | 'bad' | 'good' | 'meh' | 'rad'>(mood);
   const [modifiedScenario, setModifiedScenario] = useState<Scenarios>(scenario);
-  const [modifiedNote, setModifiedNote] = useState<string | null>(note || null);
+  const [modifiedNote, setModifiedNote] = useState<string | undefined>(note || undefined);
+
   useEffect(() => {}, [emotion]);
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
@@ -163,17 +164,11 @@ const EditRecord: React.FC<EditRecordProps> = ({
         <YStack py={'$3'}>
           <Button
             backgroundColor={'$white0'}
-            icon={
-              <ArrowRightCircle
-                size={'$3'}
-                color={'#f9476c'}
-                disabled={modifiedScenario.length === 0}
-                disabledStyle={{
-                  color: '#F2FAE8',
-                }}
-              />
-            }
+            icon={<ArrowRightCircle size={'$3'} color={'#f9476c'} />}
             disabled={modifiedScenario.length === 0}
+            disabledStyle={{
+              opacity: 0.5,
+            }}
             onPress={() => {
               const updatedMoodLog = {
                 id: id,

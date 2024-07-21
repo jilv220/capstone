@@ -9,7 +9,7 @@ import React from 'react';
 interface QuickNoteProps {
   bgColor?: string;
   note?: string | null;
-  onChangeText: ReactSetStateType<string | null>;
+  onChangeText: ReactSetStateType<string | undefined>;
 }
 const QuickNote: React.FC<QuickNoteProps> = ({ bgColor, onChangeText, note }) => {
   const [isTextArea, changeToTextArea] = React.useState(false);

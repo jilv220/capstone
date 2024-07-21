@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Svg, { G, Path, Text } from 'react-native-svg';
 import { GetProps, YStack, YStackProps, useTheme } from 'tamagui';
@@ -15,13 +15,17 @@ type HalfPieChartProp = {
 } & YStackProps;
 
 export default function HalfPieChart({ data, ...props }: HalfPieChartProp) {
-  const pieData = d3Shape
-    .pie<DataItem>()
-    .value((d) => d.value)
-    // Disable Sorting
-    .sortValues(null)
-    .startAngle(-Math.PI / 2)
-    .endAngle(Math.PI / 2)(data);
+  const pieData = useMemo(
+    () =>
+      d3Shape
+        .pie<DataItem>()
+        .value((d) => d.value)
+        // Disable Sorting
+        .sortValues(null)
+        .startAngle(-Math.PI / 2)
+        .endAngle(Math.PI / 2)(data),
+    [data]
+  );
 
   const arc = d3Shape.arc<d3Shape.PieArcDatum<DataItem>>().outerRadius(100).innerRadius(65);
   const total = data.reduce((acc, d) => acc + d.value, 0);

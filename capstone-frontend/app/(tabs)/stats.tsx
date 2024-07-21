@@ -11,11 +11,7 @@ import { ChevronsLeft, ChevronsRight } from '@tamagui/lucide-icons';
 
 const stats = () => {
   const [monthDiff, setMonthDiff] = React.useState(0);
-  const queryClient = useQueryClient();
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['mood-log', 'mood-avg'] });
-    queryClient.invalidateQueries({ queryKey: ['mood-log', 'mood-count'] });
-  }, [monthDiff]);
+  const theme = useTheme();
 
   const queries = useQueries({
     queries: [
@@ -32,9 +28,9 @@ const stats = () => {
   const [moodChartQuery, moodCountQuery] = queries;
   const moodChartData = moodChartQuery.data;
   const moodCountData = moodCountQuery.data;
+
   const isPending = queries.some((q) => q.isPending);
   const isError = queries.some((q) => q.isError);
-  const theme = useTheme();
   if (isPending) {
     return (
       <YStack flex={1} alignItems="center" justifyContent="center">
@@ -102,8 +98,11 @@ const stats = () => {
           <Button
             width={'$5'}
             backgroundColor={'$colorTransparent'}
+            disabled={monthDiff === 0}
+            disabledStyle={{
+              opacity: 0.5,
+            }}
             onPress={() => {
-              if (monthDiff === 0) return;
               setMonthDiff(monthDiff - 1);
             }}
           >

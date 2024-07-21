@@ -3,7 +3,7 @@ import { getMoodChart, getMoodCount } from "@/actions/moodLog";
 import { Conversation } from "@/interfaces/chat";
 import { useQueries, useQuery } from "@tanstack/react-query";
 
-export function usePrefetchAllScreens() {
+export function usePrefetchToplevelScreens() {
   const { data: conversations } = useQuery({
     queryKey: ['conversation'],
     queryFn: getConversations,
@@ -12,18 +12,21 @@ export function usePrefetchAllScreens() {
   const toSorted = (conversations: Conversation[] | undefined) =>
     conversations ? conversations.sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1)) : [];
 
+  const prevYear = [...Array(12)].map((_, i) => i);
+
   useQueries({
-    queries: [
-      {
-        queryKey: ['mood-log', 'mood-avg'],
-        queryFn: getMoodChart,
-      },
-      {
-        queryKey: ['mood-log', 'mood-count'],
-        queryFn: getMoodCount,
-      },
-    ],
-  });
+    queries: prevYear.map((prevNMonth) => ({
+      queryKey: ['mood-log', 'mood-avg', prevNMonth],
+      queryFn: () => getMoodChart(prevNMonth)
+    })) 
+  }); 
+
+  useQueries({
+    queries: prevYear.map((prevNMonth) => ({
+      queryKey: ['mood-log', 'mood-count', prevNMonth],
+      queryFn: () => getMoodCount(prevNMonth)
+    }))
+  }) 
 
   useQueries({
     queries: toSorted(conversations)

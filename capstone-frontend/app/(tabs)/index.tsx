@@ -9,7 +9,7 @@ import { LegacyMoodData, MoodLog } from '@/interfaces/moodLog';
 
 import MoodDisplay from '@/components/MoodDisplay';
 import EditRecord from '@/components/EditRecord';
-import { usePrefetchAllScreens } from '@/hooks/usePrefetchAllScreens';
+import { usePrefetchToplevelScreens } from '@/hooks/usePrefetchToplevelScreens';
 
 export default function HomeScreen() {
   const [position, setPosition] = useState(0);
@@ -21,7 +21,7 @@ export default function HomeScreen() {
     queryFn: getMoodLogs,
   });
 
-  usePrefetchAllScreens();
+  usePrefetchToplevelScreens();
 
   if (isPending) {
     return (
