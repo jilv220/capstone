@@ -1,0 +1,19 @@
+# Useer Story: AI Chatbot
+
+## User Story 1
+As a user, I want to interact with an AI chatbot to get emotional support and advice.
+
+## Acceptance Criteria
+Given that the user is on the chat screen, when the user sends a message to the AI chatbot, then the chatbot should respond with empathetic and supportive messages.
+
+## User Story 2
+As a user, I want to search my conversation history with the AI chatbot so that I can revisit past advice.
+
+## Acceptance Criteria
+Given that the user is on the conversation history screen, when the user enters a search query, then the relevant past conversations should be displayed.
+
+## User Story 3
+ As a user, I want to have quick access to common emotional states in the chatbot so that I can easily communicate how I feel.
+
+## Acceptance Criteria
+Given that the user is on the chat screen, when the user selects a quick access button for an emotional state, then the chatbot should initiate a conversation based on that state.
