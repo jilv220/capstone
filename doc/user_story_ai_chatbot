@@ -17,3 +17,15 @@ Given that the user is on the conversation history screen, when the user enters 
 
 ## Acceptance Criteria
 Given that the user is on the chat screen, when the user selects a quick access button for an emotional state, then the chatbot should initiate a conversation based on that state.
+
+## User Story 4
+ As a user, I want to start a new conversation with the AI chatbot.
+
+## Acceptance Criteria
+Given that the user is on the chat screen, when the user selects a new conversation, then the chatbot should initiate a new conversation chatbox.
+
+## User Story 5
+ As a user, I want to leave the AI chatbot.
+
+## Acceptance Criteria
+Given that the user is on the chat screen, when the user chooses to leave the AI chatbox, then the application should navigate to the main page.
